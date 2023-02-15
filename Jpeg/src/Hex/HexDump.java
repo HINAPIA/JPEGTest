@@ -18,22 +18,21 @@ import javax.imageio.stream.FileImageInputStream;
 
 public class HexDump {
 
-	// byte ¹è¿­°ú ÀúÀåÇÒ ÆÄÀÏ ÀÌ¸§À» ÀÔ·Â ¹Þ¾Æ ÇØ´ç ÆÄÀÏ ÀÌ¸§À¸·Î ÆÄÀÏ·Î ÀúÀåÇÏ´Â ÇÔ¼ö
-	public static void WriteFile(byte[] bytes, String saveFilePath) {
+	// byte ë°°ì—´ê³¼ ì €ìž¥í•  íŒŒì¼ ì´ë¦„ì„ ìž…ë ¥ ë°›ì•„ í•´ë‹¹ íŒŒì¼ ì´ë¦„ìœ¼ë¡œ íŒŒì¼ë¡œ ì €ìž¥í•˜ëŠ” í•¨ìˆ˜	public static void WriteFile(byte[] bytes, String saveFilePath) {
 		 try {
-			 
-	            // 1. ÆÄÀÏ °´Ã¼ »ý¼º
+
+				// 1. íŒŒì¼ ê°ì²´ ìƒì„±
 	            File file = new File(saveFilePath);
-	 
-	            // 2. ÆÄÀÏ Á¸Àç¿©ºÎ Ã¼Å© ¹× »ý¼º
+
+				// 2. íŒŒì¼ ì¡´ìž¬ì—¬ë¶€ ì²´í¬ ë° ìƒì„±
 	            if (!file.exists()) {
 	                file.createNewFile();
 	            }
 	 
-	            // 3. Writer »ý¼º
+	            // 3. Writer ìƒì„±
 	            FileOutputStream fos = new FileOutputStream(file);
 	 
-	            // 4. ÆÄÀÏ¿¡ ¾²±â
+	            // 4. íŒŒì¼ì— ì“°ê¸°
 	            fos.write(bytes);
 	 
 	            // 5. FileOutputStream close
@@ -42,36 +41,36 @@ public class HexDump {
 	            e.printStackTrace();
 	        }
 	}
-	
-	// filePath¸¦ ¹Þ¾Æ ÇØ´ç °æ·Î¿¡ ÀÖ´Â ÆÄÀÏÀ» ÀÐ°í µ¥ÀÌÅÍ¸¦ Hex ÄÚµå·Î ¹Ù²Ù¾î txtÆÄÀÏ·Î ÀúÀåÇÏ´Â ÇÔ¼ö
+
+	// filePathë¥¼ ë°›ì•„ í•´ë‹¹ ê²½ë¡œì— ìžˆëŠ” íŒŒì¼ì„ ì½ê³  ë°ì´í„°ë¥¼ Hex ì½”ë“œë¡œ ë°”ê¾¸ì–´ txtíŒŒì¼ë¡œ ì €ìž¥í•˜ëŠ” í•¨ìˆ˜
 	public static void bytesToText(String filePath, String SaveFilePath)  throws IOException {
 		File sfile = new File(filePath);
         FileInputStream fileis = new FileInputStream(sfile);
         BufferedInputStream bis = new BufferedInputStream(fileis);
-        //buffer ÇÒ´ç
+		//buffer í• ë‹¹
         byte[] arrByte = new byte[bis.available()];
         StringBuilder data = new StringBuilder();
-        int ioffs = 0; // ¹øÁö(¶óÀÎ)
-        int iLine; // ±æÀÌ
-        String space = "   "; // ÀÚ¸®¼ö ¸ÂÃâ °ø¹é
+        int ioffs = 0;// ë²ˆì§€(ë¼ì¸)
+        int iLine;// ê¸¸ì´
+        String space = "   "; // ìžë¦¬ìˆ˜ ë§žì¶œ ê³µë°±
 
         System.out.println("iLine:" + ((iLine = bis.read(arrByte))));
 
         if (iLine > 0) {        
 
-            int end = (int) (iLine / 16) + (iLine % 16 != 0 ? 1 : 0); //ÀüÃ¼ ÁÙ¼ö¸¦ ±¸ÇÔ.
+            int end = (int) (iLine / 16) + (iLine % 16 != 0 ? 1 : 0); //ï¿½ï¿½Ã¼ ï¿½Ù¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
             System.out.println("end:" + end);
 
             for (int i = 0; i < end; i++) {
-            
-                //¹øÁö Ãâ·Â
-                System.out.format("%08X: ", ioffs); // Offset : ¹øÁö Ãâ·Â
-                
-                //Çí»ç±¸¿ª
-                for (int j = ioffs; j < ioffs + 16; j++) { //16°³ Ãâ·Â
+
+				//ë²ˆì§€ ì¶œë ¥
+                System.out.format("%08X: ", ioffs); // Offset : ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+
+				//í—¥ì‚¬êµ¬ì—­
+                for (int j = ioffs; j < ioffs + 16; j++) { //16ï¿½ï¿½ ï¿½ï¿½ï¿½
 
                     if (j < iLine) {
-                        //System.out.format("%02X ", arrByte[j]); // Çí»ç °ª 2°³Ãâ·Â , %x 16Áø¼ö
+                        //System.out.format("%02X ", arrByte[j]); // ï¿½ï¿½ï¿½ ï¿½ï¿½ 2ï¿½ï¿½ï¿½ï¿½ï¿½ , %x 16ï¿½ï¿½ï¿½ï¿½
                         data.append(String.format("%02x ", arrByte[j]));
                     } else {                        
                         System.out.print(space);
@@ -79,14 +78,14 @@ public class HexDump {
 
                 }// for
                 
-                ioffs += 16; //¹øÁö¼ö Áõ°¡.
+                ioffs += 16; //ë²ˆì§€ìˆ˜ ì¦ê°€.
             }
         }
         
         bis.close();
         fileis.close();
         WriteFile(data.toString().getBytes(), SaveFilePath);
-        System.out.print("ÆÄÀÏ ÀúÀå ¿Ï·á");
+        System.out.print("íŒŒì¼ ì €ìž¥ ì™„ë£Œ");
         
 	}
 	
@@ -131,7 +130,7 @@ public class HexDump {
 	         
 	     // Printing the required Byte Array
 	     System.out.print("Byte Array : ");
-	     System.out.print("ÆÄÀÏ ÀúÀå ¿Ï·á");
+	     System.out.print("íŒŒì¼ ì €ìž¥ ì™„ë£Œ");
 	     WriteFile(ans, "src/resource/result/result test3.jpg");
 	}
 	
@@ -141,12 +140,12 @@ public class HexDump {
        	);
        String data = "",str;
        
-       System.out.println("ÀÐ±â Àü");
+       System.out.println("ì½ê¸° ì „");
        while ((str = bufferedReader.readLine()) != null) {
        	data += str;
        	//System.out.print(data);
        }
-       System.out.println("ÀÐ±â ¿Ï·á");
+       System.out.println("ì½ê¸° ì™„ë£Œ");
        
        stringTobytes(data);
 	}
