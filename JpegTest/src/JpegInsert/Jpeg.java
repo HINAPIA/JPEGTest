@@ -20,69 +20,56 @@ public class Jpeg {
         byte [] resultBytes = null;
         // 1. 파일들의 바이트 배열 얻기
         destByte = getBytes(destPath);
-
         for(int index =0; index< sourceLegnth; index++){
             sourceBytes[index] = getBytes(sourcePaths[index]);
         }
 
         // 2. source files의 main frame을 추출
-        extractSourceBytes[0] = extractAreaInJPEG(sourceBytes[0], SOF0, EOI);
-        extractSourceBytes[1] = extractAreaInJPEG(sourceBytes[1], SOF0, EOI);
-
-        //3. 삽입
+        for(int index = 0; index < sourceBytes.length;index++){
+            extractSourceBytes[index] = extractAreaInJPEG(sourceBytes[index], SOF0, EOI);
+        }
+        //3. 합쳐질 사진에 추출한 프레임을 삽입
         resultBytes = injectFramesToJPEG(destByte,extractSourceBytes);
 
-        //4. 저장
+        //4. 파일로 저장
         writeFile(resultBytes, "src/JpegInsert/resource/result/result.jpg");
         bytesToText("src/JpegInsert/resource/result/result.jpg", "src/JpegInsert/resource/result/result.txt");
     }
 
+    // Dest 파일 바이너리 데이터에 Source 파일들의 메인 프레임(SOF0 ~ EOI) 바이너리 데이터를 넣는 함수
     public byte [] injectFramesToJPEG(byte[] destByte,byte[][] extractSourceBytes ) throws IOException {
-        String hexString1,hexString2,hexString;
         byte [] resultBytes;
-        int endIndex = 0;
-
-        for (int i = destByte.length-2; i > 0; i--) {
-
-            hexString1 = String.format("%02x", destByte[i]);
-            hexString2 = String.format("%02x", destByte[i + 1]);
-            hexString = hexString1 + " " + hexString2;
-            //EOI 인덱스 찾기
-            if (hexString.equals(EOI)) {
-                endIndex = i;
-                System.out.println("2end hex string : " + hexString + ", endIndex : " + endIndex);
-                break;
-            }
-        }
-        //byte [] destByte2 = new byte[endIndex];
-        //EOI 부분을 뗀 destByte2 만들기
-        //System.arraycopy(destByte, 0, destByte2, 0,endIndex);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        // 1. Stream에 Dest파일의 바이너리 데이터를 write
+        outputStream.write(destByte);
         for(int i=0; i< extractSourceBytes.length; i++){
+            // 2. 추출한 Source 파일의 메
             byte [] frameByte = new byte [(extractSourceBytes[i].length) -2];
-            outputStream.write(destByte);
-            //SOF0 마커 삭제
+            //SOF0 마커 삭제하여
             System.arraycopy(extractSourceBytes[i], 2, frameByte, 0,extractSourceBytes[i].length -2);
             //SOFn 마커 삽입
             String marker = "c"+(i+1);
             outputStream.write((byte)Integer.parseInt("ff", 16));
             outputStream.write((byte)Integer.parseInt(marker, 16));
+            //SOFn마커를 제외한 frame 데이터 write - EOI 포함
             outputStream.write(frameByte);
+
+//            //EOI 삽입
+//            outputStream.write((byte)Integer.parseInt("ff", 16));
+//            outputStream.write((byte)Integer.parseInt("d9", 16));
         }
 
-        //EOI 삽입
-        outputStream.write((byte)Integer.parseInt("ff", 16));
-        outputStream.write((byte)Integer.parseInt("d9", 16));
-        byte[] result = outputStream.toByteArray();
-        return result;
+
+        resultBytes = outputStream.toByteArray();
+        return resultBytes;
     }
     //JPEGFile에서 startMarker가 나오는 부분부터 endMarker가 나오기 전까지 추출하여 byte []로 리턴하는 함수
-    public byte[] extractAreaInJPEG(byte [] JPEGFile ,String startMarker, String endMarker) throws IOException {
+    public byte[] extractAreaInJPEG(byte [] jpegBytes ,String startMarker, String endMarker) throws IOException {
         String hexString1,hexString2,hexString;
         byte [] resultBytes;
         int startIndex =0;
-        int endIndex = JPEGFile.length;
+        int endIndex = jpegBytes.length;
         int startCount =0;
         int endCount =0;
 
@@ -94,10 +81,10 @@ public class Jpeg {
         //썸네일의 SOF0가 먼저 나와서 2번 해당 마커를 찾도록
         if(startMarker.equals(SOF0)) startMax = 2;
 
-        for (int i = 0; i < JPEGFile.length-1; i++) {
+        for (int i = 0; i < jpegBytes.length-1; i++) {
 
-            hexString1 = String.format("%02x", JPEGFile[i]);
-            hexString2 = String.format("%02x", JPEGFile[i + 1]);
+            hexString1 = String.format("%02x", jpegBytes[i]);
+            hexString2 = String.format("%02x", jpegBytes[i + 1]);
             hexString = hexString1 + " " + hexString2;
             //System.out.println("start hex string : " + hexString);
             if (hexString.equals(startMarker)) {
@@ -117,10 +104,11 @@ public class Jpeg {
         }
 
         // 추출
-        resultBytes = new byte[endIndex-startIndex-2];
-        System.arraycopy(JPEGFile, startIndex, resultBytes, 0,endIndex-startIndex-2);
-        writeFile(resultBytes,"src/JpegInsert/resource/result/test.jpg");
-        bytesToText("src/JpegInsert/resource/result/test.jpg", "src/JpegInsert/resource/result/test.txt");
+        resultBytes = new byte[endIndex-startIndex+2];
+        // start 마커부터 end 마커를 포함한 영역까지 복사해서 resultBytes에 저장
+        System.arraycopy(jpegBytes, startIndex, resultBytes, 0,endIndex-startIndex+2);
+        //writeFile(resultBytes,"src/JpegInsert/resource/result/test.jpg");
+        //bytesToText("src/JpegInsert/resource/result/test.jpg", "src/JpegInsert/resource/result/test2.txt");
         return resultBytes;
 
     }
