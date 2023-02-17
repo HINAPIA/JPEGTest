@@ -11,12 +11,16 @@ public class JpegEdit {
     public static final String APP0 = "ff e0";
     public static final String APP1 = "ff e1";
     public static final String EOI = "ff d9";
+
+    byte[] destByte = null;
+    byte[][] extractSourceBytes = null;
+
     // Destination JPEG 파일에  Source 파일들의 Frame을 집어넣는 함수
     public void insertFramesToJpeg(String destPath, String[] sourcePaths , int sourceLegnth) throws IOException {
-        byte[] destByte = null;
+        //byte[] destByte = null;
         byte[][] sourceBytes = new byte[sourceLegnth][];
 
-        byte[][] extractSourceBytes = new byte[sourceLegnth][];
+        extractSourceBytes = new byte[sourceLegnth][];
         byte [] resultBytes = null;
         // 1. 파일들의 바이트 배열 얻기
         destByte = getBytes(destPath);
@@ -35,6 +39,28 @@ public class JpegEdit {
         writeFile(resultBytes, "src/JpegInsert/resource/result/result.jpg");
         bytesToText("src/JpegInsert/resource/result/result.jpg", "src/JpegInsert/resource/result/result.txt");
     }
+
+    //  (Frame이 여러개인 JPEG 대상) 메인 프레임을 바꾸는 함수
+    public void changeMainFrame (int sofNum){
+
+        byte [] resultBytes = null;
+
+        // Section1. 함수를 적용할 수 있는 JPEG 인지 확인
+        if (destByte == null || extractSourceBytes == null){
+            System.out.println("Error: Required data does not exist");
+            return;
+        }
+
+        // Section2. 현재 메인프레임이 시작되는 위치(sof0Idx) 알아내기
+
+        // Section3. 메인프레임으로 설정할 SOFn 의 데이터를 해당 위치(sof0Idx)로 옮기고 extract 배열에 원본 데이터 넣기
+
+        // Section4. 변경된 destByte에 변경된
+
+        // Section5. 파일로 저장
+
+    } // end of func changeMainFrame..
+
 
     // Dest 파일 바이너리 데이터에 Source 파일들의 메인 프레임(SOF0 ~ EOI) 바이너리 데이터를 넣는 함수
     public byte [] injectFramesToJPEG(byte[] destByte,byte[][] extractSourceBytes ) throws IOException {
@@ -151,17 +177,17 @@ public class JpegEdit {
 
         if (iLine > 0) {
 
-            int end = (int) (iLine / 16) + (iLine % 16 != 0 ? 1 : 0); //��ü �ټ��� ����.
+            int end = (int) (iLine / 16) + (iLine % 16 != 0 ? 1 : 0); //  ü  ټ        .
             System.out.println("end:" + end);
 
             for (int i = 0; i < end; i++) {
 
                 //번지 출력
-              //  System.out.format("%08X: ", ioffs); // Offset : ���� ���
+                //  System.out.format("%08X: ", ioffs); // Offset :
                 //헥사구역
-                for (int j = ioffs; j < ioffs + 16; j++) { //16�� ���
+                for (int j = ioffs; j < ioffs + 16; j++) { //16
                     if (j < iLine) {
-                        //System.out.format("%02X ", arrByte[j]); // ��� �� 2����� , %x 16����
+                        //System.out.format("%02X ", arrByte[j]); //        2      , %x 16
                         data.append(String.format("%02x ", arrByte[j]));
                     } else {
                         System.out.print(space);

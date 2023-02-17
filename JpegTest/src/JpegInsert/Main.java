@@ -1,7 +1,6 @@
 package JpegInsert;
 
 import JpegParsing.JpegParser;
-
 import java.io.IOException;
 
 public class Main {
@@ -16,13 +15,15 @@ public class Main {
 //        // 여러장의 사진을 한 장으로 합치지
 //        jpeg.insertFramesToJpeg(destPath, sourcePaths, count);
 
-
         JpegParser jpegParser = new JpegParser();
-        jpegParser.createMarkers(destPath);
+        //jpegParser.createMarkers(destPath);
         // 오디오 집어넣기
 //        String destPath= "src/JpegInsert/resource/1.jpg";
 //        String sourcePath = "src/JpegInsert/resource/audio.mp3";
 //        jpeg.insertSegmentToJPEG(destPath, sourcePath);
+
+        JpegEdit jpeg = new JpegEdit();
+        //jpeg.insertFramesToJpeg(destPath, sourcePaths, count);
 
     }
 }
