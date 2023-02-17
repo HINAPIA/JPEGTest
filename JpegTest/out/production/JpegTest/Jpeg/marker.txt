@@ -1,0 +1,90 @@
+public static final String JPEG_APP0_MARKER = "ff e0";
+    public static final String JPEG_APP1_MARKER = "ff e1";
+    public static final String JPEG_APP2_MARKER = "ff e2";
+    public static final String JPEG_APP3_MARKER = "ff e3";
+    public static final String JPEG_APP4_MARKER = "ff e4";
+    public static final String JPEG_APP13_MARKER = "ff ed";
+    public static final String JPEG_APP14_MARKER = "ff ee";
+    public static final String JPEG_APP15_MARKER = "ff ef";
+
+    public static final String JFIF_MARKER = "ff e0";
+    public static final String SOF0_MARKER = "ff c0";
+    public static final String SOF1_MARKER = "ff c1";
+    public static final String SOF2_MARKER = "ff c2";
+    public static final String SOF3_MARKER = "ff c3";
+    public static final String DHT_MARKER = "ff c4";
+    public static final String SOF5_MARKER = "ff c5";
+    public static final String SOF6_MARKER = "ff c6";
+    public static final String SOF7_MARKER = "ff c7";
+    public static final String SOF8_MARKER = "ff c8";
+    public static final String SOF9_MARKER = "ff c9";
+    public static final String SOF10_MARKER = "ff ca";
+    public static final String SOF11_MARKER = "ff cb";
+    public static final String DAC_MARKER = "ff cc";
+    public static final String SOF13_MARKER ="ff cd";
+    public static final String SOF14_MARKER = "ff ce";
+    public static final String SOF15_MARKER = "ff cf";
+
+    // marker for restart Stringervals
+    public static final String DRI_MARKER ="ff dd";
+    public static final String RST0_MARKER = "ff d0";
+    public static final String RST1_MARKER = "ff d1";
+    public static final String RST2_MARKER = "ff d2";
+    public static final String RST3_MARKER = "ff d3";
+    public static final String RST4_MARKER = "ff d4";
+    public static final String RST5_MARKER = "ff d5";
+    public static final String RST6_MARKER = "ff d6";
+    public static final String RST7_MARKER = "ff d7";
+
+    public static final String SOI_MARKER = "ff d8";
+    public static final String EOI_MARKER = "ff d9";
+    public static final String SOS_MARKER ="ff da";
+    public static final String DQT_MARKER = "ff db";
+    public static final String DNL_MARKER = "ff dc";
+    public static final String COM_MARKER = "ff fe";
+
+    public static final String [] MARKERS = {
+            JPEG_APP0_MARKER,
+            JPEG_APP1_MARKER,
+            JPEG_APP2_MARKER,
+            JPEG_APP3_MARKER,
+            JPEG_APP4_MARKER,
+            JPEG_APP13_MARKER,
+            JPEG_APP14_MARKER,
+            JPEG_APP15_MARKER,
+            COM_MARKER,
+            SOF0_MARKER,
+            SOF1_MARKER,
+            SOF2_MARKER,
+            SOF3_MARKER,
+            DHT_MARKER,
+            SOF5_MARKER,
+            SOF6_MARKER ,
+            SOF7_MARKER ,
+            SOF8_MARKER ,
+            SOF9_MARKER ,
+            SOF10_MARKER,
+            SOF11_MARKER ,
+            DAC_MARKER ,
+            SOF13_MARKER ,
+            SOF14_MARKER ,
+            SOF15_MARKER ,
+
+            // marker for restart Stringervals
+            DRI_MARKER ,
+            RST0_MARKER,
+            RST1_MARKER,
+            RST2_MARKER,
+            RST3_MARKER,
+            RST4_MARKER,
+            RST5_MARKER ,
+            RST6_MARKER,
+            RST7_MARKER ,
+
+            EOI_MARKER ,
+            SOS_MARKER ,
+            DQT_MARKER ,
+            DNL_MARKER ,
+            COM_MARKER
+
+    };
