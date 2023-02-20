@@ -12,15 +12,12 @@ public class JpegEdit {
     public static final String APP1 = "ff e1";
     public static final String EOI = "ff d9";
 
-    byte[] destByte = null;
-    byte[][] extractSourceBytes = null;
-
     // Destination JPEG 파일에  Source 파일들의 Frame을 집어넣는 함수
     public void insertFramesToJpeg(String destPath, String[] sourcePaths , int sourceLegnth) throws IOException {
-        //byte[] destByte = null;
+        byte[] destByte = null;
         byte[][] sourceBytes = new byte[sourceLegnth][];
 
-        extractSourceBytes = new byte[sourceLegnth][];
+        byte[][] extractSourceBytes = new byte[sourceLegnth][];
         byte [] resultBytes = null;
         // 1. 파일들의 바이트 배열 얻기
         destByte = getBytes(destPath);
@@ -41,29 +38,114 @@ public class JpegEdit {
     }
 
     //  (Frame이 여러개인 JPEG 대상) 메인 프레임을 바꾸는 함수
-    public void changeMainFrame (int sofNum){
+    public void changeMainFrame (String filePath, String SOFN) throws IOException { // frame이 여러 개인
 
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         byte [] resultBytes = null;
+        byte[] sourceBytes = getBytes(filePath); // 바이트 배열로 바꾸기
 
-        // Section1. 함수를 적용할 수 있는 JPEG 인지 확인
-        if (destByte == null || extractSourceBytes == null){
-            System.out.println("Error: Required data does not exist");
-            return;
+        // Section1. 함수를 적용할 수 있는 JPEG 인지 확인 - isMultiFrameJpeg(target)
+
+
+        // Section2. 메인 프레임과 대상 프레임 idx & data 추출
+        //index 추출
+        int[] mainFrameIdx = getFrameIdx(SOF0,EOI,sourceBytes); // 현재 메인프레임이 시작되는 위치(sof0Idx) 알아내기
+        int[] targetFrameIdx = getFrameIdx(SOFN,EOI,sourceBytes);
+        int subFrameIdx = mainFrameIdx[1]+2; // subframe 시작 idx - mainFrame 이 끝난 다음
+
+        // data 추출
+        byte[] currMainFrameData = extractAreaInJPEG(sourceBytes,SOF0,EOI); // 현 main frame data
+        byte[] targetFrameData = extractAreaInJPEG(sourceBytes,SOFN,EOI); // target frame data
+
+
+        // Section3. 메인프레임으로 설정할 SOFn 의 데이터를 해당 위치(sof0Idx)로 옮기고 본 메인프레임은 맨 마지막으로 넣기
+
+        for(int i=0; i< mainFrameIdx[0]; i++){ // main frame 전까지 outputStream에 쓰기
+            outputStream.write(sourceBytes[i]);
         }
 
-        // Section2. 현재 메인프레임이 시작되는 위치(sof0Idx) 알아내기
+        outputStream.write((byte)Integer.parseInt("ff", 16));
+        outputStream.write((byte)Integer.parseInt("c0", 16));
 
-        // Section3. 메인프레임으로 설정할 SOFn 의 데이터를 해당 위치(sof0Idx)로 옮기고 extract 배열에 원본 데이터 넣기
+        for(int i=targetFrameIdx[0]; i < targetFrameIdx[1]+2; i++){ // targetFrame 붙이기
+            outputStream.write(sourceBytes[i]);
+        }
 
-        // Section4. 변경된 destByte에 변경된
+        for (int i= subFrameIdx; i < sourceBytes.length; i++){ // 나머지 프레임들 붙이기
+            if (!(i>=targetFrameIdx[0] && i <= targetFrameIdx[1]+1)){ // target 프레임이 아닌 프레임
+                outputStream.write(sourceBytes[i]);
+            }
+        }
 
-        // Section5. 파일로 저장
+        for (int i=mainFrameIdx[0]; i<mainFrameIdx[1]+2;i++) // 기존 메인프레임 붙이기
+            outputStream.write(sourceBytes[i]);
+
+        resultBytes = outputStream.toByteArray();
+
+        // Section4. 파일로 저장
+        writeFile(resultBytes, "src/JpegInsert/resource/result/change.jpg");
 
     } // end of func changeMainFrame..
 
+    public int[] getFrameIdx(String startMarker, String endMarker,byte[] jpegBytes){
+        String hexString1,hexString2,hexString;
+        int[] result = new int[2];
+        int startIndex =0;
+        int endIndex = jpegBytes.length;
+        int startCount =0;
+        int endCount =0;
+
+        int startMax =1;
+        int endMax =1;
+
+        boolean isFindStartMarker = false; // 시작 마커를 찾았는지 여부
+        boolean isFindEndMarker = false; // 종료 마커를 찾았는지 여부
+
+        //썸네일의 SOF0가 먼저 나와서 2번 해당 마커를 찾도록
+        if(startMarker.equals(SOF0)) startMax = 2;
+
+
+        for (int i = 0; i < jpegBytes.length-1; i++) {
+
+            hexString1 = String.format("%02x", jpegBytes[i]);
+            hexString2 = String.format("%02x", jpegBytes[i + 1]);
+            hexString = hexString1 + " " + hexString2;
+            //System.out.println("start hex string : " + hexString);
+            if (hexString.equals(startMarker)) {
+                startCount++;
+                if(startCount == startMax){
+                    startIndex = i;
+                    result[0] = startIndex;
+                    isFindStartMarker = true;
+                    System.out.println("start hex string : " + hexString + ", startInex : " + startIndex);
+                }
+            }
+
+            if (isFindStartMarker) { // 조건에 부합하는 start 마커를 찾은 후, end 마커 찾기
+                if (hexString.equals(endMarker)) {
+                    endCount++;
+                    if(endCount == endMax){
+                        endIndex = i;
+                        result[1] = endIndex;
+                        isFindEndMarker = true;
+                        System.out.println("end hex string : " + hexString + ", endIndex : " + endIndex);
+                    }
+                }
+            }
+        }
+
+        if (!isFindStartMarker || !isFindEndMarker){
+            System.out.println(isFindStartMarker);
+            System.out.println(isFindEndMarker);
+            System.out.println("Error: 찾는 마커가 존재하지 않음");
+            return null;
+        }
+
+        return result;
+    }
 
     // Dest 파일 바이너리 데이터에 Source 파일들의 메인 프레임(SOF0 ~ EOI) 바이너리 데이터를 넣는 함수
-    public byte [] injectFramesToJPEG(byte[] destByte,byte[][] extractSourceBytes ) throws IOException {
+    public byte [] injectFramesToJPEG(byte[] destByte, byte[][] extractSourceBytes ) throws IOException {
         byte [] resultBytes;
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -82,8 +164,8 @@ public class JpegEdit {
             outputStream.write(frameByte);
 
 //            //EOI 삽입
-//            outputStream.write((byte)Integer.parseInt("ff", 16));
-//            outputStream.write((byte)Integer.parseInt("d9", 16));
+            //outputStream.write((byte)Integer.parseInt("ff", 16));
+            //outputStream.write((byte)Integer.parseInt("d9", 16));
         }
 
 
@@ -99,13 +181,15 @@ public class JpegEdit {
         int startCount =0;
         int endCount =0;
 
-        startMarker = SOF0;
-        endMarker = EOI;
-
         int startMax =1;
-        int endMax =2;
+        int endMax =1;
+
+        boolean isFindStartMarker = false; // 시작 마커를 찾았는지 여부
+        boolean isFindEndMarker = false; // 종료 마커를 찾았는지 여부
+
         //썸네일의 SOF0가 먼저 나와서 2번 해당 마커를 찾도록
         if(startMarker.equals(SOF0)) startMax = 2;
+
 
         for (int i = 0; i < jpegBytes.length-1; i++) {
 
@@ -117,26 +201,34 @@ public class JpegEdit {
                 startCount++;
                 if(startCount == startMax){
                     startIndex = i;
+                    isFindStartMarker = true;
                     System.out.println("start hex string : " + hexString + ", startInex : " + startIndex);
                 }
             }
-            if (hexString.equals(endMarker)) {
-                endCount++;
-                if(endCount == endMax){
-                    endIndex = i;
-                    System.out.println("end hex string : " + hexString + ", endIndex : " + endIndex);
+
+            if (isFindStartMarker) { // 조건에 부합하는 start 마커를 찾은 후, end 마커 찾기
+                if (hexString.equals(endMarker)) {
+                    endCount++;
+                    if(endCount == endMax){
+                        endIndex = i;
+                        isFindEndMarker = true;
+                        System.out.println("end hex string : " + hexString + ", endIndex : " + endIndex);
+                    }
                 }
             }
+        }
+
+        if (!isFindStartMarker || !isFindEndMarker){
+            System.out.println("Error: 찾는 마커가 존재하지 않음");
+            return null;
         }
 
         // 추출
         resultBytes = new byte[endIndex-startIndex+2];
         // start 마커부터 end 마커를 포함한 영역까지 복사해서 resultBytes에 저장
         System.arraycopy(jpegBytes, startIndex, resultBytes, 0,endIndex-startIndex+2);
-        //writeFile(resultBytes,"src/JpegInsert/resource/result/test.jpg");
-        //bytesToText("src/JpegInsert/resource/result/test.jpg", "src/JpegInsert/resource/result/test2.txt");
-        return resultBytes;
 
+        return resultBytes;
     }
     // byte 배열과 저장할 파일 이름을 입력 받아 해당 파일 이름으로 파일로 저장하는 함수
     public  void writeFile(byte[] bytes, String saveFilePath) {
