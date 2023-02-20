@@ -14,9 +14,7 @@ public class JpegParser {
         int [] markers = JpegConstants.MARKERS;
         for(int i=0; i< markers.length; i++){
             markersHashSet.add(markers[i]);
-
         }
-
     }
     public void createMarkers(String filePath){
         byte[] bytes = null;

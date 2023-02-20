@@ -16,7 +16,7 @@ public class Main {
 //        jpeg.insertFramesToJpeg(destPath, sourcePaths, count);
 
         JpegParser jpegParser = new JpegParser();
-        //jpegParser.createMarkers(destPath);
+        jpegParser.createMarkers(destPath);
         // 오디오 집어넣기
 //        String destPath= "src/JpegInsert/resource/1.jpg";
 //        String sourcePath = "src/JpegInsert/resource/audio.mp3";

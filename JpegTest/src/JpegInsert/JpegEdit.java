@@ -107,7 +107,7 @@ public class JpegEdit {
         //썸네일의 SOF0가 먼저 나와서 2번 해당 마커를 찾도록
         if(startMarker.equals(SOF0)) startMax = 2;
 
-        for (int i = 0; i < jpegBytes.length-1; i++) {
+        for (int i = 0;                                                                                                                                                           i < jpegBytes.length-1; i++) {
 
             hexString1 = String.format("%02x", jpegBytes[i]);
             hexString2 = String.format("%02x", jpegBytes[i + 1]);
