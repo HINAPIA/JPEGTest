@@ -38,8 +38,6 @@ public class JpegParser {
                 //System.out.println("[find marker] marker : " + String.format("%02x %02x",  bytes[i], bytes[i+1]) +" ,Index : "+ i);
                 Marker marker = new Marker(twoByteToNum, i);
             }
-
         }
-
     }
 }

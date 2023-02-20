@@ -14,5 +14,4 @@ public class Marker {
         System.out.println("[MARKER] name " + name+ ", marker:" + this.markerValue + ", atIndex : "+ this.atIndex);
     }
 
-
 }
