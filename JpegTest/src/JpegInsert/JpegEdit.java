@@ -2,15 +2,15 @@ package JpegInsert;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.HashMap;
+
+import Jpeg.JpegConstants;
+import Jpeg.Marker;
 
 public class JpegEdit {
-    public static final String SOI = "ff d8";
-    public static final String SOF0 = "ff c0";
-    public static final String SOF1 = "ff c1";
-    public static final String SOS = "ff da";
-    public static final String APP0 = "ff e0";
-    public static final String APP1 = "ff e1";
-    public static final String EOI = "ff d9";
+    HashMap<Integer, String> markerHashMap = JpegConstants.nameHashMap;
+    public static final int SOF0 = JpegConstants.SOF0_MARKER;
+    public static final int EOI = JpegConstants.EOI_MARKER;
 
     // Destination JPEG 파일에  Source 파일들의 Frame을 집어넣는 함수
     public void insertFramesToJpeg(String destPath, String[] sourcePaths , int sourceLegnth) throws IOException {
@@ -38,7 +38,7 @@ public class JpegEdit {
     }
 
     //  (Frame이 여러개인 JPEG 대상) 메인 프레임을 바꾸는 함수
-    public void changeMainFrame (String filePath, String SOFN) throws IOException { // frame이 여러 개인
+    public void changeMainFrame (String filePath, int SOFN) throws IOException { // frame이 여러 개인
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         byte [] resultBytes = null;
@@ -47,16 +47,11 @@ public class JpegEdit {
         // Section1. 함수를 적용할 수 있는 JPEG 인지 확인 - isMultiFrameJpeg(target)
 
 
-        // Section2. 메인 프레임과 대상 프레임 idx & data 추출
+        // Section2. 메인 프레임과 대상 프레임 idx 추출
         //index 추출
         int[] mainFrameIdx = getFrameIdx(SOF0,EOI,sourceBytes); // 현재 메인프레임이 시작되는 위치(sof0Idx) 알아내기
         int[] targetFrameIdx = getFrameIdx(SOFN,EOI,sourceBytes);
         int subFrameIdx = mainFrameIdx[1]+2; // subframe 시작 idx - mainFrame 이 끝난 다음
-
-        // data 추출
-        byte[] currMainFrameData = extractAreaInJPEG(sourceBytes,SOF0,EOI); // 현 main frame data
-        byte[] targetFrameData = extractAreaInJPEG(sourceBytes,SOFN,EOI); // target frame data
-
 
         // Section3. 메인프레임으로 설정할 SOFn 의 데이터를 해당 위치(sof0Idx)로 옮기고 본 메인프레임은 맨 마지막으로 넣기
 
@@ -64,10 +59,11 @@ public class JpegEdit {
             outputStream.write(sourceBytes[i]);
         }
 
+        // 바뀐 메인 프레임의 마커를 ff c0 으로 변경
         outputStream.write((byte)Integer.parseInt("ff", 16));
         outputStream.write((byte)Integer.parseInt("c0", 16));
 
-        for(int i=targetFrameIdx[0]; i < targetFrameIdx[1]+2; i++){ // targetFrame 붙이기
+        for(int i=targetFrameIdx[0]+2; i < targetFrameIdx[1]+2; i++){ // targetFrame 붙이기
             outputStream.write(sourceBytes[i]);
         }
 
@@ -87,8 +83,8 @@ public class JpegEdit {
 
     } // end of func changeMainFrame..
 
-    public int[] getFrameIdx(String startMarker, String endMarker,byte[] jpegBytes){
-        String hexString1,hexString2,hexString;
+    public int[] getFrameIdx(int startMarker, int endMarker,byte[] jpegBytes){
+
         int[] result = new int[2];
         int startIndex =0;
         int endIndex = jpegBytes.length;
@@ -102,35 +98,42 @@ public class JpegEdit {
         boolean isFindEndMarker = false; // 종료 마커를 찾았는지 여부
 
         //썸네일의 SOF0가 먼저 나와서 2번 해당 마커를 찾도록
-        if(startMarker.equals(SOF0)) startMax = 2;
+        if(startMarker == SOF0) startMax = 2;
 
-
+        int n1, n2;
         for (int i = 0; i < jpegBytes.length-1; i++) {
-
-            hexString1 = String.format("%02x", jpegBytes[i]);
-            hexString2 = String.format("%02x", jpegBytes[i + 1]);
-            hexString = hexString1 + " " + hexString2;
-            //System.out.println("start hex string : " + hexString);
-            if (hexString.equals(startMarker)) {
-                startCount++;
-                if(startCount == startMax){
-                    startIndex = i;
-                    result[0] = startIndex;
-                    isFindStartMarker = true;
-                    System.out.println("start hex string : " + hexString + ", startInex : " + startIndex);
-                }
+            if((n1 = Integer.valueOf((byte) jpegBytes[i]).intValue()) < 0){
+                n1 += 256;
+            }
+            if((n2 = Integer.valueOf((byte) jpegBytes[i+1]).intValue()) < 0){
+                n2 += 256;
             }
 
-            if (isFindStartMarker) { // 조건에 부합하는 start 마커를 찾은 후, end 마커 찾기
-                if (hexString.equals(endMarker)) {
-                    endCount++;
-                    if(endCount == endMax){
-                        endIndex = i;
-                        result[1] = endIndex;
-                        isFindEndMarker = true;
-                        System.out.println("end hex string : " + hexString + ", endIndex : " + endIndex);
+            int twoByteToNum = n1+n2;
+
+            if(markerHashMap.containsKey(twoByteToNum) && n1== 255){ // n1 == ff
+
+                //System.out.println("start hex string : " + hexString);
+                if (twoByteToNum == startMarker) {
+                    startCount++;
+                    if(startCount == startMax){
+                        startIndex = i;
+                        result[0] = startIndex;
+                        isFindStartMarker = true;
                     }
                 }
+
+                if (isFindStartMarker) { // 조건에 부합하는 start 마커를 찾은 후, end 마커 찾기
+                    if (twoByteToNum == endMarker) {
+                        endCount++;
+                        if(endCount == endMax){
+                            endIndex = i;
+                            result[1] = endIndex;
+                            isFindEndMarker = true;
+                        }
+                    }
+                }
+
             }
         }
 
@@ -163,9 +166,6 @@ public class JpegEdit {
             //SOFn마커를 제외한 frame 데이터 write - EOI 포함
             outputStream.write(frameByte);
 
-//            //EOI 삽입
-            //outputStream.write((byte)Integer.parseInt("ff", 16));
-            //outputStream.write((byte)Integer.parseInt("d9", 16));
         }
 
 
@@ -173,8 +173,8 @@ public class JpegEdit {
         return resultBytes;
     }
     //JPEGFile에서 startMarker가 나오는 부분부터 endMarker가 나오기 전까지 추출하여 byte []로 리턴하는 함수
-    public byte[] extractAreaInJPEG(byte [] jpegBytes ,String startMarker, String endMarker) throws IOException {
-        String hexString1,hexString2,hexString;
+    public byte[] extractAreaInJPEG(byte [] jpegBytes ,int startMarker, int endMarker) throws IOException {
+        int n1, n2;
         byte [] resultBytes;
         int startIndex =0;
         int endIndex = jpegBytes.length;
@@ -188,33 +188,40 @@ public class JpegEdit {
         boolean isFindEndMarker = false; // 종료 마커를 찾았는지 여부
 
         //썸네일의 SOF0가 먼저 나와서 2번 해당 마커를 찾도록
-        if(startMarker.equals(SOF0)) startMax = 2;
+        if(startMarker == SOF0) startMax = 2;
 
 
         for (int i = 0; i < jpegBytes.length-1; i++) {
 
-            hexString1 = String.format("%02x", jpegBytes[i]);
-            hexString2 = String.format("%02x", jpegBytes[i + 1]);
-            hexString = hexString1 + " " + hexString2;
-            //System.out.println("start hex string : " + hexString);
-            if (hexString.equals(startMarker)) {
-                startCount++;
-                if(startCount == startMax){
-                    startIndex = i;
-                    isFindStartMarker = true;
-                    System.out.println("start hex string : " + hexString + ", startInex : " + startIndex);
-                }
+            if((n1 = Integer.valueOf((byte) jpegBytes[i]).intValue())  < 0){
+                n1 += 256;
+            }
+            if((n2 = Integer.valueOf((byte) jpegBytes[i+1]).intValue())  < 0){
+                n2 += 256;
             }
 
-            if (isFindStartMarker) { // 조건에 부합하는 start 마커를 찾은 후, end 마커 찾기
-                if (hexString.equals(endMarker)) {
-                    endCount++;
-                    if(endCount == endMax){
-                        endIndex = i;
-                        isFindEndMarker = true;
-                        System.out.println("end hex string : " + hexString + ", endIndex : " + endIndex);
+            int twoByteToNum = n1+n2;
+
+            if(markerHashMap.containsKey(twoByteToNum) && n1== 255){
+
+                if (twoByteToNum == startMarker) {
+                    startCount++;
+                    if(startCount == startMax){
+                        startIndex = i;
+                        isFindStartMarker = true;
                     }
                 }
+
+                if (isFindStartMarker) { // 조건에 부합하는 start 마커를 찾은 후, end 마커 찾기
+                    if (twoByteToNum == endMarker) {
+                        endCount++;
+                        if(endCount == endMax){
+                            endIndex = i;
+                            isFindEndMarker = true;
+                        }
+                    }
+                }
+
             }
         }
 

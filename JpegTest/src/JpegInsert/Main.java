@@ -2,6 +2,7 @@ package JpegInsert;
 
 import JpegParsing.JpegParser;
 import java.io.IOException;
+import Jpeg.JpegConstants;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -15,8 +16,8 @@ public class Main {
 //        // 여러장의 사진을 한 장으로 합치지
         jpeg.insertFramesToJpeg(destPath, sourcePaths, count);
 
-        //JpegParser jpegParser = new JpegParser();
-        //jpegParser.createMarkers(destPath);
+        JpegParser jpegParser = new JpegParser();
+        jpegParser.createMarkers(destPath);
         // 오디오 집어넣기
 //        String destPath= "src/JpegInsert/resource/1.jpg";
 //        String sourcePath = "src/JpegInsert/resource/audio.mp3";
@@ -25,6 +26,6 @@ public class Main {
 //        JpegEdit jpeg = new JpegEdit();
         //jpeg.insertFramesToJpeg(destPath, sourcePaths, count);
 
-       jpeg.changeMainFrame("src/JpegInsert/resource/result/result.jpg","ff c1");
+       jpeg.changeMainFrame("src/JpegInsert/resource/result/result.jpg",JpegConstants.SOF1_MARKER);
     }
 }
