@@ -1,5 +1,5 @@
 package JpegInsert;
-
+import Jpeg.JpegConstants;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -35,6 +35,46 @@ public class JpegEdit {
         //4. 파일로 저장
         writeFile(resultBytes, "src/JpegInsert/resource/result/result.jpg");
         bytesToText("src/JpegInsert/resource/result/result.jpg", "src/JpegInsert/resource/result/result.txt");
+        //bytesToText("src/JpegInsert/resource/result/result.jpg", "src/JpegInsert/resource/result/result.txt");
+    }
+    // jpg 파일에 넣고싶은 데이터(오디오, 텍스트)를 넣는 함수
+    public String addMediaToJPEG (String sourcePath, String mediaPath, String type) throws IOException {
+        byte [] sourceBytes;
+        byte [] mediaBytes;
+        // 1. 바이트 배열 얻기
+        sourceBytes = getBytes(sourcePath);
+        mediaBytes = getBytes(mediaPath);
+        // 2. 데이터 삽입
+        // 2-1. source 파일 추가
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        outputStream.write(sourceBytes);
+
+
+        // 2-2. SOM 마커 추가
+        outputStream.write((byte) -1);
+        outputStream.write((byte) (JpegConstants.JPEG_SOM_MARKER - 255));
+        // 2-3. 타입에 따라서 marker 추가 - 오디오 : ff a0, 텍스트 : ff a1
+//        if(type.equals("audio")){
+//            outputStream.write((byte) -1);
+//            outputStream.write((byte) (JpegConstants.JPEG_MEDIA1_MARKER - 255));
+//        } else if (type.equals("text")) {
+//            outputStream.write((byte) -1);
+//            outputStream.write((byte) (JpegConstants.JPEG_MEDIA2_MARKER - 255));
+//        } else {
+//            System.out.println("addMediaToJPEG error : 잘못된 type 입니다.");
+//        }
+        // 2-4. media 데이터 추가
+        outputStream.write(mediaBytes);
+        // 2-5. 미디어 테이터의 끝을 나타내는 EOM(ff a9) 마커 추가
+//        outputStream.write((byte) -1);
+//        outputStream.write((byte) (JpegConstants.JPEG_EOM_MARKER - 255));
+
+        // 3. 저장
+        byte[] resultBytes = outputStream.toByteArray();
+        String savePath = sourcePath.substring(0, sourcePath.lastIndexOf('.'))  +"_audio.jpg";
+        writeFile(resultBytes,savePath);
+        // 4. 저장한 파일 경로 리턴
+        return savePath;
     }
 
     //  (Frame이 여러개인 JPEG 대상) 메인 프레임을 바꾸는 함수
@@ -165,7 +205,9 @@ public class JpegEdit {
             outputStream.write((byte)Integer.parseInt(marker, 16));
             //SOFn마커를 제외한 frame 데이터 write - EOI 포함
             outputStream.write(frameByte);
-
+//EOI 삽입
+            //outputStream.write((byte)Integer.parseInt("ff", 16));
+            //outputStream.write((byte)Integer.parseInt("d9", 16));
         }
 
 
@@ -180,7 +222,9 @@ public class JpegEdit {
         int endIndex = jpegBytes.length;
         int startCount =0;
         int endCount =0;
-
+//EOI 삽입
+        //outputStream.write((byte)Integer.parseInt("ff", 16));
+        //outputStream.write((byte)Integer.parseInt("d9", 16));
         int startMax =1;
         int endMax =1;
 

@@ -43,10 +43,20 @@ public class JpegConstants {
         put(472, "EOI");
         put(473, "SOS");
         put(474, "DQT");
+
         put(475, "DNL");
         put(509, "COM");
 
+
+        put(503,"SOM");
+        put(496,"MEDIA1");
+        put(497,"MEDIA2");
+        put(504,"EOM");
     }};
+    public static final int JPEG_SOM_MARKER =  0xff + 0xf8;
+    public static final int JPEG_MEDIA1_MARKER =  0xff + 0xf1;
+    public static final int JPEG_MEDIA2_MARKER =  0xff + 0xf2;
+    public static final int JPEG_EOM_MARKER = 0xff + 0xf9;
 
     public static final int JPEG_APP1_MARKER =  0xff + 0xe1;
     public static final int JPEG_APP2_MARKER =  0xff + 0xe2;
@@ -133,7 +143,11 @@ public class JpegConstants {
             DQT_MARKER ,
             DNL_MARKER ,
             COM_MARKER,
-            SOI_MARKER
+            SOI_MARKER,
+            JPEG_SOM_MARKER,
+            JPEG_MEDIA1_MARKER,
+            JPEG_MEDIA2_MARKER,
+            JPEG_EOM_MARKER
 
     };
 
