@@ -204,8 +204,16 @@ class MainActivity : AppCompatActivity() {
                     }
 //      BoxWithText(obj.boundingBox, text)
                     try{
-                        pointArrayList.add(pointData((obj.boundingBox.left + ((obj.boundingBox.right - obj.boundingBox.left)/2)).toFloat()
-                            , (obj.boundingBox.top + ((obj.boundingBox.bottom - obj.boundingBox.top)/2)).toFloat()))
+                        var pointX : Float = (obj.boundingBox.left + ((obj.boundingBox.right - obj.boundingBox.left)/2)).toFloat()
+                        var pointY : Float = (obj.boundingBox.top + ((obj.boundingBox.bottom - obj.boundingBox.top)/2)).toFloat()
+
+                        if ( pointX < 0 ) pointX = 0F
+                        if ( pointY < 0 ) pointY = 0F
+                        if(pointX>1000) pointX = 1000F
+//                        if(pointY >1800) pointY = 1800F
+
+                        pointArrayList.add(pointData(pointX, pointY))
+
                     } catch ( e: IllegalAccessException) {
                         e.printStackTrace();
                     } catch ( e: InvocationTargetException) {
@@ -300,7 +308,7 @@ class MainActivity : AppCompatActivity() {
         Log.v("Test num", "${pointArrayList.get(index)}")
         Log.v("Test num", "takeFocusPhoto ${index}")
 
-        var point = factory.createPoint(pointArrayList[index].x, pointArrayList[index].y)
+        var point = factory.createPoint(pointArrayList.get(index).x, pointArrayList.get(index).y)
         var action = FocusMeteringAction.Builder(point)
             .build()
 
