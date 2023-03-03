@@ -247,7 +247,8 @@ public class JpegEdit {
             int twoByteToNum = n1+n2;
 
             if(markerHashMap.containsKey(twoByteToNum) && n1== 255){
-
+                System.out.println("마커 찾음 : "+ i+": "+twoByteToNum);
+                System.out.println("n1 : "+ n1 + ", n2 :"+ n2) ;
                 if (twoByteToNum == startMarker) {
                     startCount++;
                     if(startCount == startMax){

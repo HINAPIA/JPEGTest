@@ -1,6 +1,8 @@
 package com.example.kotlinjpegtest
 
 import android.Manifest
+import android.app.ActionBar
+import android.app.ActionBar.*
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
@@ -10,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kotlinjpegtest.databinding.ActivityMainBinding
@@ -18,6 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.io.InputStream
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,8 +33,7 @@ class MainActivity : AppCompatActivity() {
     var destPhotoUri : Uri? = null
     var photoBitmap: Bitmap? = null
 
-    var sourceBitmap: Bitmap? = null
-    var destBitmap: Bitmap? = null
+    var resultBitMap: Bitmap? = null
     var sourceByteArray : ByteArray? = null
     var destByteArray : ByteArray? = null
     private lateinit var binding: ActivityMainBinding
@@ -39,6 +42,12 @@ class MainActivity : AppCompatActivity() {
         const val UPLOAD_FOLDER = "upload_images/"
     }
 
+//    val handler: Handler = object : Handler() {
+//        fun handleMessage(msg: Message?) {
+//            // image View에 띄우기
+//            binding.resultImageView.setImageBitmap(resultBitMap)
+//        }
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,15 +81,44 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
+    //갤러리에서 돌아올 때
+    @RequiresApi(Build.VERSION_CODES.P)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // 1번째 image view 클릭 (source image)
+        if(requestCode == 0){
+            if(resultCode == Activity.RESULT_OK){
+                sourcePhotoUri = data?.data
+                // ImageView에 image set
+                binding.imageView1.setImageURI(sourcePhotoUri)
+                val iStream: InputStream? = contentResolver.openInputStream(sourcePhotoUri!!)
+                sourceByteArray = getBytes(iStream!!)
+                Log.d("이미지", "sourceByteArray ${sourceByteArray}")
+            }else{
+                finish()
+            }
+            // 2번째 image view 클릭 (dest image)
+        }else if(requestCode ==1){
+            if(resultCode == Activity.RESULT_OK){
+                destPhotoUri = data?.data
+                // ImageView에 image set
+                binding.imageView2.setImageURI(destPhotoUri)
+                val iStream: InputStream? = contentResolver.openInputStream(destPhotoUri!!)
+                destByteArray = getBytes(iStream!!)
+                Log.d("이미지", "destByteArray ${destByteArray}")
+            }else{
+                finish()
+            }
+        }
+    }
     fun insertFrameToJpeg(sourceByteArray : ByteArray, destByteArray: ByteArray){
 
         var destFrameByteArray : ByteArray? = null
         var resultBitMap : Bitmap
         val outputStream = ByteArrayOutputStream()
 
-        CoroutineScope(Dispatchers.IO).launch {
-            // 2. source files의 main frame을 추출해
+        CoroutineScope(Dispatchers.Main).launch {
+            // 1. source files의 main frame을 추출해
             destFrameByteArray = extractFrame(destByteArray)
             if(destFrameByteArray == null){
                 System.out.println("frame을 찾을 수 없음")
@@ -88,14 +126,15 @@ class MainActivity : AppCompatActivity() {
             }
             outputStream.write(sourceByteArray)
             outputStream.write(destFrameByteArray)
-            // 3. 저장
+            // 2. 저장
             val resultBytes = outputStream.toByteArray()
             resultBitMap = byteArrayToBitmap(resultBytes)
 
-            // image View에 띄우기
+
+            binding.imageView1.setVisibility(View.GONE);
+            binding.imageView2.setVisibility(View.GONE);
             binding.resultImageView.setImageBitmap(resultBitMap)
         }
-       // outputStream.write
 
     }
 
@@ -123,21 +162,22 @@ class MainActivity : AppCompatActivity() {
 
 
         for (i in 0 until jpegBytes.size - 1) {
-            if (Integer.valueOf(jpegBytes[i].toInt()).toInt().also {
-                    n1 = it
-                } < 0) {
+
+            n1 = Integer.valueOf(jpegBytes[i].toInt())
+            if (n1 < 0) {
                 n1 += 256
             }
-            if (Integer.valueOf(jpegBytes[i + 1].toInt()).toInt().also {
-                    n2 = it
-                } < 0) {
+            n2 = Integer.valueOf(jpegBytes[i+1].toInt())
+            if (n2 < 0) {
                 n2 += 256
             }
+
             val twoByteToNum = n1 + n2
             if (markerHashMap.containsKey(twoByteToNum) && n1 == 255) {
-                println("마커 찾음 : ${i}")
+                //println("마커 찾음 : ${i}: ${twoByteToNum}")
+                //println("n1 : ${n1}, n2 : ${n2}")
                 if (twoByteToNum == jpegConstant.SOF0_MARKER) {
-                    println("SOF 마커 찾음 : ${i}")
+                    println("SOF 마커 찾음 : ${i} : ${twoByteToNum}")
                     startCount++
                     if (startCount == startMax) {
                         startIndex = i
@@ -180,41 +220,19 @@ class MainActivity : AppCompatActivity() {
         }
         return bitmap
     }
-    //갤러리에서 돌아올 때
-    @RequiresApi(Build.VERSION_CODES.P)
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        // 1번째 image view 클릭 (source image)
-        if(requestCode == 0){
-            if(resultCode == Activity.RESULT_OK){
-                sourcePhotoUri = data?.data
-                // ImageView에 image set
-                binding.imageView1.setImageURI(sourcePhotoUri)
-                sourceBitmap = uriToBitmap(sourcePhotoUri!!)
-                if(sourceBitmap!=null){
-                    sourceByteArray = bitmapToByteArray(sourceBitmap!!)
-                    Log.d("이미지", "sourceByteArray ${sourceByteArray}")
-                }
-            }else{
-                finish()
-            }
-        // 2번째 image view 클릭 (dest image)
-        }else if(requestCode ==1){
-            if(resultCode == Activity.RESULT_OK){
-                destPhotoUri = data?.data
-                // ImageView에 image set
-                binding.imageView2.setImageURI(destPhotoUri)
-                destBitmap = uriToBitmap(destPhotoUri!!)
-                if(destBitmap!=null){
-                    destByteArray = bitmapToByteArray(destBitmap!!)
-                    Log.d("이미지", "destByteArray ${destByteArray}")
-                }
-            }else{
-                finish()
-            }
-        }
-    }
 
+
+    @Throws(IOException::class)
+    fun getBytes(inputStream: InputStream): ByteArray {
+        val byteBuffer = ByteArrayOutputStream()
+        val bufferSize = 1024
+        val buffer = ByteArray(bufferSize)
+        var len = 0
+        while (inputStream.read(buffer).also { len = it } != -1) {
+            byteBuffer.write(buffer, 0, len)
+        }
+        return byteBuffer.toByteArray()
+    }
     // Bitmap을 Byte로 변환
     fun bitmapToByteArray(bitmap: Bitmap): ByteArray? {
         val stream = ByteArrayOutputStream()

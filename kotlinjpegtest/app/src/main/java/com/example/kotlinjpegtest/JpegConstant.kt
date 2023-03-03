@@ -139,9 +139,7 @@ class JpegConstant {
         DNL_MARKER,
         COM_MARKER,
         SOI_MARKER,
-        JPEG_SOM_MARKER,
-        JPEG_MEDIA1_MARKER,
-        JPEG_MEDIA2_MARKER,
-        JPEG_EOM_MARKER
+        JPEG_SOM_MARKER
+
     )
 }
