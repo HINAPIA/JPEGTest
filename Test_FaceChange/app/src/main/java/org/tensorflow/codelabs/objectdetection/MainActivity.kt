@@ -26,7 +26,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -49,7 +48,6 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.max
 import kotlin.math.min
 
@@ -118,9 +116,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
      */
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.imageView -> {
-
-            }
             R.id.captureImageFab -> {
                 try {
                     dispatchTakePictureIntent()
@@ -130,17 +125,24 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
             R.id.changeButton -> {
                // changeFace(getSampleImage(R.drawable.image2), getSampleImage(R.drawable.image1), 1500, 700)
-                changeFace(getSampleImage(R.drawable.twoface), getSampleImage(R.drawable.twoface2), 500, 700)
+                //changeFace(getSampleImage(R.drawable.twoface), getSampleImage(R.drawable.twoface2), 500, 700)
+
+                //faceLandmark(getSampleImage(imageView.drawable.hashCode()),0)
+
+                runOnUiThread {
+                    inputImageView.setImageBitmap(getSampleImage(R.drawable.image2))
+                }
+
             }
             R.id.changeButton2 -> {
-                //changeFaceOneByOne(getSampleImage(R.drawable.image2), getSampleImage(R.drawable.image1), 1500, 700)
-                changeFaceOneByOne(getSampleImage(R.drawable.twoface), getSampleImage(R.drawable.twoface2), 500, 700)
+                changeFaceOneByOne(getSampleImage(R.drawable.image2), getSampleImage(R.drawable.image1), 1000, 700)
+                //678uhchangeFaceOneByOne(getSampleImage(R.drawable.twoface), getSampleImage(R.drawable.twoface2), 500, 700)
             }
             R.id.imgSampleOne -> {
-                setViewAndDetect(getSampleImage(R.drawable.image1))
+                setViewAndDetect(getSampleImage(R.drawable.twoface))
             }
             R.id.imgSampleTwo -> {
-                setViewAndDetect(getSampleImage(R.drawable.image2))
+                setViewAndDetect(getSampleImage(R.drawable.twoface2))
             }
             R.id.imgSampleThree -> {
                 setViewAndDetect(getSampleImage(R.drawable.test5))
@@ -374,7 +376,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             )
 
             if (originalFacesResult != null || changeFacesResult != null) {
-                val cropImg = cropBitmap(changeImg, changeFaceBoundingBox!!, cropImgRect)
+                val cropImg = cropBitmap(changeImg, changeFaceBoundingBox!!, cropImgRect)?.let {
+                    circleCropBitmap(
+                        it
+                    )
+                }
 
                 runOnUiThread {
                     val overlayImg = cropImg?.let {
@@ -385,8 +391,33 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             (originalFaceLandmarks.get(3).position.y - addStartY).toInt()
                         )
                     }
+
                     inputImageView.setImageBitmap(overlayImg)
                 }
+            }
+
+        }
+    }
+
+    private fun faceLandmark(originalImg: Bitmap, changeFaceX: Int) {
+
+        // Run ODT and display result
+        // Note that we run this in the background thread to avoid blocking the app UI because
+        // TFLite object detection is a synchronised process.
+        lifecycleScope.launch(Dispatchers.Default) {
+            val originalFacesResult = getFaceDetectionOneByOne(originalImg)
+
+            var originalFaceLandmarks : List<FaceLandmark>?  = null
+
+            var originalFaceBoundingBox : RectF? = null
+            originalFaceBoundingBox = RectF(originalFacesResult!!.get(changeFaceX).boundingBox)
+            originalFaceLandmarks = originalFacesResult!!.get(changeFaceX).allLandmarks
+
+            val imgWithResult =
+                originalImg?.let { drawLandmarkResult(it, originalFaceLandmarks!!) }
+
+            runOnUiThread {
+                inputImageView.setImageBitmap(imgWithResult)
             }
 
         }
@@ -416,6 +447,29 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             original.recycle()
         }
         return result
+    }
+
+    fun circleCropBitmap(bitmap: Bitmap): Bitmap? {
+        val output = Bitmap.createBitmap(
+            bitmap.width,
+            bitmap.height, Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(output)
+        val color = -0xbdbdbe
+        val paint = Paint()
+        val rect = Rect(0, 0, bitmap.width, bitmap.height)
+        paint.isAntiAlias = true
+        canvas.drawARGB(0, 0, 0, 0)
+        paint.color = color
+        // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+        canvas.drawCircle(
+            (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat(),
+            (bitmap.width / 2).toFloat(), paint
+        )
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+        canvas.drawBitmap(bitmap, rect, rect, paint)
+
+        return output
     }
 
     fun overlayBitmap(original: Bitmap, add: Bitmap, rect:RectF, optimizationX:Int, optimizationY:Int): Bitmap? {
