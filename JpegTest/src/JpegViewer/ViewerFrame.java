@@ -113,7 +113,8 @@ class PhotoPanel extends JScrollPane{
 //        fos.close();
 //
 //        //오디오 재생
-//        try {
+//        try {o'
+
 //            Clip clip = AudioSystem.getClip();
 //            clip.open(AudioSystem.getAudioInputStream(file));
 //            // clip.loop(Clip.LOOP_CONTINUOUSLY);
