@@ -7,10 +7,11 @@
     tools:context=".resultActivity">
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="250dp"
-        android:layout_height="375dp"
-        android:layout_marginTop="32dp"
+        android:id="@+id/resultImageView"
+        android:layout_width="375dp"
+        android:layout_height="250dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,5 +25,5 @@
         android:text="save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/resultImageView" />
 </androidx.constraintlayout.widget.ConstraintLayout>
