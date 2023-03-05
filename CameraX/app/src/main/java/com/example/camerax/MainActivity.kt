@@ -1,52 +1,38 @@
 package com.example.camerax
 
-import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Matrix
-import android.media.ExifInterface
-import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.core.FocusMeteringAction.*
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.CameraController
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import com.example.camerax.databinding.ActivityMainBinding
-import com.google.common.util.concurrent.ListenableFuture
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.DetectedObject
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
-import java.io.File
-import java.io.IOException
 import java.lang.reflect.InvocationTargetException
 import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.math.max
-import kotlin.math.min
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -73,8 +59,6 @@ class MainActivity : AppCompatActivity() {
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        Log.v("Test num", "Build.VERSION.SDK_INT = " + Build.VERSION.SDK_INT)
-
         // 카메라 권한 요청
         if(allPermissionsGranted()){
             startCamera()
@@ -82,6 +66,16 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
+
+        val displayHeight = resources.displayMetrics.heightPixels
+        val displayWidth = resources.displayMetrics.widthPixels
+        Log.v("Size Info", "hxw : ${displayHeight}x${displayWidth}")
+
+
+        val params: ConstraintLayout.LayoutParams = viewBinding.viewFinder.layoutParams as ConstraintLayout.LayoutParams
+        params.width = 1080
+        params.height = 1440
+        viewBinding.viewFinder.layoutParams = params
 
         viewBinding.imageCaptureButton.setOnClickListener {
             takePhoto()
@@ -124,6 +118,9 @@ class MainActivity : AppCompatActivity() {
                     return@setOnTouchListener true
                 }
                 MotionEvent.ACTION_UP -> {
+
+                    Log.v("Size Info", "viewBinding.viewFinder.width : ${viewBinding.viewFinder.width}")
+                    Log.v("Size Info", "viewBinding.viewFinder.height : ${viewBinding.viewFinder.height}")
 
                     // Get the MeteringPointFactory from PreviewView
                     val factory = viewBinding.viewFinder.meteringPointFactory
@@ -195,6 +192,11 @@ class MainActivity : AppCompatActivity() {
                 Log.v("Test num", "pointArray size : ${pointArrayList.size}")
                 // Parse ML Kit's DetectedObject and create corresponding visualization data
                 val detectedObjects = it.map { obj ->
+                    Log.v("PointCheck", "obj.boundingBox.left : ${obj.boundingBox.left}")
+                    Log.v("PointCheck", "obj.boundingBox.top : ${obj.boundingBox.top}")
+                    Log.v("PointCheck", "obj.boundingBox.right : ${obj.boundingBox.right}")
+                    Log.v("PointCheck", "obj.boundingBox.bottom : ${obj.boundingBox.bottom}")
+
                     var text = "Unknown"
 
                     // We will show the top confident detection result if it exist
@@ -204,12 +206,17 @@ class MainActivity : AppCompatActivity() {
                     }
 //      BoxWithText(obj.boundingBox, text)
                     try{
+//                        Log.v("PointCheck", "obj.boundingBox.left : ${obj.boundingBox.left}")
+//                        Log.v("PointCheck", "obj.boundingBox.top : ${obj.boundingBox.top}")
+//                        Log.v("PointCheck", "obj.boundingBox.right : ${obj.boundingBox.right}")
+//                        Log.v("PointCheck", "obj.boundingBox.bottom : ${obj.boundingBox.bottom}")
                         var pointX : Float = (obj.boundingBox.left + ((obj.boundingBox.right - obj.boundingBox.left)/2)).toFloat()
                         var pointY : Float = (obj.boundingBox.top + ((obj.boundingBox.bottom - obj.boundingBox.top)/2)).toFloat()
+                        Log.v("PointCheck", "x,y : ${pointX}, ${pointY}")
 
-                        if ( pointX < 0 ) pointX = 0F
-                        if ( pointY < 0 ) pointY = 0F
-                        if(pointX>1000) pointX = 1000F
+//                        if ( pointX < 0 ) pointX = 0F
+//                        if ( pointY < 0 ) pointY = 0F
+//                        if(pointX>1000) pointX = 1000F
 //                        if(pointY >1800) pointY = 1800F
 
                         pointArrayList.add(pointData(pointX, pointY))
@@ -284,7 +291,8 @@ class MainActivity : AppCompatActivity() {
             override fun onCaptureSuccess(image: ImageProxy) {
                 //get bitmap from image
                 val bitmap = imageProxyToBitmap(image)
-                runObjectDetection(bitmap)
+                val resizedBitmap = Bitmap.createScaledBitmap(bitmap, 1080, 1440, false)
+                runObjectDetection(resizedBitmap)
                 super.onCaptureSuccess(image)
             }
 
@@ -414,6 +422,7 @@ class MainActivity : AppCompatActivity() {
             // surfaceProvider는 데이터를 받을 준비가 되었다는 신호를 카메라에게 보내준다.
             // setSurfaceProvider는 PreviewView에 SurfaceProvider를 제공해준다.
             val preview = Preview.Builder()
+                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                 .build()
                 .also {
                     it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
