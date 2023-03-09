@@ -1,0 +1,4 @@
+org/tensorflow/codelabs/objectdetection/BuildConfig.java
+ org.tensorflow.codelabs.objectdetection.BuildConfig
+org/tensorflow/codelabs/objectdetection/DataBindingTriggerClass.java
+ org.tensorflow.codelabs.objectdetection.DataBindingTriggerClass
