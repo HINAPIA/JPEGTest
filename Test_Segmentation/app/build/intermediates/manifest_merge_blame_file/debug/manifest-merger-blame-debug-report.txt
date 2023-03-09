@@ -30,159 +30,65 @@
 20    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 20-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:6:5-80
 20-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:6:22-78
-21
-22    <!-- Although the *SdkVersion is captured in gradle build files, this is required for non gradle builds -->
-23    <!-- <uses-sdk android:minSdkVersion="14"/> -->
-24    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-24-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:25:5-79
-24-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:25:22-76
-25    <uses-permission android:name="android.permission.INTERNET" />
-25-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:26:5-67
-25-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:26:22-64
-26    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-27
-28    <application
-28-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:14:5-44:19
-29        android:allowBackup="true"
-29-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:21:9-35
-30        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-30-->[androidx.core:core:1.3.2] C:\Users\user\.gradle\caches\transforms-2\files-2.1\001c2e17ec9d21aa891dc81b4c2e075d\core-1.3.2\AndroidManifest.xml:24:18-86
-31        android:debuggable="true"
-32        android:extractNativeLibs="false"
-33        android:hardwareAccelerated="false"
-33-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:18:9-44
-34        android:icon="@mipmap/ic_launcher"
-34-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:22:9-43
-35        android:label="@string/app_name"
-35-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:23:9-41
-36        android:largeHeap="true"
-36-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:19:9-33
-37        android:requestLegacyExternalStorage="true"
-37-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:16:9-52
-38        android:roundIcon="@mipmap/ic_launcher_round"
-38-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:24:9-54
-39        android:supportsRtl="true"
-39-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:25:9-35
-40        android:testOnly="true"
-41        android:theme="@style/Theme.ObjectDetection" >
-41-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:26:9-53
-42        <activity android:name="org.tensorflow.codelabs.objectdetection.MainActivity" >
-42-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:27:9-33:20
-42-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:27:19-86
-43            <intent-filter>
-43-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:28:13-32:29
-44                <action android:name="android.intent.action.MAIN" />
-44-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:29:17-69
-44-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:29:25-66
-45
-46                <category android:name="android.intent.category.LAUNCHER" />
-46-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:31:17-77
-46-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:31:27-74
-47            </intent-filter>
-48        </activity>
-49
-50        <provider
-50-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:35:9-43:20
-51            android:name="androidx.core.content.FileProvider"
-51-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:36:13-62
-52            android:authorities="org.tensorflow.codelabs.objectdetection.fileprovider"
-52-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:37:13-87
-53            android:exported="false"
-53-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:38:13-37
-54            android:grantUriPermissions="true" >
-54-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:39:13-47
-55            <meta-data
-55-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:40:13-42:54
-56                android:name="android.support.FILE_PROVIDER_PATHS"
-56-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:41:17-67
-57                android:resource="@xml/file_paths" />
-57-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:42:17-51
-58        </provider>
-59
-60        <service
-60-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\51a2ce836fc1a0781ea0960cd94414fd\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:9:9-15:19
-61            android:name="com.google.mlkit.common.internal.MlKitComponentDiscoveryService"
-61-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\51a2ce836fc1a0781ea0960cd94414fd\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:10:13-91
-62            android:directBootAware="true"
-62-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:17:13-43
-63            android:exported="false" >
-63-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\51a2ce836fc1a0781ea0960cd94414fd\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:11:13-37
-64            <meta-data
-64-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\51a2ce836fc1a0781ea0960cd94414fd\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:12:13-14:85
-65                android:name="com.google.firebase.components:com.google.mlkit.vision.face.internal.FaceRegistrar"
-65-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\51a2ce836fc1a0781ea0960cd94414fd\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:13:17-114
-66                android:value="com.google.firebase.components.ComponentRegistrar" />
-66-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\51a2ce836fc1a0781ea0960cd94414fd\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:14:17-82
-67            <meta-data
-67-->[com.google.mlkit:vision-common:17.2.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\16d36a97e7f9cfccef10431d0d8a8273\jetified-vision-common-17.2.0\AndroidManifest.xml:12:13-14:85
-68                android:name="com.google.firebase.components:com.google.mlkit.vision.common.internal.VisionCommonRegistrar"
-68-->[com.google.mlkit:vision-common:17.2.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\16d36a97e7f9cfccef10431d0d8a8273\jetified-vision-common-17.2.0\AndroidManifest.xml:13:17-124
-69                android:value="com.google.firebase.components.ComponentRegistrar" />
-69-->[com.google.mlkit:vision-common:17.2.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\16d36a97e7f9cfccef10431d0d8a8273\jetified-vision-common-17.2.0\AndroidManifest.xml:14:17-82
-70            <meta-data
-70-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:20:13-22:85
-71                android:name="com.google.firebase.components:com.google.mlkit.common.internal.CommonComponentRegistrar"
-71-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:21:17-120
-72                android:value="com.google.firebase.components.ComponentRegistrar" />
-72-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:22:17-82
-73        </service>
-74
-75        <provider
-75-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:9:9-13:38
-76            android:name="com.google.mlkit.common.internal.MlKitInitProvider"
-76-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:10:13-78
-77            android:authorities="org.tensorflow.codelabs.objectdetection.mlkitinitprovider"
-77-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:11:13-69
-78            android:exported="false"
-78-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:12:13-37
-79            android:initOrder="99" />
-79-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:13:13-35
-80
-81        <activity
-81-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\c8db18d77d923b8c8242a10cf94efb13\jetified-play-services-base-18.1.0\AndroidManifest.xml:20:9-22:45
-82            android:name="com.google.android.gms.common.api.GoogleApiActivity"
-82-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\c8db18d77d923b8c8242a10cf94efb13\jetified-play-services-base-18.1.0\AndroidManifest.xml:20:19-85
-83            android:exported="false"
-83-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\c8db18d77d923b8c8242a10cf94efb13\jetified-play-services-base-18.1.0\AndroidManifest.xml:22:19-43
-84            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-84-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\c8db18d77d923b8c8242a10cf94efb13\jetified-play-services-base-18.1.0\AndroidManifest.xml:21:19-78
-85
-86        <meta-data
-86-->[com.google.android.gms:play-services-basement:18.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\c050005f8c17ff3566ab6ae40a02c97b\jetified-play-services-basement-18.1.0\AndroidManifest.xml:21:9-23:69
-87            android:name="com.google.android.gms.version"
-87-->[com.google.android.gms:play-services-basement:18.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\c050005f8c17ff3566ab6ae40a02c97b\jetified-play-services-basement-18.1.0\AndroidManifest.xml:22:13-58
-88            android:value="@integer/google_play_services_version" />
-88-->[com.google.android.gms:play-services-basement:18.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\c050005f8c17ff3566ab6ae40a02c97b\jetified-play-services-basement-18.1.0\AndroidManifest.xml:23:13-66
-89
-90        <service
-90-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:29:9-35:19
-91            android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
-91-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:30:13-103
-92            android:exported="false" >
-92-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:31:13-37
-93            <meta-data
-93-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:32:13-34:39
-94                android:name="backend:com.google.android.datatransport.cct.CctBackendFactory"
-94-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:33:17-94
-95                android:value="cct" />
-95-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:34:17-36
-96        </service>
-97        <service
-97-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-2\files-2.1\341d4fbfa16832ca46bdb6c39871b2b7\jetified-transport-runtime-2.2.6\AndroidManifest.xml:26:9-30:19
-98            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService"
-98-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-2\files-2.1\341d4fbfa16832ca46bdb6c39871b2b7\jetified-transport-runtime-2.2.6\AndroidManifest.xml:27:13-117
-99            android:exported="false"
-99-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-2\files-2.1\341d4fbfa16832ca46bdb6c39871b2b7\jetified-transport-runtime-2.2.6\AndroidManifest.xml:28:13-37
-100            android:permission="android.permission.BIND_JOB_SERVICE" >
-100-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-2\files-2.1\341d4fbfa16832ca46bdb6c39871b2b7\jetified-transport-runtime-2.2.6\AndroidManifest.xml:29:13-69
-101        </service>
-102
-103        <receiver
-103-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-2\files-2.1\341d4fbfa16832ca46bdb6c39871b2b7\jetified-transport-runtime-2.2.6\AndroidManifest.xml:32:9-34:40
-104            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"
-104-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-2\files-2.1\341d4fbfa16832ca46bdb6c39871b2b7\jetified-transport-runtime-2.2.6\AndroidManifest.xml:33:13-132
-105            android:exported="false" />
-105-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-2\files-2.1\341d4fbfa16832ca46bdb6c39871b2b7\jetified-transport-runtime-2.2.6\AndroidManifest.xml:34:13-37
-106    </application>
-107
-108</manifest>
+21    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+22
+23    <application
+23-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:14:5-44:19
+24        android:allowBackup="true"
+24-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:21:9-35
+25        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+25-->[androidx.core:core:1.3.2] C:\Users\user\.gradle\caches\transforms-2\files-2.1\001c2e17ec9d21aa891dc81b4c2e075d\core-1.3.2\AndroidManifest.xml:24:18-86
+26        android:debuggable="true"
+27        android:extractNativeLibs="false"
+28        android:hardwareAccelerated="false"
+28-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:18:9-44
+29        android:icon="@mipmap/ic_launcher"
+29-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:22:9-43
+30        android:label="@string/app_name"
+30-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:23:9-41
+31        android:largeHeap="true"
+31-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:19:9-33
+32        android:requestLegacyExternalStorage="true"
+32-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:16:9-52
+33        android:roundIcon="@mipmap/ic_launcher_round"
+33-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:24:9-54
+34        android:supportsRtl="true"
+34-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:25:9-35
+35        android:testOnly="true"
+36        android:theme="@style/Theme.ObjectDetection" >
+36-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:26:9-53
+37        <activity android:name="org.tensorflow.codelabs.objectdetection.MainActivity" >
+37-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:27:9-33:20
+37-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:27:19-86
+38            <intent-filter>
+38-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:28:13-32:29
+39                <action android:name="android.intent.action.MAIN" />
+39-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:29:17-69
+39-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:29:25-66
+40
+41                <category android:name="android.intent.category.LAUNCHER" />
+41-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:31:17-77
+41-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:31:27-74
+42            </intent-filter>
+43        </activity>
+44
+45        <provider
+45-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:35:9-43:20
+46            android:name="androidx.core.content.FileProvider"
+46-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:36:13-62
+47            android:authorities="org.tensorflow.codelabs.objectdetection.fileprovider"
+47-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:37:13-87
+48            android:exported="false"
+48-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:38:13-37
+49            android:grantUriPermissions="true" >
+49-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:39:13-47
+50            <meta-data
+50-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:40:13-42:54
+51                android:name="android.support.FILE_PROVIDER_PATHS"
+51-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:41:17-67
+52                android:resource="@xml/file_paths" />
+52-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_Segmentation\app\src\main\AndroidManifest.xml:42:17-51
+53        </provider>
+54    </application>
+55
+56</manifest>

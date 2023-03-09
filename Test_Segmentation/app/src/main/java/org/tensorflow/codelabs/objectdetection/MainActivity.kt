@@ -22,10 +22,10 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.*
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.os.SystemClock
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
@@ -34,13 +34,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.lifecycleScope
-import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.face.Face
-import com.google.mlkit.vision.face.FaceDetection
-import com.google.mlkit.vision.face.FaceDetectorOptions
-import com.google.mlkit.vision.face.FaceLandmark
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.support.image.TensorImage
@@ -64,8 +58,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
     private lateinit var captureImageFab: Button
     private lateinit var imageView: ImageView
-    private lateinit var changeButton: Button
-    private lateinit var changeButton2: Button
     private lateinit var inputImageView: ImageView
     private lateinit var imgSampleOne: ImageView
     private lateinit var imgSampleTwo: ImageView
@@ -84,22 +76,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         captureImageFab = findViewById(R.id.captureImageFab)
         imageView = findViewById(R.id.imageView)
-        changeButton = findViewById(R.id.changeButton)
-        changeButton2 = findViewById(R.id.changeButton2)
         inputImageView = findViewById(R.id.imageView)
         imgSampleOne = findViewById(R.id.imgSampleOne)
         imgSampleTwo = findViewById(R.id.imgSampleTwo)
         imgSampleThree = findViewById(R.id.imgSampleThree)
         imgSampleFour = findViewById(R.id.imgSampleFour)
         tvPlaceholder = findViewById(R.id.tvPlaceholder)
-
         captureImageFab.setOnClickListener(this)
-        imageView.setOnTouchListener { view, motionEvent ->
-            changeFaceOneByOne(getSampleImage(R.drawable.image2), getSampleImage(R.drawable.image1), motionEvent.x.toInt(), motionEvent.y.toInt())
-            return@setOnTouchListener true
-        }
-        changeButton.setOnClickListener(this)
-        changeButton2.setOnClickListener(this)
         imgSampleOne.setOnClickListener(this)
         imgSampleTwo.setOnClickListener(this)
         imgSampleThree.setOnClickListener(this)
@@ -128,26 +111,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     Log.e(TAG, e.message.toString())
                 }
             }
-            R.id.changeButton -> {
-               // changeFace(getSampleImage(R.drawable.image2), getSampleImage(R.drawable.image1), 1500, 700)
-                //changeFace(getSampleImage(R.drawable.twoface), getSampleImage(R.drawable.twoface2), 500, 700)
-
-                //faceLandmark(getSampleImage(imageView.drawable.hashCode()),0)
-
-                runOnUiThread {
-                    inputImageView.setImageBitmap(getSampleImage(R.drawable.image2))
-                }
-
-            }
-            R.id.changeButton2 -> {
-                changeFaceOneByOne(getSampleImage(R.drawable.image2), getSampleImage(R.drawable.image1), 1000, 700)
-                //678uhchangeFaceOneByOne(getSampleImage(R.drawable.twoface), getSampleImage(R.drawable.twoface2), 500, 700)
-            }
             R.id.imgSampleOne -> {
-                setViewAndDetect(getSampleImage(R.drawable.twoface))
+                setViewAndDetect(getSampleImage(R.drawable.image1))
             }
             R.id.imgSampleTwo -> {
-                setViewAndDetect(getSampleImage(R.drawable.twoface2))
+                setViewAndDetect(getSampleImage(R.drawable.image2))
             }
             R.id.imgSampleThree -> {
                 setViewAndDetect(getSampleImage(R.drawable.test5))
@@ -162,22 +130,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     fun clearImageSegmenter() {
         imageSegmenter = null
     }
-    private fun getObjectDetection(bitmap: Bitmap) {
-        // Step 1: Create TFLite's TensorImage object
-        val image = TensorImage.fromBitmap(bitmap)
 
-        setupImageSegmenter()
-
-        val segmentResult = imageSegmenter?.segment(image)
-
-        System.out.println(segmentResult)
-
-        setResults(
-            segmentResult,
-            image.height,
-            image.width
-        )
-    }
     fun setResults(
         segmentResult: List<Segmentation>?,
         imageHeight: Int,
@@ -283,232 +236,21 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
      *      TFLite Object Detection function
      */
     private fun runObjectDetection(bitmap: Bitmap ) {
-        val resultToDisplay = getObjectDetection(bitmap)
+        // Step 1: Create TFLite's TensorImage object
+        val image = TensorImage.fromBitmap(bitmap)
+
+        setupImageSegmenter()
+
+        val segmentResult = imageSegmenter?.segment(image)
+
+        System.out.println(segmentResult)
+
+        setResults(
+            segmentResult,
+            image.height,
+            image.width
+        )
         // Draw the detection result on the bitmap and show it.
-
-        val faceResultToDisplay = getFaceDetection(bitmap)
-
-        val faceDetectionResultImg =
-            faceResultToDisplay?.let { drawDetectionResult(bitmap, it, Color.RED) }
-
-    }
-
-    private fun getFaceDetection(bitmap: Bitmap): List<DetectionResult>? {
-        var faceResultToDisplay: List<DetectionResult>?  = null
-
-        var returnState = false
-
-        // High-accuracy landmark detection and face classification
-        val highAccuracyOpts = FaceDetectorOptions.Builder()
-            .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
-            .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
-            .setContourMode(FaceDetectorOptions.CONTOUR_MODE_ALL)
-            .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
-            .enableTracking()
-            .build()
-
-        val image = InputImage.fromBitmap(bitmap, 0)
-        val detector = FaceDetection.getClient(highAccuracyOpts)
-        val result = detector.process(image)
-            .addOnSuccessListener { faces ->
-                faceResultToDisplay = faces.map {
-                    // Get the top-1 category and craft the display text
-                    val text = it.trackingId
-                    val faceRect = RectF(it.boundingBox)
-                    // Create a data object to display the detection result
-                    DetectionResult(faceRect, text.toString())
-                }
-                returnState = true
-            }
-            .addOnFailureListener { e ->
-                println("fail")
-                returnState = true
-            }
-        while(!returnState) {
-            System.out.println("wait")
-            Thread.sleep(500)
-        }
-        return faceResultToDisplay
-    }
-
-    private fun getFaceDetectionOneByOne(bitmap: Bitmap): ArrayList<Face>? {
-        var faceResultToDisplay: List<DetectionResult>?  = null
-        var returnFaces : ArrayList<Face>? = null
-        var returnState = false
-
-        // High-accuracy landmark detection and face classification
-        val highAccuracyOpts = FaceDetectorOptions.Builder()
-            .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
-            .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
-            .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
-            .enableTracking()
-            .build()
-
-        val image = InputImage.fromBitmap(bitmap, 0)
-        val detector = FaceDetection.getClient(highAccuracyOpts)
-        val result = detector.process(image)
-            .addOnSuccessListener { faces ->
-                returnFaces = faces as ArrayList<Face>?
-                returnState = true
-            }
-            .addOnFailureListener { e ->
-                println("fail")
-                returnState = true
-            }
-        while(!returnState) {
-            System.out.println("wait")
-            Thread.sleep(500)
-        }
-        return returnFaces
-    }
-
-    private fun changeFace(originalImg: Bitmap, changeImg: Bitmap, changeFaceX: Int, changeFaceY: Int) {
-
-        // Run ODT and display result
-        // Note that we run this in the background thread to avoid blocking the app UI because
-        // TFLite object detection is a synchronised process.
-        lifecycleScope.launch(Dispatchers.Default) {
-            val originalResultToDisplay = getFaceDetection(originalImg)
-            val changeResultTODisplay = getFaceDetection(changeImg)
-
-            var originalFaceBoundingBox : RectF? = null
-            var changeFaceBoundingBox : RectF? = null
-
-            if (originalResultToDisplay != null) {
-                for(face in originalResultToDisplay) {
-                    if (changeFaceX >= face.boundingBox.left && changeFaceX <= face.boundingBox.right &&
-                        changeFaceY >= face.boundingBox.top && changeFaceY <= face.boundingBox.bottom
-                    ) {
-                        originalFaceBoundingBox = face.boundingBox
-                        break
-                    }
-                }
-            }
-
-            if (changeResultTODisplay != null) {
-                for(face in changeResultTODisplay) {
-                    if (changeFaceX >= face.boundingBox.left && changeFaceX <= face.boundingBox.right &&
-                        changeFaceY >= face.boundingBox.top && changeFaceY <= face.boundingBox.bottom
-                    ){
-                        changeFaceBoundingBox = face.boundingBox
-                        break
-                    }
-                }
-            }
-
-//            val cropImg = cropBitmap(changeImg, changeFaceBoundingBox!!)
-//
-//            runOnUiThread {
-//                val overlayImg = cropImg?.let { overlayBitmap(originalImg, it,
-//                    originalFaceBoundingBox!!, 0,0) }
-//                inputImageView.setImageBitmap(overlayImg)
-//            }
-
-        }
-    }
-
-    private fun changeFaceOneByOne(originalImg: Bitmap, changeImg: Bitmap,changeFaceX: Int, changeFaceY: Int) {
-
-        // Run ODT and display result
-        // Note that we run this in the background thread to avoid blocking the app UI because
-        // TFLite object detection is a synchronised process.
-        lifecycleScope.launch(Dispatchers.Default) {
-            val originalFacesResult = getFaceDetectionOneByOne(originalImg)
-            val changeFacesResult = getFaceDetectionOneByOne(changeImg)
-
-            var originalFaceLandmarks : List<FaceLandmark>?  = null
-            var changeFaceLandmarks : List<FaceLandmark>?  = null
-
-            var originalFaceBoundingBox : RectF? = null
-            var changeFaceBoundingBox : RectF? = null
-            if (originalFacesResult != null) {
-                for (face in originalFacesResult) {
-                    if (changeFaceX >= face.boundingBox.left && changeFaceX <= face.boundingBox.right &&
-                        changeFaceY >= face.boundingBox.top && changeFaceY <= face.boundingBox.bottom
-                    ) {
-                        originalFaceBoundingBox = RectF(face.boundingBox)
-                        originalFaceLandmarks = face.allLandmarks
-                        break
-                    }
-                }
-            }
-
-            if (changeFacesResult != null) {
-
-                for (face in changeFacesResult) {
-                    if (changeFaceX >= face.boundingBox.left && changeFaceX <= face.boundingBox.right &&
-                        changeFaceY >= face.boundingBox.top && changeFaceY <= face.boundingBox.bottom
-                    ) {
-                        changeFaceBoundingBox = RectF(face.boundingBox)
-                        changeFaceLandmarks = face.allLandmarks
-                        break
-                    }
-                }
-            }
-
-//            val imgWithResult =
-//                originalImg?.let { drawLandmarkResult(it, changeFaceLandmarks!!) }
-//
-//            runOnUiThread {
-//                inputImageView.setImageBitmap(imgWithResult)
-//            }
-
-            val addStartY =  ((changeFaceLandmarks!!.get(0).position.y - changeFaceLandmarks.get(3).position.y )/2).toInt()
-            val addEndY =  ((changeFaceLandmarks.get(0).position.y - changeFaceLandmarks.get(5).position.y )/2).toInt()
-
-            val cropImgRect = Rect(
-                changeFaceLandmarks.get(2).position.x.toInt(), // left
-                changeFaceLandmarks.get(3).position.y.toInt() - addStartY, // top
-                changeFaceLandmarks.get(7).position.x.toInt(), // right
-                changeFaceLandmarks.get(0).position.y.toInt() + addEndY  // bottom
-            )
-
-            if (originalFacesResult != null || changeFacesResult != null) {
-                val cropImg = cropBitmap(changeImg, changeFaceBoundingBox!!, cropImgRect)?.let {
-                    circleCropBitmap(
-                        it
-                    )
-                }
-
-                runOnUiThread {
-                    val overlayImg = cropImg?.let {
-                        overlayBitmap(
-                            originalImg, it,
-                            originalFaceBoundingBox!!,
-                            (originalFaceLandmarks!!.get(2).position.x).toInt(),
-                            (originalFaceLandmarks.get(3).position.y - addStartY).toInt()
-                        )
-                    }
-
-                    inputImageView.setImageBitmap(overlayImg)
-                }
-            }
-
-        }
-    }
-
-    private fun faceLandmark(originalImg: Bitmap, changeFaceX: Int) {
-
-        // Run ODT and display result
-        // Note that we run this in the background thread to avoid blocking the app UI because
-        // TFLite object detection is a synchronised process.
-        lifecycleScope.launch(Dispatchers.Default) {
-            val originalFacesResult = getFaceDetectionOneByOne(originalImg)
-
-            var originalFaceLandmarks : List<FaceLandmark>?  = null
-
-            var originalFaceBoundingBox : RectF? = null
-            originalFaceBoundingBox = RectF(originalFacesResult!!.get(changeFaceX).boundingBox)
-            originalFaceLandmarks = originalFacesResult!!.get(changeFaceX).allLandmarks
-
-            val imgWithResult =
-                originalImg?.let { drawLandmarkResult(it, originalFaceLandmarks!!) }
-
-            runOnUiThread {
-                inputImageView.setImageBitmap(imgWithResult)
-            }
-
-        }
     }
 
     private fun cropBitmap(original: Bitmap, rect:RectF, optimizationRect: Rect): Bitmap? {
@@ -584,12 +326,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         return resultOverlayBmp
     }
-
-
-    /**
-     * debugPrint(visionObjects: List<Detection>)
-     *      Print the detection result to logcat to examine
-     */
 
     /**
      * setViewAndDetect(bitmap: Bitmap)
@@ -726,106 +462,4 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
     }
-
-    /**
-     * drawDetectionResult(bitmap: Bitmap, detectionResults: List<DetectionResult>
-     *      Draw a box around each objects and show the object's name.
-     */
-    private fun drawDetectionResult(
-        bitmap: Bitmap,
-        detectionResults: List<DetectionResult>,
-        coustomColor: Int
-    ): Bitmap? {
-        val outputBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
-        val canvas = Canvas(outputBitmap)
-        val pen = Paint()
-        pen.textAlign = Paint.Align.LEFT
-
-        detectionResults.forEach {
-            // draw bounding box
-            pen.color = coustomColor
-            pen.strokeWidth = 8F
-            pen.style = Paint.Style.STROKE
-            val box = it.boundingBox
-            canvas.drawRect(box, pen)
-
-            val tagSize = Rect(0, 0, 0, 0)
-
-            // calculate the right font size
-            pen.style = Paint.Style.FILL_AND_STROKE
-            pen.color = Color.YELLOW
-            pen.strokeWidth = 2F
-
-            pen.textSize = MAX_FONT_SIZE
-            pen.getTextBounds(it.text, 0, it.text.length, tagSize)
-            val fontSize: Float = pen.textSize * box.width() / tagSize.width()
-
-            // adjust the font size so texts are inside the bounding box
-            if (fontSize < pen.textSize) pen.textSize = fontSize
-
-            var margin = (box.width() - tagSize.width()) / 2.0F
-            if (margin < 0F) margin = 0F
-            canvas.drawText(
-                it.text, box.left + margin,
-                box.top + tagSize.height().times(1F), pen
-            )
-        }
-        return outputBitmap
-    }
-
-/**
- * drawDetectionResult(bitmap: Bitmap, detectionResults: List<DetectionResult>
- *      Draw a box around each objects and show the object's name.
- */
-    private fun drawLandmarkResult(
-    bitmap: Bitmap,
-    landmark: List<FaceLandmark>
-    ): Bitmap? {
-        val outputBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
-        val canvas = Canvas(outputBitmap)
-        val pen = Paint()
-        pen.textAlign = Paint.Align.LEFT
-
-        landmark.forEach {
-            // draw bounding box
-            pen.color = Color.GREEN
-            pen.strokeWidth = 30F
-            pen.style = Paint.Style.STROKE
-           canvas.drawPoint(it.position.x, it.position.y, pen)
-        }
-        pen.color = Color.YELLOW
-        pen.strokeWidth = 30F
-        pen.style = Paint.Style.STROKE
-        var i = 2
-        canvas.drawPoint(landmark.get(i).position.x, landmark.get(i).position.y, pen)
-
-        return outputBitmap
-    }
-
-    private fun drawNewFace(
-        bitmap: Bitmap,
-        detectionResults: List<DetectionResult>
-    ): Bitmap {
-        val outputBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
-        val canvas = Canvas(outputBitmap)
-        val pen = Paint()
-        pen.textAlign = Paint.Align.LEFT
-
-        detectionResults.forEach {
-            // draw bounding box
-            pen.color = Color.RED
-            pen.strokeWidth = 8F
-            pen.style = Paint.Style.STROKE
-            val box = it.boundingBox
-
-            canvas.drawRect(box, pen)
-        }
-        return outputBitmap
-    }
 }
-
-/**
- * DetectionResult
- *      A class to store the visualization info of a detected object.
- */
-data class DetectionResult(val boundingBox: RectF, val text: String)

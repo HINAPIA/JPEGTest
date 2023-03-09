@@ -28,10 +28,6 @@
         "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\src\\main\\res\\drawable\\ic_launcher_background.xml"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\build\\intermediates\\res\\merged\\debug\\drawable_twoface2.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\src\\main\\res\\drawable\\twoface2.jpg"
-    },
-    {
         "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\build\\intermediates\\res\\merged\\debug\\drawable_test1.png.flat",
         "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\src\\main\\res\\drawable\\test1.png"
     },
@@ -88,16 +84,12 @@
         "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher_round.png"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\build\\intermediates\\res\\merged\\debug\\drawable_twoface.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\src\\main\\res\\drawable\\twoface.jpg"
+        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher_round.png"
     },
     {
         "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\build\\intermediates\\res\\merged\\debug\\drawable_img_meal_two.jpg.flat",
         "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\src\\main\\res\\drawable\\img_meal_two.jpg"
-    },
-    {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi_ic_launcher_round.png.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher_round.png"
     },
     {
         "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\build\\intermediates\\res\\merged\\debug\\layout_activity_main.xml.flat",
