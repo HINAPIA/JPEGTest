@@ -16,7 +16,6 @@
 
 package org.tensorflow.codelabs.objectdetection
 
-import android.R.attr
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -76,6 +75,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var mContext: Context? = null
 
     @SuppressLint("MissingInflatedId", "ClickableViewAccessibility")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = this
