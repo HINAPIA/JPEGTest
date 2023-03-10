@@ -39,6 +39,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.core.BaseOptions
+import org.tensorflow.lite.task.vision.detector.ObjectDetector
 import org.tensorflow.lite.task.vision.segmenter.ImageSegmenter
 import org.tensorflow.lite.task.vision.segmenter.OutputType
 import org.tensorflow.lite.task.vision.segmenter.Segmentation
@@ -65,6 +66,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var imgSampleFour: ImageView
     private lateinit var tvPlaceholder: TextView
     private lateinit var currentPhotoPath: String
+
+    private var imageSegmenter: ImageSegmenter? = null
+    private var objectDetector: ObjectDetector? = null
 
     private var mContext: Context? = null
 
@@ -126,7 +130,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         }
     }
-    private var imageSegmenter: ImageSegmenter? = null
+
     fun clearImageSegmenter() {
         imageSegmenter = null
     }
@@ -135,7 +139,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         segmentResult: List<Segmentation>?,
         imageHeight: Int,
         imageWidth: Int
-    ) {
+    ): Bitmap? {
         if (segmentResult != null && segmentResult.isNotEmpty()) {
             val colorLabels = segmentResult[0].coloredLabels.mapIndexed { index, coloredLabel ->
                 ColorLabel(
@@ -172,10 +176,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             // box to match with the size that the captured images will be displayed.
 
             var scaleBitmap = Bitmap.createScaledBitmap(image, imageWidth, imageHeight, false)
-            runOnUiThread {
-               inputImageView.setImageBitmap(scaleBitmap)
-            }
+            //runOnUiThread {
+            //   inputImageView.setImageBitmap(scaleBitmap)
+            //}
+            return scaleBitmap
         }
+        return null
     }
 
     data class ColorLabel(
@@ -201,22 +207,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val optionsBuilder =
             ImageSegmenter.ImageSegmenterOptions.builder()
 
+        /*
         // Set general segmentation options, including number of used threads
         val baseOptionsBuilder = BaseOptions.builder().setNumThreads(2)
-
         // Use the specified hardware for running the model. Default to CPU
         baseOptionsBuilder.useNnapi()
-
-
         optionsBuilder.setBaseOptions(baseOptionsBuilder.build())
+        */
 
         /*
         CATEGORY_MASK is being specifically used to predict the available objects
         based on individual pixels in this sample. The other option available for
-        OutputType, CONFIDENCE_MAP, provides a gray scale mapping of the image
+        OutputType, CONFIDENCE_MASK, provides a gray scale mapping of the image
         where each pixel has a confidence score applied to it from 0.0f to 1.0f
          */
 
+        /* Segmentation option 및 디렉터 설정 */
         optionsBuilder.setOutputType(OutputType.CATEGORY_MASK)
         try {
             imageSegmenter =
@@ -228,6 +234,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         } catch (e: IllegalStateException) {
             Log.e(TAG, "TFLite failed to load model with error: " + e.message)
         }
+
+        /* Object Detection option 및 디렉터 설정 */
+        // Step 2: Initialize the detector object
+        val options = ObjectDetector.ObjectDetectorOptions.builder()
+            .setMaxResults(5)
+            .setScoreThreshold(0.3f)
+            .build()
+        objectDetector = ObjectDetector.createFromFileAndOptions(
+            this,
+            "model.tflite",
+            options
+        )
     }
 
 
@@ -237,21 +255,84 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
      */
     private fun runObjectDetection(bitmap: Bitmap ) {
         // Step 1: Create TFLite's TensorImage object
+
         val image = TensorImage.fromBitmap(bitmap)
 
         setupImageSegmenter()
 
-        val segmentResult = imageSegmenter?.segment(image)
+        val results = objectDetector!!.detect(image)
+        val testObjectRect: RectF = results[0].boundingBox
+
+        val testObjectBitmap = cropBitmap(bitmap, testObjectRect)
+        val testImage = TensorImage.fromBitmap(testObjectBitmap)
+
+        val segmentResult = imageSegmenter?.segment(testImage)
 
         System.out.println(segmentResult)
 
-        setResults(
+        val segmentationResultBitmap = setResults(
             segmentResult,
-            image.height,
-            image.width
+            testImage.height,
+            testImage.width
         )
+
+        val resultBitmap = overlayBitmap(getSampleImage(R.drawable.image1), segmentationResultBitmap!!,testObjectRect.left.toInt(), testObjectRect.top.toInt() )
+        runOnUiThread {
+            inputImageView.setImageBitmap(resultBitmap)
+        }
         // Draw the detection result on the bitmap and show it.
     }
+
+
+    private fun cropBitmap(original: Bitmap, rect:RectF): Bitmap? {
+        val width = (rect.right - rect.left).toInt()
+        val height = (rect.bottom - rect.top).toInt()
+        var startX = rect.left.toInt()
+        var startY = rect.top.toInt()
+        if (rect.left.toInt() < 0) {
+            startX = 0
+        }
+        if (rect.top.toInt() < 0) {
+            startY = 0
+        }
+
+        val result = Bitmap.createBitmap(
+            original
+            , startX         // X 시작위치
+            , startY         // Y 시작위치
+            , width          // 넓이
+            , height         // 높이
+        )
+        if (result != original) {
+            original.recycle()
+        }
+        return result
+    }
+    fun overlayBitmap(original: Bitmap, add: Bitmap, optimizationX:Int, optimizationY:Int): Bitmap? {
+
+        var startX = optimizationX
+        var startY = optimizationY
+
+        if (startX < 0) {
+            startX = 0
+        }
+        if (startY < 0) {
+            startY = 0
+        }
+
+        //결과값 저장을 위한 Bitmap
+        val resultOverlayBmp = Bitmap.createBitmap(
+            original.width, original.height, original.config
+        )
+
+        //캔버스를 통해 비트맵을 겹치기한다.
+        val canvas = Canvas(resultOverlayBmp)
+        canvas.drawBitmap(original, Matrix(), null)
+        canvas.drawBitmap(add, startX.toFloat(), startY.toFloat(), null)
+
+        return resultOverlayBmp
+    }
+
 
     /**
      * setViewAndDetect(bitmap: Bitmap)
