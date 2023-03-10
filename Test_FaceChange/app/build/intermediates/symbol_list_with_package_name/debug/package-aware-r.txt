@@ -1873,7 +1873,6 @@ id center_horizontal
 id center_vertical
 id chain
 id chains
-id changeButton
 id changeButton2
 id checkbox
 id checked
@@ -1944,6 +1943,7 @@ id end
 id endToStart
 id enterAlways
 id enterAlwaysCollapsed
+id errorMessage
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu

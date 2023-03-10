@@ -24,7 +24,7 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="@null"
             android:scaleType="fitCenter" />
@@ -99,5 +99,18 @@
         android:drawableLeft="@drawable/ic_camera"
         android:text="@string/tv_take_photo"
         android:textAllCaps="false" />
+
+    <TextView
+        android:id="@+id/errorMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/captureImageFab"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="16dp"
+        android:layout_toStartOf="@+id/captureImageFab" />
 
 </RelativeLayout>

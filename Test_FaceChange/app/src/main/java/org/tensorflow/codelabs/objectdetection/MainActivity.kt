@@ -32,6 +32,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.toBitmap
 import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.lifecycleScope
 import com.google.mlkit.vision.common.InputImage
@@ -69,9 +70,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var imgSampleThree: ImageView
     private lateinit var imgSampleFour: ImageView
     private lateinit var tvPlaceholder: TextView
+    private lateinit var errorMessage: TextView
     private lateinit var currentPhotoPath: String
 
-    @SuppressLint("MissingInflatedId")
+    private var imageNum: Int = 0
+
+    @SuppressLint("MissingInflatedId", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -79,22 +83,35 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         captureImageFab = findViewById(R.id.captureImageFab)
         imageView = findViewById(R.id.imageView)
-        changeButton = findViewById(R.id.changeButton)
-        changeButton2 = findViewById(R.id.changeButton2)
         inputImageView = findViewById(R.id.imageView)
         imgSampleOne = findViewById(R.id.imgSampleOne)
         imgSampleTwo = findViewById(R.id.imgSampleTwo)
         imgSampleThree = findViewById(R.id.imgSampleThree)
         imgSampleFour = findViewById(R.id.imgSampleFour)
         tvPlaceholder = findViewById(R.id.tvPlaceholder)
+        errorMessage = findViewById(R.id.errorMessage)
 
-        captureImageFab.setOnClickListener(this)
         imageView.setOnTouchListener { view, motionEvent ->
-            changeFaceOneByOne(getSampleImage(R.drawable.image2), getSampleImage(R.drawable.image1), motionEvent.x.toInt(), motionEvent.y.toInt())
+
+            runOnUiThread {
+                errorMessage.setText("실행 중")
+            }
+            
+            // click 좌표를 bitmap에 해당하는 좌표로 변환
+            val point = getBitmapClickPoint(PointF(motionEvent.x, motionEvent.y), imageView)
+
+            val drawable = imageView.drawable
+            if(imageNum == 1)
+                changeFaceOneByOne(drawable.toBitmap(), getSampleImage(R.drawable.image2), point.x, point.y)
+            else if (imageNum == 2)
+                changeFaceOneByOne(drawable.toBitmap(), getSampleImage(R.drawable.twoface2), point.x, point.y)
+
+            runOnUiThread {
+                errorMessage.setText("")
+            }
             return@setOnTouchListener true
         }
-        changeButton.setOnClickListener(this)
-        changeButton2.setOnClickListener(this)
+        captureImageFab.setOnClickListener(this)
         imgSampleOne.setOnClickListener(this)
         imgSampleTwo.setOnClickListener(this)
         imgSampleThree.setOnClickListener(this)
@@ -123,26 +140,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     Log.e(TAG, e.message.toString())
                 }
             }
-            R.id.changeButton -> {
-               // changeFace(getSampleImage(R.drawable.image2), getSampleImage(R.drawable.image1), 1500, 700)
-                //changeFace(getSampleImage(R.drawable.twoface), getSampleImage(R.drawable.twoface2), 500, 700)
-
-                //faceLandmark(getSampleImage(imageView.drawable.hashCode()),0)
-
-                runOnUiThread {
-                    inputImageView.setImageBitmap(getSampleImage(R.drawable.image2))
-                }
-
-            }
-            R.id.changeButton2 -> {
-                changeFaceOneByOne(getSampleImage(R.drawable.image2), getSampleImage(R.drawable.image1), 1000, 700)
-                //678uhchangeFaceOneByOne(getSampleImage(R.drawable.twoface), getSampleImage(R.drawable.twoface2), 500, 700)
-            }
             R.id.imgSampleOne -> {
-                setViewAndDetect(getSampleImage(R.drawable.twoface))
+                //setViewAndDetect(getSampleImage(R.drawable.image1))
+                imageNum = 1
+                runOnUiThread {
+                    inputImageView.setImageBitmap(getSampleImage(R.drawable.image1))
+                }
             }
             R.id.imgSampleTwo -> {
-                setViewAndDetect(getSampleImage(R.drawable.twoface2))
+                //setViewAndDetect(getSampleImage(R.drawable.image2))
+                imageNum = 2
+                runOnUiThread {
+                    inputImageView.setImageBitmap(getSampleImage(R.drawable.twoface))
+                }
             }
             R.id.imgSampleThree -> {
                 setViewAndDetect(getSampleImage(R.drawable.test5))
@@ -152,6 +162,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
         }
+    }
+
+    private fun getBitmapClickPoint( clickPoint: PointF, imageView: ImageView) : Point {
+
+        val bitmap:Bitmap = imageView.drawable.toBitmap()
+
+        // imageView width, height 가져오기
+        val viewWidth = imageView.width
+        val viewHeight = imageView.height
+
+        // 실제 이미지일 때 포인트 위치
+//        val newPointX = clickPoint.x  * (bitmap.width/viewWidth)
+//        val newPointY =clickPoint.y * (bitmap.height/viewHeight)
+        val newPointX = (bitmap.width * clickPoint.x)  / viewWidth
+        val newPointY =(bitmap.height * clickPoint.y)  / viewHeight
+
+        return Point(newPointX.toInt(), newPointY.toInt())
     }
 
     private fun getObjectDetection(bitmap: Bitmap): List<DetectionResult> {
@@ -328,11 +355,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             val originalFacesResult = getFaceDetectionOneByOne(originalImg)
             val changeFacesResult = getFaceDetectionOneByOne(changeImg)
 
-            var originalFaceLandmarks : List<FaceLandmark>?  = null
-            var changeFaceLandmarks : List<FaceLandmark>?  = null
+            var originalFaceLandmarks: List<FaceLandmark>? = null
+            var changeFaceLandmarks: List<FaceLandmark>? = null
 
-            var originalFaceBoundingBox : RectF? = null
-            var changeFaceBoundingBox : RectF? = null
+            var originalFaceBoundingBox: RectF? = null
             if (originalFacesResult != null) {
                 for (face in originalFacesResult) {
                     if (changeFaceX >= face.boundingBox.left && changeFaceX <= face.boundingBox.right &&
@@ -345,58 +371,64 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
 
-            if (changeFacesResult != null) {
+            if (originalFaceBoundingBox == null) {
+                runOnUiThread {
+                    errorMessage.setText("해당 포인트에는 객체가 존재하지 않음")
+                }
+            } else if (changeFacesResult != null) {
 
                 for (face in changeFacesResult) {
                     if (changeFaceX >= face.boundingBox.left && changeFaceX <= face.boundingBox.right &&
                         changeFaceY >= face.boundingBox.top && changeFaceY <= face.boundingBox.bottom
                     ) {
-                        changeFaceBoundingBox = RectF(face.boundingBox)
                         changeFaceLandmarks = face.allLandmarks
                         break
                     }
                 }
-            }
 
-//            val imgWithResult =
-//                originalImg?.let { drawLandmarkResult(it, changeFaceLandmarks!!) }
-//
-//            runOnUiThread {
-//                inputImageView.setImageBitmap(imgWithResult)
-//            }
-
-            val addStartY =  ((changeFaceLandmarks!!.get(0).position.y - changeFaceLandmarks.get(3).position.y )/2).toInt()
-            val addEndY =  ((changeFaceLandmarks.get(0).position.y - changeFaceLandmarks.get(5).position.y )/2).toInt()
-
-            val cropImgRect = Rect(
-                changeFaceLandmarks.get(2).position.x.toInt(), // left
-                changeFaceLandmarks.get(3).position.y.toInt() - addStartY, // top
-                changeFaceLandmarks.get(7).position.x.toInt(), // right
-                changeFaceLandmarks.get(0).position.y.toInt() + addEndY  // bottom
-            )
-
-            if (originalFacesResult != null || changeFacesResult != null) {
-                val cropImg = cropBitmap(changeImg, changeFaceBoundingBox!!, cropImgRect)?.let {
-                    circleCropBitmap(
-                        it
-                    )
-                }
-
-                runOnUiThread {
-                    val overlayImg = cropImg?.let {
-                        overlayBitmap(
-                            originalImg, it,
-                            originalFaceBoundingBox!!,
-                            (originalFaceLandmarks!!.get(2).position.x).toInt(),
-                            (originalFaceLandmarks.get(3).position.y - addStartY).toInt()
-                        )
+                if (changeFaceLandmarks == null) {
+                    runOnUiThread {
+                        errorMessage.setText("해당 포인트에는 change 객체가 존재하지 않음")
                     }
+                } else {
 
-                    inputImageView.setImageBitmap(overlayImg)
+                    val addStartY =
+                        ((changeFaceLandmarks!!.get(0).position.y - changeFaceLandmarks.get(3).position.y) / 2).toInt()
+                    val addEndY =
+                        ((changeFaceLandmarks.get(0).position.y - changeFaceLandmarks.get(5).position.y) / 2).toInt()
+
+                    val cropImgRect = Rect(
+                        changeFaceLandmarks.get(2).position.x.toInt(), // left
+                        changeFaceLandmarks.get(3).position.y.toInt() - addStartY, // top
+                        changeFaceLandmarks.get(7).position.x.toInt(), // right
+                        changeFaceLandmarks.get(0).position.y.toInt() + addEndY  // bottom
+                    )
+
+                    if (originalFacesResult != null || changeFacesResult != null) {
+                        val cropImg = cropBitmap(changeImg, cropImgRect)?.let {
+                            circleCropBitmap(
+                                it
+                            )
+                        }
+
+                        runOnUiThread {
+                            val overlayImg = cropImg?.let {
+                                overlayBitmap(
+                                    originalImg, it,
+                                    originalFaceBoundingBox!!,
+                                    (originalFaceLandmarks!!.get(2).position.x).toInt(),
+                                    (originalFaceLandmarks.get(3).position.y - addStartY).toInt()
+                                )
+                            }
+
+                            inputImageView.setImageBitmap(overlayImg)
+                        }
+                    }
                 }
             }
 
         }
+
     }
 
     private fun faceLandmark(originalImg: Bitmap, changeFaceX: Int) {
@@ -423,16 +455,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun cropBitmap(original: Bitmap, rect:RectF, optimizationRect: Rect): Bitmap? {
+    private fun cropBitmap(original: Bitmap, cropRect: Rect): Bitmap? {
 
-        val width = (optimizationRect.right - optimizationRect.left)
-        val height = optimizationRect.bottom - optimizationRect.top
-        var startX = optimizationRect.left
-        var startY = optimizationRect.top
-        if (rect.left.toInt() < 0) {
+        val width = (cropRect.right - cropRect.left)
+        val height = cropRect.bottom - cropRect.top
+        var startX = cropRect.left
+        var startY = cropRect.top
+        if (startX.toInt() < 0) {
             startX = 0
         }
-        if (rect.top.toInt() < 0) {
+        if (startY.toInt() < 0) {
             startY = 0
         }
 

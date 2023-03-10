@@ -16,6 +16,7 @@
 
 package org.tensorflow.codelabs.objectdetection
 
+import android.R.attr
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -34,11 +35,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.support.image.TensorImage
-import org.tensorflow.lite.task.core.BaseOptions
 import org.tensorflow.lite.task.vision.detector.ObjectDetector
 import org.tensorflow.lite.task.vision.segmenter.ImageSegmenter
 import org.tensorflow.lite.task.vision.segmenter.OutputType
@@ -49,6 +50,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
+
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -65,6 +67,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var imgSampleThree: ImageView
     private lateinit var imgSampleFour: ImageView
     private lateinit var tvPlaceholder: TextView
+    private lateinit var errorMessage: TextView
     private lateinit var currentPhotoPath: String
 
     private var imageSegmenter: ImageSegmenter? = null
@@ -72,7 +75,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private var mContext: Context? = null
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint("MissingInflatedId", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = this
@@ -86,6 +89,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         imgSampleThree = findViewById(R.id.imgSampleThree)
         imgSampleFour = findViewById(R.id.imgSampleFour)
         tvPlaceholder = findViewById(R.id.tvPlaceholder)
+        errorMessage = findViewById(R.id.errorMessage)
+
+        imageView.setOnTouchListener { view, motionEvent ->
+            runOnUiThread {
+                errorMessage.setText("실행 중")
+            }
+
+            // click 좌표를 bitmap에 해당하는 좌표로 변환
+            val point = getBitmapClickPoint(PointF(motionEvent.x, motionEvent.y), imageView)
+
+            val drawable = imageView.drawable
+            runSegmentation(drawable.toBitmap(), point.x, point.y)
+            runOnUiThread {
+                errorMessage.setText("")
+            }
+            return@setOnTouchListener true
+        }
         captureImageFab.setOnClickListener(this)
         imgSampleOne.setOnClickListener(this)
         imgSampleTwo.setOnClickListener(this)
@@ -116,7 +136,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
             R.id.imgSampleOne -> {
-                setViewAndDetect(getSampleImage(R.drawable.image1))
+                //setViewAndDetect(getSampleImage(R.drawable.image1))
+                runOnUiThread {
+                    inputImageView.setImageBitmap(getSampleImage(R.drawable.image1))
+                }
             }
             R.id.imgSampleTwo -> {
                 setViewAndDetect(getSampleImage(R.drawable.image2))
@@ -129,6 +152,24 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
         }
+    }
+
+
+    private fun getBitmapClickPoint( clickPoint: PointF, imageView: ImageView) : Point {
+
+        val bitmap:Bitmap = imageView.drawable.toBitmap()
+
+        // imageView width, height 가져오기
+        val viewWidth = imageView.width
+        val viewHeight = imageView.height
+
+        // 실제 이미지일 때 포인트 위치
+//        val newPointX = clickPoint.x  * (bitmap.width/viewWidth)
+//        val newPointY =clickPoint.y * (bitmap.height/viewHeight)
+        val newPointX = (bitmap.width * clickPoint.x)  / viewWidth
+        val newPointY =(bitmap.height * clickPoint.y)  / viewHeight
+
+        return Point(newPointX.toInt(), newPointY.toInt())
     }
 
     fun clearImageSegmenter() {
@@ -176,9 +217,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             // box to match with the size that the captured images will be displayed.
 
             var scaleBitmap = Bitmap.createScaledBitmap(image, imageWidth, imageHeight, false)
-            //runOnUiThread {
-            //   inputImageView.setImageBitmap(scaleBitmap)
-            //}
+
             return scaleBitmap
         }
         return null
@@ -253,30 +292,54 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
      * runObjectDetection(bitmap: Bitmap)
      *      TFLite Object Detection function
      */
-    private fun runObjectDetection(bitmap: Bitmap ) {
-        // Step 1: Create TFLite's TensorImage object
+    private fun runSegmentation(bitmap: Bitmap, changeFaceX: Int, changeFaceY: Int) {
+        val copyBitmap: Bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
 
         val image = TensorImage.fromBitmap(bitmap)
 
+        // 모델 전처리 함수 (디렉터 제작)
         setupImageSegmenter()
 
+        // objectDetection 모델 실행
         val results = objectDetector!!.detect(image)
-        val testObjectRect: RectF = results[0].boundingBox
 
-        val testObjectBitmap = cropBitmap(bitmap, testObjectRect)
+        // 추출할 boundingBox 알애내기
+        var testObjectRect : RectF? = null
+        if (results != null) {
+            for (it in results) {
+                if (changeFaceX >= it.boundingBox.left && changeFaceX <= it.boundingBox.right &&
+                    changeFaceY >= it.boundingBox.top && changeFaceY <= it.boundingBox.bottom
+                ) {
+                    testObjectRect = it.boundingBox
+                    break
+                }
+            }
+
+        }
+        if(testObjectRect == null) {
+            runOnUiThread {
+                errorMessage.setText("해당 포인트에는 객체가 존재하지 않음")
+            }
+            return
+        }
+        // bitmap 자르고 tensor 이미지로 변환
+        val testObjectBitmap = cropBitmap(bitmap, testObjectRect!!)
         val testImage = TensorImage.fromBitmap(testObjectBitmap)
 
+        // segmnetatin 모델 결과
         val segmentResult = imageSegmenter?.segment(testImage)
 
-        System.out.println(segmentResult)
-
+        if(results.size == 0)
+            return
+        // segmentatin result 결과 값 알아내기
         val segmentationResultBitmap = setResults(
             segmentResult,
             testImage.height,
             testImage.width
         )
 
-        val resultBitmap = overlayBitmap(getSampleImage(R.drawable.image1), segmentationResultBitmap!!,testObjectRect.left.toInt(), testObjectRect.top.toInt() )
+        //  비트맵 합치기
+        val resultBitmap = overlayBitmap(copyBitmap, segmentationResultBitmap!!,testObjectRect.left.toInt(), testObjectRect.top.toInt() )
         runOnUiThread {
             inputImageView.setImageBitmap(resultBitmap)
         }
@@ -347,7 +410,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         // Run ODT and display result
         // Note that we run this in the background thread to avoid blocking the app UI because
         // TFLite object detection is a synchronised process.
-        lifecycleScope.launch(Dispatchers.Default) { runObjectDetection(bitmap) }
+        lifecycleScope.launch(Dispatchers.Default) { runSegmentation(bitmap,0,0) }
     }
 
     /**

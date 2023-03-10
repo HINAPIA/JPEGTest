@@ -24,7 +24,7 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="@null"
             android:scaleType="fitCenter" />
@@ -66,7 +66,7 @@
             android:adjustViewBounds="true"
             android:contentDescription="@null"
             android:scaleType="centerCrop"
-            android:src="@drawable/image2" />
+            android:src="@drawable/twoface" />
 
         <ImageView
             android:id="@+id/imgSampleThree"
@@ -101,23 +101,27 @@
         android:textAllCaps="false" />
 
     <Button
-        android:id="@+id/changeButton"
+        android:id="@+id/changeButton2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="10dp"
         android:layout_marginBottom="16dp"
         android:layout_toEndOf="@+id/captureImageFab"
-        android:text="change" />
+        android:text="change2" />
 
-    <Button
-        android:id="@+id/changeButton2"
+
+    <TextView
+        android:id="@+id/errorMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/captureImageFab"
+        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="-290dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="0dp"
         android:layout_marginBottom="16dp"
-        android:layout_toEndOf="@+id/captureImageFab"
-        android:text="change2" />
+        android:layout_toStartOf="@+id/captureImageFab" />
 
 </RelativeLayout>

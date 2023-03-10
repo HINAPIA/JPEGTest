@@ -6,30 +6,30 @@
 6
 7    <uses-sdk
 8        android:minSdkVersion="23"
-8-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml
+8-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml
 9        android:targetSdkVersion="30" />
-9-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml
+9-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml
 10
 11    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-11-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:5:5-79
-11-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:5:22-77
+11-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:5:5-79
+11-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:5:22-77
 12    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-12-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:6:5-80
-12-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:6:22-78
+12-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:6:5-80
+12-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:6:22-78
 13
 14    <queries>
-14-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:8:5-12:15
+14-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:8:5-12:15
 15        <intent>
-15-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:9:9-11:18
+15-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:9:9-11:18
 16            <action android:name="android.media.action.IMAGE_CAPTURE" />
-16-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:10:13-73
-16-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:10:21-70
+16-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:10:13-73
+16-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:10:21-70
 17        </intent>
 18    </queries>
 19
 20    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-20-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:6:5-80
-20-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:6:22-78
+20-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:6:5-80
+20-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:6:22-78
 21
 22    <!-- Although the *SdkVersion is captured in gradle build files, this is required for non gradle builds -->
 23    <!-- <uses-sdk android:minSdkVersion="14"/> -->
@@ -42,61 +42,61 @@
 26    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 27
 28    <application
-28-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:14:5-44:19
+28-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:14:5-44:19
 29        android:allowBackup="true"
-29-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:21:9-35
+29-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:21:9-35
 30        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 30-->[androidx.core:core:1.3.2] C:\Users\user\.gradle\caches\transforms-2\files-2.1\001c2e17ec9d21aa891dc81b4c2e075d\core-1.3.2\AndroidManifest.xml:24:18-86
 31        android:debuggable="true"
 32        android:extractNativeLibs="false"
 33        android:hardwareAccelerated="false"
-33-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:18:9-44
+33-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:18:9-44
 34        android:icon="@mipmap/ic_launcher"
-34-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:22:9-43
+34-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:22:9-43
 35        android:label="@string/app_name"
-35-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:23:9-41
+35-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:23:9-41
 36        android:largeHeap="true"
-36-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:19:9-33
+36-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:19:9-33
 37        android:requestLegacyExternalStorage="true"
-37-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:16:9-52
+37-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:16:9-52
 38        android:roundIcon="@mipmap/ic_launcher_round"
-38-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:24:9-54
+38-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:24:9-54
 39        android:supportsRtl="true"
-39-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:25:9-35
+39-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:25:9-35
 40        android:testOnly="true"
 41        android:theme="@style/Theme.ObjectDetection" >
-41-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:26:9-53
+41-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:26:9-53
 42        <activity android:name="org.tensorflow.codelabs.objectdetection.MainActivity" >
-42-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:27:9-33:20
-42-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:27:19-86
+42-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:27:9-33:20
+42-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:27:19-86
 43            <intent-filter>
-43-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:28:13-32:29
+43-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:28:13-32:29
 44                <action android:name="android.intent.action.MAIN" />
-44-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:29:17-69
-44-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:29:25-66
+44-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:29:17-69
+44-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:29:25-66
 45
 46                <category android:name="android.intent.category.LAUNCHER" />
-46-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:31:17-77
-46-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:31:27-74
+46-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:31:17-77
+46-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:31:27-74
 47            </intent-filter>
 48        </activity>
 49
 50        <provider
-50-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:35:9-43:20
+50-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:35:9-43:20
 51            android:name="androidx.core.content.FileProvider"
-51-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:36:13-62
+51-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:36:13-62
 52            android:authorities="org.tensorflow.codelabs.objectdetection.fileprovider"
-52-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:37:13-87
+52-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:37:13-87
 53            android:exported="false"
-53-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:38:13-37
+53-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:38:13-37
 54            android:grantUriPermissions="true" >
-54-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:39:13-47
+54-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:39:13-47
 55            <meta-data
-55-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:40:13-42:54
+55-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:40:13-42:54
 56                android:name="android.support.FILE_PROVIDER_PATHS"
-56-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:41:17-67
+56-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:41:17-67
 57                android:resource="@xml/file_paths" />
-57-->C:\Users\user\Documents\GitHub\Object_Detection\app\src\main\AndroidManifest.xml:42:17-51
+57-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:42:17-51
 58        </provider>
 59
 60        <service

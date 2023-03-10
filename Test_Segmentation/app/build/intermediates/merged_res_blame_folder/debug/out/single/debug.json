@@ -40,12 +40,12 @@
         "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\src\\main\\res\\mipmap-xxhdpi\\ic_launcher_round.png"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\build\\intermediates\\res\\merged\\debug\\drawable_test3.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\src\\main\\res\\drawable\\test3.jpg"
-    },
-    {
         "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\build\\intermediates\\res\\merged\\debug\\drawable_img_meal_three.jpg.flat",
         "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\src\\main\\res\\drawable\\img_meal_three.jpg"
+    },
+    {
+        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\build\\intermediates\\res\\merged\\debug\\drawable_test3.jpg.flat",
+        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\src\\main\\res\\drawable\\test3.jpg"
     },
     {
         "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_Segmentation\\app\\build\\intermediates\\res\\merged\\debug\\drawable_test4.png.flat",
