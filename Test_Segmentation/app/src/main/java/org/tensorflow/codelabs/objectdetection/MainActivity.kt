@@ -37,6 +37,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.opencv.android.OpenCVLoader
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.core.BaseOptions
 import org.tensorflow.lite.task.vision.detector.ObjectDetector
@@ -71,6 +72,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var objectDetector: ObjectDetector? = null
 
     private var mContext: Context? = null
+
+    init {
+        val isIntialized = OpenCVLoader.initDebug()
+    }
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
