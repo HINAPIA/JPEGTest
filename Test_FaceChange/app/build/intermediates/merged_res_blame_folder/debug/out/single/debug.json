@@ -20,12 +20,12 @@
         "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher.png"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_test3.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\test3.jpg"
+        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_auto_rewind1.jpg.flat",
+        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\auto_rewind1.jpg"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_img_meal_three.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\img_meal_three.jpg"
+        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_test3.jpg.flat",
+        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\test3.jpg"
     },
     {
         "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\xml_file_paths.xml.flat",
@@ -40,8 +40,8 @@
         "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-anydpi-v26\\ic_launcher.xml"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_img_meal_one.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\img_meal_one.jpg"
+        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_auto_rewind3.jpg.flat",
+        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\auto_rewind3.jpg"
     },
     {
         "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_image2.jpg.flat",
@@ -68,12 +68,24 @@
         "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher_round.png"
     },
     {
+        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_auto_rewind_best.jpg.flat",
+        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\auto_rewind_best.jpg"
+    },
+    {
+        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_auto_rewind5.jpg.flat",
+        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\auto_rewind5.jpg"
+    },
+    {
         "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v24_ic_launcher_foreground.xml.flat",
         "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v24\\ic_launcher_foreground.xml"
     },
     {
         "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_twoface.jpg.flat",
         "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\twoface.jpg"
+    },
+    {
+        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_auto_rewind4.jpg.flat",
+        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\auto_rewind4.jpg"
     },
     {
         "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_image1.jpg.flat",
@@ -84,16 +96,16 @@
         "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-anydpi-v26\\ic_launcher_round.xml"
     },
     {
+        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_auto_rewind2.jpg.flat",
+        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\auto_rewind2.jpg"
+    },
+    {
         "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi_ic_launcher_round.png.flat",
         "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-xhdpi\\ic_launcher_round.png"
     },
     {
         "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_test1.png.flat",
         "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\test1.png"
-    },
-    {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_img_meal_two.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\img_meal_two.jpg"
     },
     {
         "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_camera.xml.flat",

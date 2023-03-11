@@ -33,6 +33,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.toRectF
 import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.lifecycleScope
 import com.google.mlkit.vision.common.InputImage
@@ -49,6 +50,7 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.max
 import kotlin.math.min
 
@@ -61,9 +63,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         private const val MAX_FONT_SIZE = 96F
     }
     private lateinit var captureImageFab: Button
+    private lateinit var eyeOpenButton: Button
+    private lateinit var smileButton: Button
+    private lateinit var allButton: Button
     private lateinit var imageView: ImageView
-    private lateinit var changeButton: Button
-    private lateinit var changeButton2: Button
     private lateinit var inputImageView: ImageView
     private lateinit var imgSampleOne: ImageView
     private lateinit var imgSampleTwo: ImageView
@@ -72,16 +75,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var tvPlaceholder: TextView
     private lateinit var errorMessage: TextView
     private lateinit var currentPhotoPath: String
-
+    private lateinit var testDrawble : Array<Int>
     private var imageNum: Int = 0
 
-    @SuppressLint("MissingInflatedId", "ClickableViewAccessibility")
+    @SuppressLint("MissingInflatedId", "ClickableViewAccessibility", "CutPasteId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
 
         captureImageFab = findViewById(R.id.captureImageFab)
+        eyeOpenButton = findViewById(R.id.eyeOpenButton)
+        allButton = findViewById(R.id.allButton)
+        smileButton = findViewById(R.id.smileButton)
         imageView = findViewById(R.id.imageView)
         inputImageView = findViewById(R.id.imageView)
         imgSampleOne = findViewById(R.id.imgSampleOne)
@@ -92,7 +98,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         errorMessage = findViewById(R.id.errorMessage)
 
         imageView.setOnTouchListener { view, motionEvent ->
-
             runOnUiThread {
                 errorMessage.setText("실행 중")
             }
@@ -106,9 +111,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             else if (imageNum == 2)
                 changeFaceOneByOne(drawable.toBitmap(), getSampleImage(R.drawable.twoface2), point.x, point.y)
 
-            runOnUiThread {
-                errorMessage.setText("")
-            }
             return@setOnTouchListener true
         }
         captureImageFab.setOnClickListener(this)
@@ -116,6 +118,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         imgSampleTwo.setOnClickListener(this)
         imgSampleThree.setOnClickListener(this)
         imgSampleFour.setOnClickListener(this)
+        eyeOpenButton.setOnClickListener(this)
+        smileButton.setOnClickListener(this)
+        allButton.setOnClickListener(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -132,6 +137,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
      *      Detect touches on the UI components
      */
     override fun onClick(v: View?) {
+        imageNum = 0
         when (v?.id) {
             R.id.captureImageFab -> {
                 try {
@@ -155,13 +161,131 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
             R.id.imgSampleThree -> {
-                setViewAndDetect(getSampleImage(R.drawable.test5))
+                testDrawble = arrayOf(R.drawable.image1, R.drawable.image2)
+
+                runOnUiThread {
+                    inputImageView.setImageBitmap(getSampleImage(R.drawable.image2))
+                }
             }
             R.id.imgSampleFour -> {
-                setViewAndDetect(getSampleImage(R.drawable.test4))
+                testDrawble = arrayOf(R.drawable.auto_rewind_best, R.drawable.auto_rewind1,
+                    R.drawable.auto_rewind2, R.drawable.auto_rewind3,
+                    R.drawable.auto_rewind4, R.drawable.auto_rewind5)
+
+                runOnUiThread {
+                    inputImageView.setImageBitmap(getSampleImage(R.drawable.auto_rewind1))
+                }
+            }
+            R.id.eyeOpenButton -> {
+                runOnUiThread {
+                    errorMessage.setText("실행 중")
+                }
+                autoBestFaceChange(testDrawble,0)
+            }
+            R.id.smileButton -> {
+                runOnUiThread {
+                    errorMessage.setText("실행 중")
+                }
+                autoBestFaceChange(testDrawble,1)
+            }
+            R.id.allButton -> {
+                runOnUiThread {
+                    errorMessage.setText("실행 중")
+                }
+                autoBestFaceChange(testDrawble,2)
             }
 
         }
+    }
+
+    private fun autoBestFaceChange(testDrawble: Array<Int>, bestFaceStandart: Int) {
+        lateinit var basicInformation: List<Face>
+
+        val bestFaceIndex: ArrayList<Int?> = ArrayList()
+        val bestFace : ArrayList<Face> = ArrayList()
+
+        lifecycleScope.launch(Dispatchers.Default) {
+            for(j in 0 until testDrawble.size) {
+                // j 번째 사진 faces 정보 얻기
+                val facesResult = getFaceDetectionOneByOne(getSampleImage(testDrawble[j]))
+                if (facesResult != null) {
+                    if(j == 0) {
+                        // 첫번째 인덱스일 경우 비교를 위한 변수 초기화
+                        for(i in 0 until facesResult.size) {
+                            bestFaceIndex.add(0)
+                            bestFace.add(facesResult[i])
+                        }
+                        basicInformation = facesResult
+                    }
+
+                    else
+                        // 그 이후 인덱스일 경우, 각 face을 비교
+                        for (i in 0 until facesResult.size) {
+                            // 비교할 face = checkFace
+                            val checkFace = facesResult[i]
+
+                            // 현재 face가 비교될 face 배열의 index 값
+                            var index = getBoxComparisonIndex(checkFace, bestFace)
+
+                            // bestFace 정보 알아내기
+                            val best = bestFace[index]
+
+                            if(bestFaceStandart == 0) { // 베스트 사진의 기준이 눈일 때
+                                // 가장 눈을 뜬 사진 알아내기
+                                if(best.leftEyeOpenProbability!! < checkFace.leftEyeOpenProbability!! ||
+                                    best.rightEyeOpenProbability!! < checkFace.rightEyeOpenProbability!!) {
+                                    bestFace[index] = checkFace
+                                    bestFaceIndex[index] = j
+                                }
+                            }
+                            else if(bestFaceStandart == 1)  // 베스트 사진의 기준이 입일 때
+                                if(best.smilingProbability!! < checkFace.smilingProbability!!) {
+                                    bestFace[index] = checkFace
+                                    bestFaceIndex[index] = j
+                                }
+
+                            else {  // 베스트 사진의 기준이 눈,입일 때
+                                if(best.leftEyeOpenProbability!! < checkFace.leftEyeOpenProbability!! ||
+                                    best.rightEyeOpenProbability!! < checkFace.rightEyeOpenProbability!! &&
+                                    best.smilingProbability!! < checkFace.smilingProbability!!) {
+                                    bestFace[index] = checkFace
+                                    bestFaceIndex[index] = j
+                                }
+                            }
+                        }
+                }
+            }
+            println(bestFaceIndex)
+            var resultBitmap = getSampleImage(testDrawble[0])
+
+            for (i in 0 until bestFace.size) {
+                // 현재 face가 비교될 face 배열의 index 값
+                val index = getBoxComparisonIndex(bestFace[i], basicInformation)
+                resultBitmap = getFaceChangeBitmap(resultBitmap, getSampleImage(testDrawble[bestFaceIndex[i]!!]),
+                    basicInformation[index].boundingBox.toRectF(),
+                    basicInformation[index].allLandmarks, bestFace[i].allLandmarks)
+            }
+
+            runOnUiThread {
+                inputImageView.setImageBitmap(resultBitmap)
+                errorMessage.setText("")
+            }
+        }
+    }
+
+    private fun getBoxComparisonIndex(check: Face, original: List<Face>) : Int{
+        var index = 0
+        // 현재 face가 어떤 face인지 알기 도와주는 중간 값
+        val checkPointX = check.boundingBox.left + (check.boundingBox.right - check.boundingBox.left)/2
+        val checkPointY = check.boundingBox.top + (check.boundingBox.bottom - check.boundingBox.top)/2
+        for(k in 0 until original.size) {
+            if (checkPointX >= original[k].boundingBox.left && checkPointX <= original[k].boundingBox.right &&
+                checkPointY >= original[k].boundingBox.top && checkPointY <= original[k].boundingBox.bottom) {
+                index = k
+                break
+            }
+        }
+        return index
     }
 
     private fun getBitmapClickPoint( clickPoint: PointF, imageView: ImageView) : Point {
@@ -173,8 +297,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val viewHeight = imageView.height
 
         // 실제 이미지일 때 포인트 위치
-//        val newPointX = clickPoint.x  * (bitmap.width/viewWidth)
-//        val newPointY =clickPoint.y * (bitmap.height/viewHeight)
         val newPointX = (bitmap.width * clickPoint.x)  / viewWidth
         val newPointY =(bitmap.height * clickPoint.y)  / viewHeight
 
@@ -187,7 +309,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         // Step 2: Initialize the detector object
         val options = ObjectDetector.ObjectDetectorOptions.builder()
-            .setMaxResults(5)
+            .setMaxResults(10)
             .setScoreThreshold(0.3f)
             .build()
         val detector = ObjectDetector.createFromFileAndOptions(
@@ -216,19 +338,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
      *      TFLite Object Detection function
      */
     private fun runObjectDetection(bitmap: Bitmap ) {
-        val resultToDisplay = getObjectDetection(bitmap)
-        // Draw the detection result on the bitmap and show it.
 
+        // Object Detection
+        //val resultToDisplay = getObjectDetection(bitmap)
+
+        // face Detection
         val faceResultToDisplay = getFaceDetection(bitmap)
 
+        // faceDetection 결과(bindingBox) 그리기
         val faceDetectionResultImg =
             faceResultToDisplay?.let { drawDetectionResult(bitmap, it, Color.RED) }
 
-        val imgWithResult =
-            faceDetectionResultImg?.let { drawDetectionResult(it, resultToDisplay, Color.BLUE) }
+        // ObjectDetection 결과(bindingBox) 그리기
+        //val imgWithResult =
+        //    faceDetectionResultImg?.let { drawDetectionResult(it, resultToDisplay, Color.BLUE) }
 
         runOnUiThread {
-            inputImageView.setImageBitmap(imgWithResult)
+            inputImageView.setImageBitmap(faceDetectionResultImg)
         }
     }
 
@@ -325,24 +451,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             if (changeResultTODisplay != null) {
-                for(face in changeResultTODisplay) {
+                for (face in changeResultTODisplay) {
                     if (changeFaceX >= face.boundingBox.left && changeFaceX <= face.boundingBox.right &&
                         changeFaceY >= face.boundingBox.top && changeFaceY <= face.boundingBox.bottom
-                    ){
+                    ) {
                         changeFaceBoundingBox = face.boundingBox
                         break
                     }
                 }
             }
-
-//            val cropImg = cropBitmap(changeImg, changeFaceBoundingBox!!)
-//
-//            runOnUiThread {
-//                val overlayImg = cropImg?.let { overlayBitmap(originalImg, it,
-//                    originalFaceBoundingBox!!, 0,0) }
-//                inputImageView.setImageBitmap(overlayImg)
-//            }
-
         }
     }
 
@@ -371,12 +488,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
 
-            if (originalFaceBoundingBox == null) {
+            if (originalFaceBoundingBox == null && originalFaceLandmarks == null)
                 runOnUiThread {
                     errorMessage.setText("해당 포인트에는 객체가 존재하지 않음")
                 }
-            } else if (changeFacesResult != null) {
-
+            else if (changeFacesResult != null) {
                 for (face in changeFacesResult) {
                     if (changeFaceX >= face.boundingBox.left && changeFaceX <= face.boundingBox.right &&
                         changeFaceY >= face.boundingBox.top && changeFaceY <= face.boundingBox.bottom
@@ -386,49 +502,44 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     }
                 }
 
-                if (changeFaceLandmarks == null) {
+                if (changeFaceLandmarks == null)
                     runOnUiThread {
                         errorMessage.setText("해당 포인트에는 change 객체가 존재하지 않음")
                     }
-                } else {
-
-                    val addStartY =
-                        ((changeFaceLandmarks!!.get(0).position.y - changeFaceLandmarks.get(3).position.y) / 2).toInt()
-                    val addEndY =
-                        ((changeFaceLandmarks.get(0).position.y - changeFaceLandmarks.get(5).position.y) / 2).toInt()
-
-                    val cropImgRect = Rect(
-                        changeFaceLandmarks.get(2).position.x.toInt(), // left
-                        changeFaceLandmarks.get(3).position.y.toInt() - addStartY, // top
-                        changeFaceLandmarks.get(7).position.x.toInt(), // right
-                        changeFaceLandmarks.get(0).position.y.toInt() + addEndY  // bottom
-                    )
-
-                    if (originalFacesResult != null || changeFacesResult != null) {
-                        val cropImg = cropBitmap(changeImg, cropImgRect)?.let {
-                            circleCropBitmap(
-                                it
-                            )
-                        }
-
-                        runOnUiThread {
-                            val overlayImg = cropImg?.let {
-                                overlayBitmap(
-                                    originalImg, it,
-                                    originalFaceBoundingBox!!,
-                                    (originalFaceLandmarks!!.get(2).position.x).toInt(),
-                                    (originalFaceLandmarks.get(3).position.y - addStartY).toInt()
-                                )
-                            }
-
-                            inputImageView.setImageBitmap(overlayImg)
-                        }
+                else {
+                    val resultBitmap = getFaceChangeBitmap(originalImg, changeImg, originalFaceBoundingBox!!,
+                        originalFaceLandmarks!!, changeFaceLandmarks)
+                    runOnUiThread {
+                        inputImageView.setImageBitmap(resultBitmap)
                     }
                 }
             }
-
         }
+    }
 
+    private fun getFaceChangeBitmap(originalImg:Bitmap, changeImg:Bitmap, originalFaceBoundingBox: RectF, originalFaceLandmarks: List<FaceLandmark>, changeFaceLandmarks: List<FaceLandmark>) : Bitmap {
+        val addStartY =
+            ((changeFaceLandmarks[0].position.y - changeFaceLandmarks[3].position.y) / 2).toInt()
+        val addEndY =
+            ((changeFaceLandmarks[0].position.y - changeFaceLandmarks[5].position.y) / 2).toInt()
+
+        val cropImgRect = Rect(
+            changeFaceLandmarks[2].position.x.toInt(), // left
+            changeFaceLandmarks[3].position.y.toInt() - addStartY, // top
+            changeFaceLandmarks[7].position.x.toInt(), // right
+            changeFaceLandmarks[0].position.y.toInt() + addEndY  // bottom
+        )
+
+        val cropImg = cropBitmap(changeImg, cropImgRect)?.let { circleCropBitmap(it) }
+        val overlayImg = cropImg?.let {
+            overlayBitmap(
+                originalImg, it,
+                originalFaceBoundingBox,
+                (originalFaceLandmarks[2].position.x).toInt(),
+                (originalFaceLandmarks[3].position.y - addStartY).toInt()
+            )
+        }
+        return overlayImg!!
     }
 
     private fun faceLandmark(originalImg: Bitmap, changeFaceX: Int) {
@@ -446,7 +557,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             originalFaceLandmarks = originalFacesResult!!.get(changeFaceX).allLandmarks
 
             val imgWithResult =
-                originalImg?.let { drawLandmarkResult(it, originalFaceLandmarks!!) }
+                drawLandmarkResult(originalImg, originalFaceLandmarks!!)
 
             runOnUiThread {
                 inputImageView.setImageBitmap(imgWithResult)
@@ -457,16 +568,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun cropBitmap(original: Bitmap, cropRect: Rect): Bitmap? {
 
-        val width = (cropRect.right - cropRect.left)
-        val height = cropRect.bottom - cropRect.top
+        var width = (cropRect.right - cropRect.left)
+        var height = cropRect.bottom - cropRect.top
         var startX = cropRect.left
         var startY = cropRect.top
-        if (startX.toInt() < 0) {
+        if (startX < 0)
             startX = 0
-        }
-        if (startY.toInt() < 0) {
+        else if (startX+width > original.width)
+            width = original.width-startX
+        if (startY < 0)
             startY = 0
-        }
+        else if(startY+height > original.height)
+            height = original.height-startY
 
         val result = Bitmap.createBitmap(
             original
