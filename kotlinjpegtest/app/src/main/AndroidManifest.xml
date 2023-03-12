@@ -12,6 +12,9 @@
         android:theme="@style/Theme.KotlinJpegTest"
         tools:targetApi="31">
         <activity
+            android:name=".CustomMainActivity"
+            android:exported="false" />
+        <activity
             android:name=".resultActivity"
             android:exported="false" />
         <activity
