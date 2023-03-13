@@ -7,7 +7,7 @@
 7    <uses-sdk
 8        android:minSdkVersion="23"
 8-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml
-9        android:targetSdkVersion="30" />
+9        android:targetSdkVersion="33" />
 9-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml
 10
 11    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -34,19 +34,19 @@
 22    <!-- Although the *SdkVersion is captured in gradle build files, this is required for non gradle builds -->
 23    <!-- <uses-sdk android:minSdkVersion="14"/> -->
 24    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-24-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:25:5-79
-24-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:25:22-76
+24-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-3\cb4c0178ae79c1f774b439f22c9c798b\transformed\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:25:5-79
+24-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-3\cb4c0178ae79c1f774b439f22c9c798b\transformed\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:25:22-76
 25    <uses-permission android:name="android.permission.INTERNET" />
-25-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:26:5-67
-25-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:26:22-64
+25-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-3\cb4c0178ae79c1f774b439f22c9c798b\transformed\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:26:5-67
+25-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-3\cb4c0178ae79c1f774b439f22c9c798b\transformed\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:26:22-64
 26    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 27
 28    <application
-28-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:14:5-44:19
+28-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:14:5-45:19
 29        android:allowBackup="true"
 29-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:21:9-35
 30        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-30-->[androidx.core:core:1.3.2] C:\Users\user\.gradle\caches\transforms-2\files-2.1\001c2e17ec9d21aa891dc81b4c2e075d\core-1.3.2\AndroidManifest.xml:24:18-86
+30-->[androidx.core:core:1.3.2] C:\Users\user\.gradle\caches\transforms-3\b802ec5f7dfd97200823836ad5713fb4\transformed\core-1.3.2\AndroidManifest.xml:24:18-86
 31        android:debuggable="true"
 32        android:extractNativeLibs="false"
 33        android:hardwareAccelerated="false"
@@ -66,123 +66,142 @@
 40        android:testOnly="true"
 41        android:theme="@style/Theme.ObjectDetection" >
 41-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:26:9-53
-42        <activity android:name="org.tensorflow.codelabs.objectdetection.MainActivity" >
-42-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:27:9-33:20
-42-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:27:19-86
-43            <intent-filter>
-43-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:28:13-32:29
-44                <action android:name="android.intent.action.MAIN" />
-44-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:29:17-69
-44-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:29:25-66
-45
-46                <category android:name="android.intent.category.LAUNCHER" />
-46-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:31:17-77
-46-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:31:27-74
-47            </intent-filter>
-48        </activity>
-49
-50        <provider
-50-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:35:9-43:20
-51            android:name="androidx.core.content.FileProvider"
-51-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:36:13-62
-52            android:authorities="org.tensorflow.codelabs.objectdetection.fileprovider"
-52-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:37:13-87
-53            android:exported="false"
-53-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:38:13-37
-54            android:grantUriPermissions="true" >
-54-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:39:13-47
-55            <meta-data
-55-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:40:13-42:54
-56                android:name="android.support.FILE_PROVIDER_PATHS"
-56-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:41:17-67
-57                android:resource="@xml/file_paths" />
-57-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:42:17-51
-58        </provider>
-59
-60        <service
-60-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\51a2ce836fc1a0781ea0960cd94414fd\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:9:9-15:19
-61            android:name="com.google.mlkit.common.internal.MlKitComponentDiscoveryService"
-61-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\51a2ce836fc1a0781ea0960cd94414fd\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:10:13-91
-62            android:directBootAware="true"
-62-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:17:13-43
-63            android:exported="false" >
-63-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\51a2ce836fc1a0781ea0960cd94414fd\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:11:13-37
-64            <meta-data
-64-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\51a2ce836fc1a0781ea0960cd94414fd\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:12:13-14:85
-65                android:name="com.google.firebase.components:com.google.mlkit.vision.face.internal.FaceRegistrar"
-65-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\51a2ce836fc1a0781ea0960cd94414fd\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:13:17-114
-66                android:value="com.google.firebase.components.ComponentRegistrar" />
-66-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\51a2ce836fc1a0781ea0960cd94414fd\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:14:17-82
-67            <meta-data
-67-->[com.google.mlkit:vision-common:17.2.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\16d36a97e7f9cfccef10431d0d8a8273\jetified-vision-common-17.2.0\AndroidManifest.xml:12:13-14:85
-68                android:name="com.google.firebase.components:com.google.mlkit.vision.common.internal.VisionCommonRegistrar"
-68-->[com.google.mlkit:vision-common:17.2.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\16d36a97e7f9cfccef10431d0d8a8273\jetified-vision-common-17.2.0\AndroidManifest.xml:13:17-124
-69                android:value="com.google.firebase.components.ComponentRegistrar" />
-69-->[com.google.mlkit:vision-common:17.2.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\16d36a97e7f9cfccef10431d0d8a8273\jetified-vision-common-17.2.0\AndroidManifest.xml:14:17-82
-70            <meta-data
-70-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:20:13-22:85
-71                android:name="com.google.firebase.components:com.google.mlkit.common.internal.CommonComponentRegistrar"
-71-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:21:17-120
-72                android:value="com.google.firebase.components.ComponentRegistrar" />
-72-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:22:17-82
-73        </service>
-74
-75        <provider
-75-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:9:9-13:38
-76            android:name="com.google.mlkit.common.internal.MlKitInitProvider"
-76-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:10:13-78
-77            android:authorities="org.tensorflow.codelabs.objectdetection.mlkitinitprovider"
-77-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:11:13-69
-78            android:exported="false"
-78-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:12:13-37
-79            android:initOrder="99" />
-79-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\b6c3004a0d8dc88b6da5e8076fc5ad80\jetified-common-18.5.0\AndroidManifest.xml:13:13-35
-80
-81        <activity
-81-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\c8db18d77d923b8c8242a10cf94efb13\jetified-play-services-base-18.1.0\AndroidManifest.xml:20:9-22:45
-82            android:name="com.google.android.gms.common.api.GoogleApiActivity"
-82-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\c8db18d77d923b8c8242a10cf94efb13\jetified-play-services-base-18.1.0\AndroidManifest.xml:20:19-85
-83            android:exported="false"
-83-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\c8db18d77d923b8c8242a10cf94efb13\jetified-play-services-base-18.1.0\AndroidManifest.xml:22:19-43
-84            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-84-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\c8db18d77d923b8c8242a10cf94efb13\jetified-play-services-base-18.1.0\AndroidManifest.xml:21:19-78
-85
-86        <meta-data
-86-->[com.google.android.gms:play-services-basement:18.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\c050005f8c17ff3566ab6ae40a02c97b\jetified-play-services-basement-18.1.0\AndroidManifest.xml:21:9-23:69
-87            android:name="com.google.android.gms.version"
-87-->[com.google.android.gms:play-services-basement:18.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\c050005f8c17ff3566ab6ae40a02c97b\jetified-play-services-basement-18.1.0\AndroidManifest.xml:22:13-58
-88            android:value="@integer/google_play_services_version" />
-88-->[com.google.android.gms:play-services-basement:18.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\c050005f8c17ff3566ab6ae40a02c97b\jetified-play-services-basement-18.1.0\AndroidManifest.xml:23:13-66
-89
-90        <service
-90-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:29:9-35:19
-91            android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
-91-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:30:13-103
-92            android:exported="false" >
-92-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:31:13-37
-93            <meta-data
-93-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:32:13-34:39
-94                android:name="backend:com.google.android.datatransport.cct.CctBackendFactory"
-94-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:33:17-94
-95                android:value="cct" />
-95-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-2\files-2.1\a938d9bf584e86ebf437c20e2b1c8544\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:34:17-36
-96        </service>
-97        <service
-97-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-2\files-2.1\341d4fbfa16832ca46bdb6c39871b2b7\jetified-transport-runtime-2.2.6\AndroidManifest.xml:26:9-30:19
-98            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService"
-98-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-2\files-2.1\341d4fbfa16832ca46bdb6c39871b2b7\jetified-transport-runtime-2.2.6\AndroidManifest.xml:27:13-117
-99            android:exported="false"
-99-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-2\files-2.1\341d4fbfa16832ca46bdb6c39871b2b7\jetified-transport-runtime-2.2.6\AndroidManifest.xml:28:13-37
-100            android:permission="android.permission.BIND_JOB_SERVICE" >
-100-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-2\files-2.1\341d4fbfa16832ca46bdb6c39871b2b7\jetified-transport-runtime-2.2.6\AndroidManifest.xml:29:13-69
-101        </service>
-102
-103        <receiver
-103-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-2\files-2.1\341d4fbfa16832ca46bdb6c39871b2b7\jetified-transport-runtime-2.2.6\AndroidManifest.xml:32:9-34:40
-104            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"
-104-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-2\files-2.1\341d4fbfa16832ca46bdb6c39871b2b7\jetified-transport-runtime-2.2.6\AndroidManifest.xml:33:13-132
-105            android:exported="false" />
-105-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-2\files-2.1\341d4fbfa16832ca46bdb6c39871b2b7\jetified-transport-runtime-2.2.6\AndroidManifest.xml:34:13-37
-106    </application>
-107
-108</manifest>
+42        <activity
+42-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:27:9-34:20
+43            android:name="org.tensorflow.codelabs.objectdetection.MainActivity"
+43-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:27:19-86
+44            android:exported="true" >
+44-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:28:13-36
+45            <intent-filter>
+45-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:29:13-33:29
+46                <action android:name="android.intent.action.MAIN" />
+46-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:30:17-69
+46-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:30:25-66
+47
+48                <category android:name="android.intent.category.LAUNCHER" />
+48-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:32:17-77
+48-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:32:27-74
+49            </intent-filter>
+50        </activity>
+51
+52        <provider
+52-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:36:9-44:20
+53            android:name="androidx.core.content.FileProvider"
+53-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:37:13-62
+54            android:authorities="org.tensorflow.codelabs.objectdetection.fileprovider"
+54-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:38:13-87
+55            android:exported="false"
+55-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:39:13-37
+56            android:grantUriPermissions="true" >
+56-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:40:13-47
+57            <meta-data
+57-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:41:13-43:54
+58                android:name="android.support.FILE_PROVIDER_PATHS"
+58-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:42:17-67
+59                android:resource="@xml/file_paths" />
+59-->C:\Users\user\Documents\GitHub\JPEG-Test\Test_FaceChange\app\src\main\AndroidManifest.xml:43:17-51
+60        </provider>
+61
+62        <service
+62-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-3\3932f5af1c42a8c2840bab1212f55f95\transformed\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:9:9-15:19
+63            android:name="com.google.mlkit.common.internal.MlKitComponentDiscoveryService"
+63-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-3\3932f5af1c42a8c2840bab1212f55f95\transformed\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:10:13-91
+64            android:directBootAware="true"
+64-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-3\6f867bf88af97e34049c035d43fb4645\transformed\jetified-common-18.5.0\AndroidManifest.xml:17:13-43
+65            android:exported="false" >
+65-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-3\3932f5af1c42a8c2840bab1212f55f95\transformed\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:11:13-37
+66            <meta-data
+66-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-3\3932f5af1c42a8c2840bab1212f55f95\transformed\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:12:13-14:85
+67                android:name="com.google.firebase.components:com.google.mlkit.vision.face.internal.FaceRegistrar"
+67-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-3\3932f5af1c42a8c2840bab1212f55f95\transformed\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:13:17-114
+68                android:value="com.google.firebase.components.ComponentRegistrar" />
+68-->[com.google.android.gms:play-services-mlkit-face-detection:17.1.0] C:\Users\user\.gradle\caches\transforms-3\3932f5af1c42a8c2840bab1212f55f95\transformed\jetified-play-services-mlkit-face-detection-17.1.0\AndroidManifest.xml:14:17-82
+69            <meta-data
+69-->[com.google.mlkit:vision-common:17.2.0] C:\Users\user\.gradle\caches\transforms-3\1336838b5f51c1ab92cfa9c76588774c\transformed\jetified-vision-common-17.2.0\AndroidManifest.xml:12:13-14:85
+70                android:name="com.google.firebase.components:com.google.mlkit.vision.common.internal.VisionCommonRegistrar"
+70-->[com.google.mlkit:vision-common:17.2.0] C:\Users\user\.gradle\caches\transforms-3\1336838b5f51c1ab92cfa9c76588774c\transformed\jetified-vision-common-17.2.0\AndroidManifest.xml:13:17-124
+71                android:value="com.google.firebase.components.ComponentRegistrar" />
+71-->[com.google.mlkit:vision-common:17.2.0] C:\Users\user\.gradle\caches\transforms-3\1336838b5f51c1ab92cfa9c76588774c\transformed\jetified-vision-common-17.2.0\AndroidManifest.xml:14:17-82
+72            <meta-data
+72-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-3\6f867bf88af97e34049c035d43fb4645\transformed\jetified-common-18.5.0\AndroidManifest.xml:20:13-22:85
+73                android:name="com.google.firebase.components:com.google.mlkit.common.internal.CommonComponentRegistrar"
+73-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-3\6f867bf88af97e34049c035d43fb4645\transformed\jetified-common-18.5.0\AndroidManifest.xml:21:17-120
+74                android:value="com.google.firebase.components.ComponentRegistrar" />
+74-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-3\6f867bf88af97e34049c035d43fb4645\transformed\jetified-common-18.5.0\AndroidManifest.xml:22:17-82
+75        </service>
+76
+77        <provider
+77-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-3\6f867bf88af97e34049c035d43fb4645\transformed\jetified-common-18.5.0\AndroidManifest.xml:9:9-13:38
+78            android:name="com.google.mlkit.common.internal.MlKitInitProvider"
+78-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-3\6f867bf88af97e34049c035d43fb4645\transformed\jetified-common-18.5.0\AndroidManifest.xml:10:13-78
+79            android:authorities="org.tensorflow.codelabs.objectdetection.mlkitinitprovider"
+79-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-3\6f867bf88af97e34049c035d43fb4645\transformed\jetified-common-18.5.0\AndroidManifest.xml:11:13-69
+80            android:exported="false"
+80-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-3\6f867bf88af97e34049c035d43fb4645\transformed\jetified-common-18.5.0\AndroidManifest.xml:12:13-37
+81            android:initOrder="99" />
+81-->[com.google.mlkit:common:18.5.0] C:\Users\user\.gradle\caches\transforms-3\6f867bf88af97e34049c035d43fb4645\transformed\jetified-common-18.5.0\AndroidManifest.xml:13:13-35
+82
+83        <activity
+83-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\user\.gradle\caches\transforms-3\d69ace51eba9bbc0c887581788b60f3e\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:20:9-22:45
+84            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+84-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\user\.gradle\caches\transforms-3\d69ace51eba9bbc0c887581788b60f3e\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:20:19-85
+85            android:exported="false"
+85-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\user\.gradle\caches\transforms-3\d69ace51eba9bbc0c887581788b60f3e\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:22:19-43
+86            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+86-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\user\.gradle\caches\transforms-3\d69ace51eba9bbc0c887581788b60f3e\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:21:19-78
+87
+88        <meta-data
+88-->[com.google.android.gms:play-services-basement:18.1.0] C:\Users\user\.gradle\caches\transforms-3\ac19fde5ee4025027ad3a67e0408bdf4\transformed\jetified-play-services-basement-18.1.0\AndroidManifest.xml:21:9-23:69
+89            android:name="com.google.android.gms.version"
+89-->[com.google.android.gms:play-services-basement:18.1.0] C:\Users\user\.gradle\caches\transforms-3\ac19fde5ee4025027ad3a67e0408bdf4\transformed\jetified-play-services-basement-18.1.0\AndroidManifest.xml:22:13-58
+90            android:value="@integer/google_play_services_version" />
+90-->[com.google.android.gms:play-services-basement:18.1.0] C:\Users\user\.gradle\caches\transforms-3\ac19fde5ee4025027ad3a67e0408bdf4\transformed\jetified-play-services-basement-18.1.0\AndroidManifest.xml:23:13-66
+91
+92        <provider
+92-->[androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\user\.gradle\caches\transforms-3\6adfc2f576145f62460950b76b65cb55\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:26:9-34:20
+93            android:name="androidx.startup.InitializationProvider"
+93-->[androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\user\.gradle\caches\transforms-3\6adfc2f576145f62460950b76b65cb55\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:27:13-67
+94            android:authorities="org.tensorflow.codelabs.objectdetection.androidx-startup"
+94-->[androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\user\.gradle\caches\transforms-3\6adfc2f576145f62460950b76b65cb55\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:28:13-68
+95            android:exported="false" >
+95-->[androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\user\.gradle\caches\transforms-3\6adfc2f576145f62460950b76b65cb55\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:29:13-37
+96            <meta-data
+96-->[androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\user\.gradle\caches\transforms-3\6adfc2f576145f62460950b76b65cb55\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:31:13-33:52
+97                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+97-->[androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\user\.gradle\caches\transforms-3\6adfc2f576145f62460950b76b65cb55\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:32:17-78
+98                android:value="androidx.startup" />
+98-->[androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\user\.gradle\caches\transforms-3\6adfc2f576145f62460950b76b65cb55\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:33:17-49
+99        </provider>
+100
+101        <service
+101-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-3\cb4c0178ae79c1f774b439f22c9c798b\transformed\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:29:9-35:19
+102            android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
+102-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-3\cb4c0178ae79c1f774b439f22c9c798b\transformed\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:30:13-103
+103            android:exported="false" >
+103-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-3\cb4c0178ae79c1f774b439f22c9c798b\transformed\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:31:13-37
+104            <meta-data
+104-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-3\cb4c0178ae79c1f774b439f22c9c798b\transformed\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:32:13-34:39
+105                android:name="backend:com.google.android.datatransport.cct.CctBackendFactory"
+105-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-3\cb4c0178ae79c1f774b439f22c9c798b\transformed\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:33:17-94
+106                android:value="cct" />
+106-->[com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\user\.gradle\caches\transforms-3\cb4c0178ae79c1f774b439f22c9c798b\transformed\jetified-transport-backend-cct-2.3.3\AndroidManifest.xml:34:17-36
+107        </service>
+108        <service
+108-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-3\bb3d5824f7abe494b02aacefabb66c18\transformed\jetified-transport-runtime-2.2.6\AndroidManifest.xml:26:9-30:19
+109            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService"
+109-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-3\bb3d5824f7abe494b02aacefabb66c18\transformed\jetified-transport-runtime-2.2.6\AndroidManifest.xml:27:13-117
+110            android:exported="false"
+110-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-3\bb3d5824f7abe494b02aacefabb66c18\transformed\jetified-transport-runtime-2.2.6\AndroidManifest.xml:28:13-37
+111            android:permission="android.permission.BIND_JOB_SERVICE" >
+111-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-3\bb3d5824f7abe494b02aacefabb66c18\transformed\jetified-transport-runtime-2.2.6\AndroidManifest.xml:29:13-69
+112        </service>
+113
+114        <receiver
+114-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-3\bb3d5824f7abe494b02aacefabb66c18\transformed\jetified-transport-runtime-2.2.6\AndroidManifest.xml:32:9-34:40
+115            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"
+115-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-3\bb3d5824f7abe494b02aacefabb66c18\transformed\jetified-transport-runtime-2.2.6\AndroidManifest.xml:33:13-132
+116            android:exported="false" />
+116-->[com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\user\.gradle\caches\transforms-3\bb3d5824f7abe494b02aacefabb66c18\transformed\jetified-transport-runtime-2.2.6\AndroidManifest.xml:34:13-37
+117    </application>
+118
+119</manifest>

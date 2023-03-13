@@ -2216,6 +2216,7 @@ id up
 id useLogo
 id view_offset_helper
 id view_tree_lifecycle_owner
+id view_tree_view_model_store_owner
 id visible
 id wide
 id withText
@@ -2400,6 +2401,7 @@ string abc_searchview_description_voice
 string abc_shareactionprovider_share_with
 string abc_shareactionprovider_share_with_application
 string abc_toolbar_collapse_description
+string androidx_startup
 string app_name
 string appbar_scrolling_view_behavior
 string bottom_sheet_behavior

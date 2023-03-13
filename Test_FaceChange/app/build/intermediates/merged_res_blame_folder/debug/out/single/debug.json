@@ -1,130 +1,130 @@
 [
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_launcher_background.xml.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\ic_launcher_background.xml"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_test1.png.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/test1.png"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi_ic_launcher.png.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-xxhdpi\\ic_launcher.png"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/mipmap-mdpi/ic_launcher_round.png"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi_ic_launcher.png.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher.png"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/mipmap-xxhdpi/ic_launcher_round.png"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_test5.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\test5.jpg"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_auto_rewind_best.jpg.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/auto_rewind_best.jpg"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher.png.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher.png"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_test5.jpg.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/test5.jpg"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_auto_rewind1.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\auto_rewind1.jpg"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/mipmap-hdpi/ic_launcher.png"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_test3.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\test3.jpg"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_auto_rewind3.jpg.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/auto_rewind3.jpg"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\xml_file_paths.xml.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\xml\\file_paths.xml"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/mipmap-xxxhdpi/ic_launcher_round.png"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi_ic_launcher_round.png.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher_round.png"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_image2.jpg.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/image2.jpg"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-anydpi-v26\\ic_launcher.xml"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/mipmap-xxhdpi/ic_launcher.png"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_auto_rewind3.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\auto_rewind3.jpg"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_test4.png.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/test4.png"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_image2.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\image2.jpg"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/mipmap-anydpi-v26/ic_launcher_round.xml"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi_ic_launcher_round.png.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-xxhdpi\\ic_launcher_round.png"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/mipmap-hdpi/ic_launcher_round.png"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi_ic_launcher.png.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher.png"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_test3.jpg.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/test3.jpg"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi_ic_launcher_round.png.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher_round.png"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/mipmap-xhdpi/ic_launcher.png"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_test4.png.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\test4.png"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_ic_launcher_background.xml.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/ic_launcher_background.xml"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher_round.png.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher_round.png"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_auto_rewind5.jpg.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/auto_rewind5.jpg"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_auto_rewind_best.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\auto_rewind_best.jpg"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/mipmap-mdpi/ic_launcher.png"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_auto_rewind5.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\auto_rewind5.jpg"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_twoface.jpg.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/twoface.jpg"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v24_ic_launcher_foreground.xml.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v24\\ic_launcher_foreground.xml"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/xml_file_paths.xml.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/xml/file_paths.xml"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_twoface.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\twoface.jpg"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_auto_rewind4.jpg.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/auto_rewind4.jpg"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_auto_rewind4.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\auto_rewind4.jpg"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/layout_activity_main.xml.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/layout/activity_main.xml"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_image1.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\image1.jpg"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/mipmap-xhdpi/ic_launcher_round.png"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_twoface2.jpg.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/twoface2.jpg"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_auto_rewind2.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\auto_rewind2.jpg"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_auto_rewind2.jpg.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/auto_rewind2.jpg"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi_ic_launcher_round.png.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-xhdpi\\ic_launcher_round.png"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/mipmap-anydpi-v26/ic_launcher.xml"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_test1.png.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\test1.png"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_test2.jpg.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/test2.jpg"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_camera.xml.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\ic_camera.xml"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable-anydpi-v24_ic_launcher_foreground.xml.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-pngs-23:/drawable-anydpi-v24/ic_launcher_foreground.xml"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_twoface2.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\twoface2.jpg"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_image1.jpg.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/image1.jpg"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\drawable_test2.jpg.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\drawable\\test2.jpg"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_auto_rewind1.jpg.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/auto_rewind1.jpg"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\layout_activity_main.xml.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\layout\\activity_main.xml"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/drawable_ic_camera.xml.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/drawable/ic_camera.xml"
     },
     {
-        "merged": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi_ic_launcher.png.flat",
-        "source": "C:\\Users\\user\\Documents\\GitHub\\JPEG-Test\\Test_FaceChange\\app\\src\\main\\res\\mipmap-xhdpi\\ic_launcher.png"
+        "merged": "org.tensorflow.codelabs.objectdetection.app-merged_res-28:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "org.tensorflow.codelabs.objectdetection.app-main-30:/mipmap-xxxhdpi/ic_launcher.png"
     }
 ]

@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="23"
-        android:targetSdkVersion="30" />
+        android:targetSdkVersion="33" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -39,7 +39,9 @@
         android:supportsRtl="true"
         android:testOnly="true"
         android:theme="@style/Theme.ObjectDetection" >
-        <activity android:name="org.tensorflow.codelabs.objectdetection.MainActivity" >
+        <activity
+            android:name="org.tensorflow.codelabs.objectdetection.MainActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -86,6 +88,15 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="org.tensorflow.codelabs.objectdetection.androidx-startup"
+            android:exported="false" >
+            <meta-data
+                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+                android:value="androidx.startup" />
+        </provider>
 
         <service
             android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
