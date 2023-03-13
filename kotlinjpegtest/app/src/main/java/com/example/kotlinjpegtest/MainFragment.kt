@@ -49,7 +49,6 @@ class MainFragment : Fragment() {
     var jpegConstant : JpegConstant = JpegConstant()
     var markerHashMap: HashMap<Int?, String?> = jpegConstant.nameHashMap
 
-
     var sourcePhotoUri : Uri? = null
     var destPhotoUri : Uri? = null
     var resultBitMap: Bitmap? = null
@@ -97,7 +96,6 @@ class MainFragment : Fragment() {
             requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                 MainActivity.REQUEST_CODE
             )
-            
         }
 
         //add 버튼 클릭
@@ -107,6 +105,11 @@ class MainFragment : Fragment() {
             }
         }
 
+        // custom insert 버튼 클릭
+        binding!!.btnNew.setOnClickListener{
+            val intent = Intent(getActivity(), CustomMainActivity::class.java)
+            startActivity(intent)
+        }
         return binding.root
     }
 
