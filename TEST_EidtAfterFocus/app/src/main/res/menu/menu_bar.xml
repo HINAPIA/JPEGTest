@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/multi_focus_menu"
+        android:icon="@drawable/baseline_center_focus_strong_24"
+        android:title="@string/multi_focus"/>
+    <item
+        android:id="@+id/rewind_menu"
+        android:icon="@drawable/baseline_face_retouching_natural_24"
+        android:title="@string/rewind"/>
+    <item
+        android:id="@+id/remove_menu"
+        android:icon="@drawable/baseline_remove_circle_outline_24"
+        android:title="@string/remove"/>
+
+    <item
+        android:id="@+id/add_menu"
+        android:icon="@drawable/baseline_note_add_24"
+        android:title="@string/remove"/>
+
+</menu>
