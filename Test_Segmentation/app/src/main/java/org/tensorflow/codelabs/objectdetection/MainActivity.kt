@@ -232,12 +232,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         fun getColor(): Int {
             // Use completely transparent for the background color.
-            return if (id == 0) Color.TRANSPARENT else Color.argb(
-                128,
-                Color.red(rgbColor),
-                Color.green(rgbColor),
-                Color.blue(rgbColor)
-            )
+        return if (id == 0) Color.BLACK else Color.WHITE
         }
     }
 
@@ -391,6 +386,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         //캔버스를 통해 비트맵을 겹치기한다.
         val canvas = Canvas(resultOverlayBmp)
         canvas.drawBitmap(original, Matrix(), null)
+        val paint = Paint(Color.BLACK)
+        canvas.drawRect(Rect(0,0,original.width, original.height),paint)
         canvas.drawBitmap(add, startX.toFloat(), startY.toFloat(), null)
 
         return resultOverlayBmp
