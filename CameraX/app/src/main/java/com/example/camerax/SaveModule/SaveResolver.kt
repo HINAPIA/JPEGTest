@@ -22,63 +22,66 @@ import kotlinx.coroutines.launch
 import java.io.*
 
 
-class SaveResolver(_mainActivity: MainActivity, _pictureContainer: PictureContainer) {
+class SaveResolver(_mainActivity: Activity, _pictureContainer: PictureContainer) {
     private var pictureContainer : PictureContainer
-    private var mainActivity : MainActivity
+    private var mainActivity : Activity
     init{
         pictureContainer = _pictureContainer
         mainActivity = _mainActivity
     }
 
     fun save(){
-        val byteBuffer = ByteArrayOutputStream()
-        var firstPicture = pictureContainer.getPictureList().get(0)
-        //SOI 쓰기
-        byteBuffer.write(firstPicture.getByteArray(),0,2)
-        //헤더 쓰기
-        byteBuffer.write(pictureContainer.getHeader().convertBinaryData())
-        //나머지 첫번째 사진의 데이터 쓰기
-        byteBuffer.write(firstPicture.getByteArray(),2,firstPicture.getByteArray().size-3)
-        // write
-        for(i in 1.. pictureContainer.getCount()-1){
-            var picture = pictureContainer.getPictureList().get(i)
-            byteBuffer.write(/* b = */ picture.getByteArray())
-        }
-        var resultByteArray = byteBuffer.toByteArray()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            //Q 버전 이상일 경우. (안드로이드 10, API 29 이상일 경우)
-            saveImageOnAboveAndroidQ(resultByteArray)
-            Log.d("Picture Module", "이미지 저장 함수 :saveImageOnAboveAndroidQ ")
-        } else {
-            // Q 버전 이하일 경우. 저장소 권한을 얻어온다.
-            val writePermission = mainActivity?.let {
-                ActivityCompat.checkSelfPermission(
-                    it,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
+        CoroutineScope(Dispatchers.IO).launch {
+            val byteBuffer = ByteArrayOutputStream()
+            var firstPicture = pictureContainer.getPictureList().get(0)
+            //SOI 쓰기
+            byteBuffer.write(firstPicture.getByteArray(),0,2)
+            //헤더 쓰기
+            byteBuffer.write(pictureContainer.getHeader().convertBinaryData())
+            //나머지 첫번째 사진의 데이터 쓰기
+            byteBuffer.write(firstPicture.getByteArray(),2,firstPicture.getByteArray().size-3)
+            // write
+            for(i in 1.. pictureContainer.getCount()-1){
+                var picture = pictureContainer.getPictureList().get(i)
+                byteBuffer.write(/* b = */ picture.getByteArray())
             }
-            if (writePermission == PackageManager.PERMISSION_GRANTED) {
+            var resultByteArray = byteBuffer.toByteArray()
 
-                saveImageOnUnderAndroidQ(resultByteArray)
-
-                // Toast.makeText(context, "이미지 저장이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                //Q 버전 이상일 경우. (안드로이드 10, API 29 이상일 경우)
+                saveImageOnAboveAndroidQ(resultByteArray)
+                Log.d("Picture Module", "이미지 저장 함수 :saveImageOnAboveAndroidQ ")
             } else {
-                val requestExternalStorageCode = 1
+                // Q 버전 이하일 경우. 저장소 권한을 얻어온다.
+                val writePermission = mainActivity?.let {
+                    ActivityCompat.checkSelfPermission(
+                        it,
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                }
+                if (writePermission == PackageManager.PERMISSION_GRANTED) {
 
-                val permissionStorage = arrayOf(
-                    android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
+                    saveImageOnUnderAndroidQ(resultByteArray)
 
-                ActivityCompat.requestPermissions(
-                    mainActivity as Activity,
-                    permissionStorage,
-                    requestExternalStorageCode
-                )
+                    // Toast.makeText(context, "이미지 저장이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                } else {
+                    val requestExternalStorageCode = 1
+
+                    val permissionStorage = arrayOf(
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+
+                    ActivityCompat.requestPermissions(
+                        mainActivity as Activity,
+                        permissionStorage,
+                        requestExternalStorageCode
+                    )
+                }
             }
+            Log.d("이미지","insertFrameToJpeg 끝")
         }
-        Log.d("이미지","insertFrameToJpeg 끝")
+
     }
 
 //    //Android Q (Android 10, API 29 이상에서는 이 메서드를 통해서 이미지를 저장한다.)

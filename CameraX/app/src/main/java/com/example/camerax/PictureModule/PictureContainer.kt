@@ -1,14 +1,20 @@
 package com.example.camerax.PictureModule
 
+import android.app.Activity
 import android.os.Build
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.camerax.MainActivity
 import com.example.camerax.SaveModule.SaveResolver
+import kotlinx.coroutines.flow.DEFAULT_CONCURRENCY
+import java.io.Serializable
 
-class PictureContainer(_mainActivity: MainActivity) {
+
+class PictureContainer(_activity: Activity) {
     private var saveResolver : SaveResolver
-    private var mainActivity : MainActivity
+    private lateinit var activity : Activity
     // 저장하기 전에 만듦
     private var header : Header
     private var pictureList : ArrayList<Picture> = arrayListOf()
@@ -16,10 +22,11 @@ class PictureContainer(_mainActivity: MainActivity) {
     // 수정을 하거나 새로운 사진 그룹이 추가되면 +1
     private var groupID : Int = 0
     init {
-        mainActivity = _mainActivity
-        header = Header(pictureList)
-        saveResolver = SaveResolver(mainActivity,this)
+        activity = _activity
+        header = Header()
+        saveResolver = SaveResolver(activity ,this)
     }
+
     // PictureContainer의 내용을 리셋 후 초기화
     @RequiresApi(Build.VERSION_CODES.Q)
     fun refresh(byteArrayList: ArrayList<ByteArray>, type: ImageType){
@@ -35,12 +42,20 @@ class PictureContainer(_mainActivity: MainActivity) {
         count = byteArrayList.size
         Log.d("Picture Module",
             "[Picture Container] size :${pictureList.size}, count: ${count}")
-        headerCreate()
+        headerRenew()
         save()
     }
-
-    fun headerCreate(){
-        header.create(groupID)
+    fun setHeader(_header : Header){
+        header = _header
+    }
+    fun setPictureList(_pictureList : ArrayList<Picture>){
+        pictureList = _pictureList
+    }
+    fun setCount(_count : Int){
+        count = _count
+    }
+    fun headerRenew(){
+        header.renew(groupID, pictureList)
     }
     //PictureContainer의 데이터를 파일로 저장
     fun save(){
@@ -57,3 +72,4 @@ class PictureContainer(_mainActivity: MainActivity) {
         return pictureList
     }
 }
+

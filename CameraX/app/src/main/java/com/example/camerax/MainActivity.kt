@@ -39,7 +39,7 @@ import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity()  {
     private var pictureContainer : PictureContainer = PictureContainer(this)
     var byteArrayList : ArrayList<ByteArray> = arrayListOf()
     var jpegConstant : JpegConstant = JpegConstant()
@@ -168,6 +168,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        viewBinding.btnLoad.setOnClickListener {
+            val intent = Intent(this, LoadActivity::class.java)
+            // load activity로 전환
+            startActivity(intent)
+        }
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
@@ -419,6 +424,7 @@ class MainActivity : AppCompatActivity() {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
+                @RequiresApi(Build.VERSION_CODES.Q)
                 override fun onImageSaved(output: ImageCapture.OutputFileResults){
                     val iStream: InputStream? = contentResolver.openInputStream(output.savedUri!!)
                     var sourceByteArray = jpegCreator.getBytes(iStream!!)
