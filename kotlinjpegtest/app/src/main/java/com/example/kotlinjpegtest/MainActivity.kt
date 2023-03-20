@@ -14,7 +14,7 @@ import java.io.*
 class MainActivity : AppCompatActivity() {
     var jpegConstant : JpegConstant = JpegConstant()
     private lateinit var binding: ActivityMainBinding
-    var fragment : MainFragment? = null
+    var fragment : ResultFragment? = null
     companion object {
         const val REQUEST_CODE = 1
         const val UPLOAD_FOLDER = "upload_images/"
@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
-        fragment = MainFragment()
+        fragment = ResultFragment()
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment, fragment!!)
             .commit()
@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("결과", " 액티비티의 onActivityResult ${requestCode}")
       if (fragment != null) {
           Log.d("결과", " 액티비티의 onActivityResult에서 자식 호출 ${requestCode}")
-            (fragment as MainFragment).onActivityResult(requestCode, resultCode, data)
+            (fragment as ResultFragment).onActivityResult(requestCode, resultCode, data)
         }
 
     }

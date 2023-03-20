@@ -1,6 +1,8 @@
 package com.example.kotlinjpegtest
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -28,10 +30,7 @@ import com.example.kotlinjpegtest.databinding.ActivityMainBinding
 import com.example.kotlinjpegtest.databinding.FragmentMainBinding
 import com.example.kotlinjpegtest.databinding.FragmentResultBinding
 import com.example.kotlinjpegtest.databinding.ItemMarkerBinding
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -66,11 +65,21 @@ class ResultFragment : Fragment() {
     ): View? {
 
         binding = FragmentResultBinding.inflate(inflater, container, false)
+        binding!!.resultImageView.setOnClickListener {
+            Log.d("이미지", "1 클릭")
+            // 갤러리로 이동
+            var photoIntent = Intent(Intent.ACTION_PICK)
+            photoIntent.type = "image/*"
+            mainActivity.startActivityForResult(photoIntent, 0)
+            // 권한 요청
+            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                MainActivity.REQUEST_CODE
+            )
+        }
+//        val resultByteArray = this.arguments?.getByteArray("image")
+//        resultBitMap = byteArrayToBitmap(resultByteArray!!)
 
-        val resultByteArray = this.arguments?.getByteArray("image")
-        resultBitMap = byteArrayToBitmap(resultByteArray!!)
-        getMarker(resultByteArray)
-        binding.resultImageView.setImageBitmap(resultBitMap)
+//        binding.resultImageView.setImageBitmap(resultBitMap)
 
         //save 버튼 클릭
         binding!!.btnSave.setOnClickListener{
@@ -108,7 +117,38 @@ class ResultFragment : Fragment() {
         binding!!.recycleView.setLayoutManager(linearLayoutManager)
         binding!!.recycleView.adapter = MarkerAdapter()
         return binding.root
-        return binding.root
+    }
+    //갤러리에서 돌아올 때
+    @RequiresApi(Build.VERSION_CODES.P)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        //super.onActivityResult(requestCode, resultCode, data)
+        Log.d("결과", " 프래그먼트 onActivityResult 호출 ${requestCode}")
+        // 1번째 image view 클릭 (source image)
+        if(requestCode == 0){
+            if(resultCode == Activity.RESULT_OK){
+                var sourcePhotoUri = data?.data
+                // ImageView에 image set
+                binding.resultImageView.setImageURI(sourcePhotoUri)
+                val iStream: InputStream? = mainActivity.contentResolver.openInputStream(sourcePhotoUri!!)
+                var sourceByteArray = getBytes(iStream!!)
+                getMarker(sourceByteArray)
+//                Log.d("이미지", "sourceByteArray ${sourceByteArray}")
+            }else{
+                mainActivity.finish()
+            }
+            // 2번째 image view 클릭 (dest image)
+        }
+    }
+    @Throws(IOException::class)
+    fun getBytes(inputStream: InputStream): ByteArray {
+        val byteBuffer = ByteArrayOutputStream()
+        val bufferSize = 1024
+        val buffer = ByteArray(bufferSize)
+        var len = 0
+        while (inputStream.read(buffer).also { len = it } != -1) {
+            byteBuffer.write(buffer, 0, len)
+        }
+        return byteBuffer.toByteArray()
     }
     inner class MarkerViewHolder(val binding: ItemMarkerBinding) : RecyclerView.ViewHolder(binding.root)
     @SuppressLint("SuspiciousIndentation")
@@ -154,8 +194,10 @@ class ResultFragment : Fragment() {
                 curMarker.index = i.toString()
                 curMarker.name = jpegConstant.nameHashMap.get(twoByteToNum);
                 markerDataList!!.add(curMarker)
+                Log.d("Marker", "마커 찾음 : ${i}: ${twoByteToNum}")
             }
         }
+        binding!!.recycleView.adapter?.notifyDataSetChanged()
     }
     // 화면에 나타난 View를 Bitmap에 그릴 용도.
     private fun drawBitmap(): Bitmap {
