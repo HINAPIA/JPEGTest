@@ -7,9 +7,11 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import com.example.camerax.LoadModule.LoadResolver
 import com.example.camerax.PictureModule.PictureContainer
+import com.example.camerax.ViewerModule.ViewerFragment
 import com.example.camerax.databinding.ActivityLoadBinding
 import com.example.camerax.databinding.ActivityMainBinding
 import java.io.ByteArrayOutputStream
@@ -20,6 +22,8 @@ class LoadActivity : AppCompatActivity() {
     private lateinit var binding : ActivityLoadBinding
     private var loadResolver : LoadResolver = LoadResolver(this)
     private var pictureContainer : PictureContainer = PictureContainer(this)
+    private val viewerFragment = ViewerFragment()
+    private val jpegViewModels:jpegViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -39,7 +43,18 @@ class LoadActivity : AppCompatActivity() {
         }
         binding.btnSave.setOnClickListener{
             pictureContainer.save()
+            Log.d("btnSave click: ","save 버튼이 눌림!!")
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.framelayout,viewerFragment)
+                    .addToBackStack(null)
+                    .commit()
+
         }
+
+//        jpegViewModels.jpegContainer.observe(this){
+//
+//        }
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -55,6 +70,7 @@ class LoadActivity : AppCompatActivity() {
                 var sourceByteArray = getBytes(iStream!!)
                 // 파일을 parsing해서 PictureContainer로 바꾸는 함수 호출
                 loadResolver.createPictureContainer(this,pictureContainer,sourceByteArray)
+                jpegViewModels.setContainer(pictureContainer)
 
             }else{
                 finish()
