@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".LoadActivity">
 
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="265dp"
@@ -26,4 +27,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <FrameLayout
+        android:layout_width="409dp"
+        android:layout_height="299dp"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="351dp"
+        android:id="@+id/framelayout"
+        tools:ignore="MissingConstraints">
+
+    </FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
