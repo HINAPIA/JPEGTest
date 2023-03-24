@@ -1,23 +1,24 @@
 package com.example.test_cinemagraph
 
-import android.R.attr
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.*
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.toRect
 import com.example.test_cinemagraph.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.vision.detector.ObjectDetector
-
+import java.lang.reflect.Array.get
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     private var testDrawble : ArrayList<Int> = arrayListOf()
     private val ImageAttribute = "Cinemagraphs"
     val boundingBox: ArrayList<List<Int>> = arrayListOf()
-    private val changeBitmapList : ArrayList<Bitmap> = arrayListOf()
+    private val cropBitmapList : ArrayList<Bitmap> = arrayListOf()
     private val objectClassification: ArrayList<String> = arrayListOf()
     private var currentObject = ""
     private lateinit var context: Context
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     private var resultToDisplay: List<DetectionResult>? = null
 
     companion object {
-        private const val MAX_FONT_SIZE = 300F
+        private const val MAX_FONT_SIZE = 50F
         const val BITMAP_RESIZE = 500
     }
 
@@ -49,10 +50,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         testDrawble = arrayListOf(R.drawable.auto_rewind_best, R.drawable.auto_rewind1,
-            R.drawable.auto_rewind2)
-
-        // R.drawable.auto_rewind3,
-        //            R.drawable.auto_rewind4, R.drawable.auto_rewind5
+            R.drawable.auto_rewind2, R.drawable.auto_rewind3,
+            R.drawable.auto_rewind4, R.drawable.auto_rewind5)
 
         imageView = binding.imageView
         editButton = binding.editButton
@@ -60,22 +59,14 @@ class MainActivity : AppCompatActivity() {
 
         imageView.setOnTouchListener { view, motionEvent ->
 
-                // click 좌표를 bitmap에 해당하는 좌표로 변환
-                val point = getBitmapClickPoint(PointF(motionEvent.x, motionEvent.y), imageView)
+           if(motionEvent.action == MotionEvent.ACTION_DOWN) {
+               // click 좌표를 bitmap에 해당하는 좌표로 변환
+               val point = getBitmapClickPoint(PointF(motionEvent.x, motionEvent.y), imageView)
 
-                println("point::"+point)
+               println("point::" + point)
 
-                for (i in 0 until testDrawble.size) {
-                    var bitmap = getSampleImage(testDrawble[i])
-
-                    //bitmap = Bitmap.createScaledBitmap(bitmap, BITMAP_RESIZE, bitmap.height/(bitmap.width/BITMAP_RESIZE), true)
-
-                    getObjectBoundingBoxList(bitmap, point.x, point.y)
-                }
-                println("=======================================================")
-                for (i in 0 until boundingBox.size)
-                    println(i.toString() + " || " + boundingBox)
-
+               getBoundingBox(point)
+           }
             return@setOnTouchListener true
         }
         editButton.setOnClickListener {
@@ -107,10 +98,27 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private fun getBoundingBox(point: Point) {
+        boundingBox.clear()
+        binding.cropImageLayout.removeAllViews()
+        CoroutineScope(Dispatchers.Main).launch {
+            for (i in 0 until testDrawble.size) {
+                println("111111: " + i)
+                var bitmap = getSampleImage(testDrawble[i])
+                //bitmap = Bitmap.createScaledBitmap(bitmap, BITMAP_RESIZE, bitmap.height/(bitmap.width/BITMAP_RESIZE), true)
+
+                getObjectBoundingBoxList(bitmap, point.x, point.y)
+            }
+            println("=======================================================")
+            for (i in 0 until boundingBox.size)
+                println(i.toString() + " || " + boundingBox[i])
+        }
+    }
+
     private fun getBitmapClickPoint( clickPoint: PointF, imageView: ImageView) : Point {
 
         var bitmap:Bitmap = imageView.drawable.toBitmap()
-        bitmap = Bitmap.createScaledBitmap(bitmap, 1080, 810, true)
+        //bitmap = Bitmap.createScaledBitmap(bitmap, 1080, 810, true)
 
         // imageView width, height 가져오기
         val viewWidth = imageView.width
@@ -123,33 +131,56 @@ class MainActivity : AppCompatActivity() {
         return Point(newPointX.toInt(), newPointY.toInt())
     }
 
-
     private fun cinemagraphRun(bitmapList: ArrayList<Int>) {
 
     }
 
     private fun getObjectBoundingBoxList(bitmap: Bitmap, changeFaceX: Int, changeFaceY: Int) {
-
         // Run ODT and display result
         // Note that we run this in the background thread to avoid blocking the app UI because
         // TFLite object detection is a synchronised process.
         val detectionResult = getObjectDetection(bitmap)
 
         if (detectionResult != null) {
-            for (it in detectionResult) {
+            for (i in 0 until detectionResult.size) {
+                var  it = detectionResult[i]
+
+                // 겹치는 다른 객체가 추출되는 것을 방지하기 위해
+                if(i == 0) {
+                    
+                }
+
                 if (currentObject.equals("") || currentObject.equals(it.text)) {
-                    //println("person : "+it.boundingBox)
-                    if (changeFaceX >= it.boundingBox.left && changeFaceX <= it.boundingBox.right)
-                        if (changeFaceY >= it.boundingBox.top && changeFaceY <= it.boundingBox.bottom) {
-                            val arrayBounding = listOf(
-                                it.boundingBox.left.toInt(),
-                                it.boundingBox.top.toInt(),
-                                it.boundingBox.right.toInt(),
-                                it.boundingBox.bottom.toInt()
-                            )
-                            boundingBox.add(arrayBounding)
-                            break
-                        }
+                    println("[i] x: " + it.boundingBox.left + " ~ " + it.boundingBox.right)
+                    println("[i] y: " + it.boundingBox.top + " ~ " + it.boundingBox.bottom)
+                    if (changeFaceX >= it.boundingBox.left && changeFaceX <= it.boundingBox.right &&
+                        changeFaceY >= it.boundingBox.top && changeFaceY <= it.boundingBox.bottom) {
+                        val arrayBounding = listOf(
+                            i,
+                            it.boundingBox.left.toInt(),
+                            it.boundingBox.top.toInt(),
+                            it.boundingBox.right.toInt(),
+                            it.boundingBox.bottom.toInt()
+                        )
+                        println("result I: " + i)
+                        boundingBox.add(arrayBounding)
+
+                        // 넣고자 하는 layout 불러오기
+                        val cropLayout = layoutInflater.inflate(R.layout.crop_image_array, null)
+
+                        // 위 불러온 layout에서 변경을 할 view가져오기
+                        val cropImageView: ImageView =
+                            cropLayout.findViewById(R.id.cropImageView)
+
+                        // bitmap를 잘라 위에 불러온 view에 bitmap 삽입
+                        val cropImage = cropBitmap(bitmap, it.boundingBox.toRect())
+                        cropImageView.setImageBitmap(cropImage)
+
+                        // main activity에 만들어둔 scrollbar 속 layout의 아이디를 통해 해당 layout에 넣기
+                        binding.cropImageLayout.addView(cropLayout)
+
+                        break
+                    }
                 }
             }
         }
@@ -252,37 +283,21 @@ class MainActivity : AppCompatActivity() {
         detectionResults.forEach {
             if(currentObject.equals("") || currentObject.equals(it.text)) {
                 // draw bounding box
-                pen.color = coustomColor
-                pen.strokeWidth = 40F
+                pen.color = Color.parseColor("#B8C5BB")
+                pen.strokeWidth = floatToDp(10F).toFloat()
                 pen.style = Paint.Style.STROKE
                 val box = it.boundingBox
-                canvas.drawRect(box, pen)
+                canvas.drawRoundRect(box, floatToDp(10F).toFloat(), floatToDp(10F).toFloat(), pen)
 
                 val tagSize = Rect(0, 0, 0, 0)
-
-                // calculate the right font size
-                pen.style = Paint.Style.FILL_AND_STROKE
-                pen.color = Color.YELLOW
-
-                pen.textSize = MAX_FONT_SIZE
-                pen.getTextBounds(it.text, 0, it.text.length, tagSize)
-                val fontSize: Float = pen.textSize * box.width() / tagSize.width()
-
-                // adjust the font size so texts are inside the bounding box
-                if (fontSize < pen.textSize) pen.textSize = fontSize
-
-                var margin = (box.width() - tagSize.width()) / 2.0F
-                if (margin < 0F) margin = 0F
-                canvas.drawText(
-                    it.text, box.left + margin,
-                    box.top + tagSize.height().times(1F), pen
-                )
             }
         }
         return outputBitmap
     }
 
-
+    private fun floatToDp(f : Float):Int {
+        return (f * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
+    }
 
     private fun cropBitmap(original: Bitmap, cropRect: Rect): Bitmap? {
 
