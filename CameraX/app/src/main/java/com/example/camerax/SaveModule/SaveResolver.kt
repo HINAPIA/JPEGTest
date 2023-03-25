@@ -32,18 +32,43 @@ class SaveResolver(_mainActivity: Activity, _Container: Container) {
     fun save(){
         CoroutineScope(Dispatchers.IO).launch {
             val byteBuffer = ByteArrayOutputStream()
-            var firstPicture = container.getPictureList().get(0)
-            //SOI 쓰기
-            byteBuffer.write(firstPicture.getByteArray(),0,2)
-            //헤더 쓰기
-            byteBuffer.write(container.getHeader().convertBinaryData())
-            //나머지 첫번째 사진의 데이터 쓰기
-            byteBuffer.write(firstPicture.getByteArray(),2,firstPicture.getByteArray().size-3)
-            // write
-            for(i in 1.. container.getCount()-1){
-                var picture = container.getPictureList().get(i)
-                byteBuffer.write(/* b = */ picture.getByteArray())
+            try{
+                //첫번 째 이미지 버퍼에 작성
+                var firstPicture = container.imageContent.getPictureAtIndex(0)
+                if(firstPicture == null) throw NullPointerException("empty first Picture")
+                //SOI 쓰기
+                byteBuffer.write(firstPicture.pictureByteArray,0,2)
+                //헤더 쓰기
+                //App3 마커
+                byteBuffer.write(container.getHeaderData())
+                //나머지 첫번째 사진의 데이터 쓰기
+                byteBuffer.write(firstPicture.pictureByteArray,2,firstPicture.pictureByteArray.size-3)
+            }catch (e : Exception){
+                CoroutineScope(Dispatchers.Main).launch{
+                    //예외 발생시 처리할 내용
+                    Toast.makeText(mainActivity, "사진을 다시 찍어주세요", Toast.LENGTH_SHORT).show();
+                }
             }
+            // 순서는 이미지 > 텍스트 > 오디오
+            // Imgaes write
+            for(i in 1.. container.imageContent.pictureCount-1){
+                var picture = container.imageContent.getPictureAtIndex(i)
+                byteBuffer.write(/* b = */ picture!!.pictureByteArray)
+            }
+
+            // Text Wirte
+//            for(i in 0.. container.textContent.textCount-1){
+//                var text = container.textContent.getTextAtIndex(i)
+//                byteBuffer.write(/* b = */ text!!.textByteArray)
+//            }
+//
+//            // Audio Write
+//            if(container.audioContent.audio.audioByteArray.size > 0){
+//                var audio = container.audioContent.audio
+//                byteBuffer.write(/* b = */ audio!!.audioByteArray)
+//            }
+
+
             var resultByteArray = byteBuffer.toByteArray()
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

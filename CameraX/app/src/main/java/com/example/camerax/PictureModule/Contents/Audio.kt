@@ -12,4 +12,8 @@ class Audio (_audioByteArray : ByteArray, _attribute: Attribute){
         Log.d("Picture Module",
             "[create Audio]size :${audioByteArray.size}")
     }
+    fun getInfoLength() : Int{
+        // offset(4) + attribute(4) + size(4)
+        return 12
+    }
 }

@@ -17,5 +17,8 @@ class Text (_byteArray : ByteArray, _attribute: Attribute) {
             "[create Text]size :${textByteArray.size}")
     }
 
-
+    fun getInfoLength() : Int{
+        // offset(4) + attribute(4) + size(4)
+        return 12
+    }
 }

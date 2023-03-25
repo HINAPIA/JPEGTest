@@ -19,15 +19,15 @@ class ViewerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentViewerBinding.inflate(inflater, container, false)
+      //  binding = FragmentViewerBinding.inflate(inflater, container, false)
         Log.d("viewerFragment onCreateView: ","여기로 들어옴!!")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("viewrFragment onViewCreated: ","여기로 들어옴!!")
-        Log.d("jpegContainer: ",""+ (jpegViewModel.jpegContainer.value?.getCount() ?: -99))
+//        Log.d("viewrFragment onViewCreated: ","여기로 들어옴!!")
+//        Log.d("jpegContainer: ",""+ (jpegViewModel.jpegContainer.value?.getCount() ?: -99))
 
 
     //        articleAdapter = ArticleAdapter(requireContext())

@@ -12,7 +12,6 @@ class AudioContent {
 
     fun init() {
         length = 0
-        TODO("Not yet implemented")
     }
     suspend fun reFresh(byteArrayList: ArrayList<ByteArray>, attribute : Attribute){
         for(i in 0..byteArrayList.size-1){

@@ -11,10 +11,8 @@ class Picture(_byteArray: ByteArray, _attribute: Attribute) {
     private  var bitmap : Bitmap
     var pictureByteArray : ByteArray
     var attribute : Attribute
-
     var embeddedSize = 0
     var embeddedData : ByteArray? = null
-     private var length : Int = 0
     init {
         pictureByteArray = _byteArray
         bitmap = byteArrayToBitmap(pictureByteArray)
@@ -31,6 +29,11 @@ class Picture(_byteArray: ByteArray, _attribute: Attribute) {
     // Byte를 Bitmap으로 변환
     fun byteArrayToBitmap(byteArray: ByteArray): Bitmap {
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+    }
+
+    fun getInfoLength() : Int{
+        // offset(4) + attribute(4) + size(4) + embedded size(4) + embedded Data(var)
+        return 16 + embeddedSize
     }
 
 }

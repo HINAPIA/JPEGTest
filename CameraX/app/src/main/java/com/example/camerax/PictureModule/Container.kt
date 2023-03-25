@@ -9,21 +9,24 @@ import com.example.camerax.PictureModule.Contents.Attribute
 import com.example.camerax.PictureModule.Contents.Audio
 import com.example.camerax.PictureModule.Contents.ContentType
 import com.example.camerax.SaveModule.SaveResolver
+import java.nio.ByteBuffer
 
 
 class Container(_activity: Activity) {
     private var saveResolver : SaveResolver
     private lateinit var activity : Activity
+    var header : Header
 
-    private var imageContent : ImageContent = ImageContent()
-    private var audioContent : AudioContent = AudioContent()
-    private var textContent: TextContent = TextContent()
-    private var length : Int = 0
+    var imageContent : ImageContent = ImageContent()
+    var audioContent : AudioContent = AudioContent()
+    var textContent: TextContent = TextContent()
+    var length : Int = 0
     // 수정을 하거나 새로운 사진 그룹이 추가되면 +1
     private var groupCount : Int = 0
     init {
         activity = _activity
         saveResolver = SaveResolver(activity ,this)
+        header = Header(this)
     }
 
     fun init(){
@@ -44,14 +47,15 @@ class Container(_activity: Activity) {
         }
         groupCount = 1
         //headerRenew()
-        //save()
+        save()
     }
 
 
 
 
-    fun headerRenew(){
-      //  header.renew(groupID, pictureList)
+    fun getHeaderData() : ByteArray{
+
+        return header.getHeaderInfo()
     }
     //PictureContainer의 데이터를 파일로 저장
     fun save(){

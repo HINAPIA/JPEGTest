@@ -24,4 +24,7 @@ class TextContent {
         textList.add(text)
         textCount = textCount + 1
     }
+    fun getTextAtIndex(index : Int): Text?{
+        return textList.get(index) ?: null
+    }
 }
