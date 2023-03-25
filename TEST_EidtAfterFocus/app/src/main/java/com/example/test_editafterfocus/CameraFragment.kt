@@ -1,39 +1,46 @@
 package com.example.test_editafterfocus
 
 import android.content.ContentValues
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraMetadata
+import android.hardware.camera2.CaptureRequest
 import android.os.Build
+import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.widget.AbsSeekBar
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.camera2.interop.Camera2CameraControl
+import androidx.camera.camera2.interop.Camera2CameraInfo
+import androidx.camera.camera2.interop.CaptureRequestOptions
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.example.test_editafterfocus.databinding.FragmentCameraBinding
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.DetectedObject
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
-import java.io.File
 import java.lang.reflect.InvocationTargetException
 import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+
 
 class CameraFragment : Fragment() {
 
@@ -48,7 +55,6 @@ class CameraFragment : Fragment() {
     lateinit var mainActivity: AppCompatActivity
     private lateinit var viewBinding : FragmentCameraBinding
 
-
     private var pointArrayList: ArrayList<pointData> = arrayListOf()
     private var previewByteArrayList : ArrayList<ByteArray> = arrayListOf()
 
@@ -57,6 +63,7 @@ class CameraFragment : Fragment() {
         mainActivity = context as MainActivity
     }
 
+    @androidx.annotation.OptIn(androidx.camera.camera2.interop.ExperimentalCamera2Interop::class)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -77,11 +84,34 @@ class CameraFragment : Fragment() {
         val displayWidth = resources.displayMetrics.widthPixels
         Log.v("Size Info", "hxw : ${displayHeight}x${displayWidth}")
 
-
         val params: ConstraintLayout.LayoutParams = viewBinding.viewFinder.layoutParams as ConstraintLayout.LayoutParams
         params.width = 1080
         params.height = 1440
         viewBinding.viewFinder.layoutParams = params
+
+
+        /**
+         * SeekBar 조절
+         */
+        viewBinding.seekBar.setOnSeekBarChangeListener(object:SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                Log.v("Seek", "onProgressChanged")
+                val distance : Float = (10f/20f)*progress.toFloat()
+                Camera2CameraControl.from(camera.cameraControl).captureRequestOptions = CaptureRequestOptions.Builder()
+                    .apply {
+                        setCaptureRequestOption(CaptureRequest.CONTROL_AF_MODE, CameraMetadata.CONTROL_AF_MODE_OFF)
+                        setCaptureRequestOption(CaptureRequest.LENS_FOCUS_DISTANCE, distance) }.build()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                Log.v("Seek", "onStartTrackingTouch")
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                Log.v("Seek", "onStopTrackingTouch")
+            }
+        })
+
 
         /**
          * 사진 1장 찍고 저장하는 Button
@@ -164,6 +194,7 @@ class CameraFragment : Fragment() {
         // Inflate the layout for this fragment
         return viewBinding.root
     }
+
 
     /**
      * 카메라 Preview에서 Bitmap 가져오고 runObjectDetection에 넘겨주기
@@ -417,10 +448,10 @@ class CameraFragment : Fragment() {
     /**
      * 카메라 Setting
      */
+    @androidx.annotation.OptIn(androidx.camera.camera2.interop.ExperimentalCamera2Interop::class)
     private fun startCamera(){
         // 1. CameraProvider 요청
         val cameraProviderFuture = ProcessCameraProvider.getInstance(mainActivity)
-
         cameraProviderFuture.addListener({
             // 2. CameraProvier 사용 가능 여부 확인
             // 생명주기에 binding 할 수 있는 ProcessCameraProvider 객체 가져옴
@@ -442,7 +473,10 @@ class CameraFragment : Fragment() {
 
             // 3-2. 카메라 세팅
             // CameraSelector는 카메라 세팅을 맡는다.(전면, 후면 카메라)
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+//            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            val cameraSelector = CameraSelector.Builder()
+                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                .build()
 
             try {
                 // binding 전에 binding 초기화
@@ -454,6 +488,33 @@ class CameraFragment : Fragment() {
 
                 cameraController = camera!!.cameraControl
 
+//                val extender = Camera2Interop.Extender(preview)
+//                extender.setCaptureRequestOption(
+//                    CaptureRequest.CONTROL_AF_MODE,
+//                    CameraMetadata.CONTROL_AF_MODE_OFF
+//                )
+//                extender.setCaptureRequestOption(CaptureRequest.LENS_FOCUS_DISTANCE, distance)
+//
+
+                val camera2CameraInfo = Camera2CameraInfo.from(camera.cameraInfo)
+                val minFocusDistance = camera2CameraInfo.getCameraCharacteristic(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE)
+
+                Log.v("LensFocusDistance", "minFocusDistance : $minFocusDistance")
+
+                Camera2CameraControl.from(camera.cameraControl).captureRequestOptions = CaptureRequestOptions.Builder()
+                    .apply {
+                        setCaptureRequestOption(CaptureRequest.CONTROL_AF_MODE, CameraMetadata.CONTROL_AF_MODE_OFF)
+//                        setCaptureRequestOption(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_ON)
+
+                        // Fix focus lens distance to infinity to get focus far away (avoid to get a close focus)
+                        setCaptureRequestOption(CaptureRequest.LENS_FOCUS_DISTANCE, 0f)
+                    }
+                    .build()
+
+
+//                Camera2CameraControl.from(camera.cameraControl).captureRequestOptions = CaptureRequestOptions.Builder()
+//                    .apply { setCaptureRequestOption(CaptureRequest.LENS_FOCUS_DISTANCE, 5f) }.build()
+
             } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
@@ -461,6 +522,16 @@ class CameraFragment : Fragment() {
         }, ContextCompat.getMainExecutor(mainActivity))
 
     }
+
+//    @androidx.annotation.OptIn(androidx.camera.camera2.interop.ExperimentalCamera2Interop::class)
+//    fun setFocusDistance(builder: ExtendableBuilder<*>?, distance: Float) {
+//        val extender: Camera2Interop.Extender<*> = Camera2Interop.Extender<Any?>(builder)
+//        extender.setCaptureRequestOption(
+//            CaptureRequest.CONTROL_AF_MODE,
+//            CameraMetadata.CONTROL_AF_MODE_OFF
+//        )
+//        extender.setCaptureRequestOption(CaptureRequest.LENS_FOCUS_DISTANCE, distance)
+//    }
 
     /**
      * 카메라 권한 확인하기
