@@ -22,13 +22,17 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.camerax.PictureModule.ImageType
-import com.example.camerax.PictureModule.PictureContainer
+import com.example.camerax.PictureModule.Container
+import com.example.camerax.PictureModule.Contents.Attribute
+import com.example.camerax.PictureModule.Contents.ContentType
 import com.example.camerax.databinding.ActivityMainBinding
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.DetectedObject
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.*
 import java.lang.reflect.InvocationTargetException
 import java.nio.ByteBuffer
@@ -40,7 +44,7 @@ import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity()  {
-    private var pictureContainer : PictureContainer = PictureContainer(this)
+    private var container : Container = Container(this)
     var byteArrayList : ArrayList<ByteArray> = arrayListOf()
     var jpegConstant : JpegConstant = JpegConstant()
     var markerHashMap: HashMap<Int?, String?> = jpegConstant.nameHashMap
@@ -428,25 +432,30 @@ class MainActivity : AppCompatActivity()  {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults){
                     val iStream: InputStream? = contentResolver.openInputStream(output.savedUri!!)
                     var sourceByteArray = jpegCreator.getBytes(iStream!!)
-
-                    if(mode == 0){
-                        byteArrayList.add(sourceByteArray)
-                        pictureContainer.refresh(byteArrayList, ImageType.basic)
-                    }
-                    else if (mode == 1){
-                        byteArrayList.add(sourceByteArray)
-                        Log.d("이미지", "takePhoto: "  +byteArrayList.size.toString())
-                        // 초점 사진들이 모두 저장 완료 되었을 때
-                        if(byteArrayList.size == pointArrayList.size){
-                            Log.d("이미지", "모두 저장 완료: "  +byteArrayList.size.toString())
-                            isImageArrayFull = true
-                            pictureContainer.refresh(byteArrayList, ImageType.focus)
+                    CoroutineScope(Dispatchers.IO).launch{
+                        if(mode == 0){
+                            byteArrayList.add(sourceByteArray)
+                            container.reFresh (byteArrayList, ContentType.Image, Attribute.general)
+                        }
+                        else if (mode == 1){
+                            byteArrayList.add(sourceByteArray)
+                            Log.d("이미지", "takePhoto: "  +byteArrayList.size.toString())
+                            // 초점 사진들이 모두 저장 완료 되었을 때
+                            if(byteArrayList.size == pointArrayList.size){
+                                Log.d("이미지", "모두 저장 완료: "  +byteArrayList.size.toString())
+                                isImageArrayFull = true
+                                container.reFresh(byteArrayList, ContentType.Image, Attribute.focus)
+                            }
+                        }
+                        CoroutineScope(Dispatchers.Main).launch {
+                            val msg = "Photo capture succeeded: ${output.savedUri}"
+                            Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                            Log.d(TAG, msg)
                         }
                     }
 
-                    val msg = "Photo capture succeeded: ${output.savedUri}"
-                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, msg)
+
+
                 }
             }
         )

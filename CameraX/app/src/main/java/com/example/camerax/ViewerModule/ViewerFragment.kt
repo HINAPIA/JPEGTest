@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.camerax.PictureModule.PictureContainer
 import com.example.camerax.databinding.FragmentViewerBinding
 import androidx.fragment.app.activityViewModels
 import com.example.camerax.jpegViewModel

@@ -14,35 +14,34 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import com.example.camerax.MainActivity
-import com.example.camerax.PictureModule.PictureContainer
+import com.example.camerax.PictureModule.Container
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.*
 
 
-class SaveResolver(_mainActivity: Activity, _pictureContainer: PictureContainer) {
-    private var pictureContainer : PictureContainer
+class SaveResolver(_mainActivity: Activity, _Container: Container) {
+    private var container : Container
     private var mainActivity : Activity
     init{
-        pictureContainer = _pictureContainer
+        container = _Container
         mainActivity = _mainActivity
     }
 
     fun save(){
         CoroutineScope(Dispatchers.IO).launch {
             val byteBuffer = ByteArrayOutputStream()
-            var firstPicture = pictureContainer.getPictureList().get(0)
+            var firstPicture = container.getPictureList().get(0)
             //SOI 쓰기
             byteBuffer.write(firstPicture.getByteArray(),0,2)
             //헤더 쓰기
-            byteBuffer.write(pictureContainer.getHeader().convertBinaryData())
+            byteBuffer.write(container.getHeader().convertBinaryData())
             //나머지 첫번째 사진의 데이터 쓰기
             byteBuffer.write(firstPicture.getByteArray(),2,firstPicture.getByteArray().size-3)
             // write
-            for(i in 1.. pictureContainer.getCount()-1){
-                var picture = pictureContainer.getPictureList().get(i)
+            for(i in 1.. container.getCount()-1){
+                var picture = container.getPictureList().get(i)
                 byteBuffer.write(/* b = */ picture.getByteArray())
             }
             var resultByteArray = byteBuffer.toByteArray()

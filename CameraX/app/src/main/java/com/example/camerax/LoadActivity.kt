@@ -3,17 +3,14 @@ package com.example.camerax
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import com.example.camerax.LoadModule.LoadResolver
-import com.example.camerax.PictureModule.PictureContainer
+import com.example.camerax.PictureModule.Container
 import com.example.camerax.ViewerModule.ViewerFragment
 import com.example.camerax.databinding.ActivityLoadBinding
-import com.example.camerax.databinding.ActivityMainBinding
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -21,7 +18,7 @@ import java.io.InputStream
 class LoadActivity : AppCompatActivity() {
     private lateinit var binding : ActivityLoadBinding
     private var loadResolver : LoadResolver = LoadResolver(this)
-    private var pictureContainer : PictureContainer = PictureContainer(this)
+    private var container : Container = Container(this)
     private val viewerFragment = ViewerFragment()
     private val jpegViewModels:jpegViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +39,7 @@ class LoadActivity : AppCompatActivity() {
             )
         }
         binding.btnSave.setOnClickListener{
-            pictureContainer.save()
+            container.save()
             Log.d("btnSave click: ","save 버튼이 눌림!!")
                 supportFragmentManager
                     .beginTransaction()
@@ -69,8 +66,8 @@ class LoadActivity : AppCompatActivity() {
                 val iStream: InputStream? = contentResolver.openInputStream(sourcePhotoUri!!)
                 var sourceByteArray = getBytes(iStream!!)
                 // 파일을 parsing해서 PictureContainer로 바꾸는 함수 호출
-                loadResolver.createPictureContainer(this,pictureContainer,sourceByteArray)
-                jpegViewModels.setContainer(pictureContainer)
+                loadResolver.createPictureContainer(this,container,sourceByteArray)
+                jpegViewModels.setContainer(container)
 
             }else{
                 finish()

@@ -1,7 +1,6 @@
 package com.example.camerax.LoadModule
 
 import android.app.Activity
-import com.example.camerax.MainActivity
 import com.example.camerax.PictureModule.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +12,7 @@ class LoadResolver(_activity: Activity) {
         activity = _activity
     }
     //Jpeg 파일을 PictureContainer로 변환 하는 함수
-    fun createPictureContainer(activity: Activity,pictureContainer:PictureContainer, sourceByteArray: ByteArray) {
+    fun createPictureContainer(activity: Activity, container:Container, sourceByteArray: ByteArray) {
         var header : Header = Header()
 
         // start header parsing ...
@@ -49,7 +48,7 @@ class LoadResolver(_activity: Activity) {
         // 헤더 생성
         var newHeader = pictureInfoList?.let { Header(it) }
         if (newHeader != null) {
-            pictureContainer.setHeader(newHeader)
+            container.setHeader(newHeader)
         }
         // end header parsing ...
 
@@ -70,9 +69,9 @@ class LoadResolver(_activity: Activity) {
                 var picture : Picture = Picture(targetImageArray, ImageType.basic)
                 pictureList.add(picture)
             }
-            pictureContainer.setPictureList(pictureList)
+            container.setPictureList(pictureList)
             // end PictureList parsing ...
-            pictureContainer.setCount(count)
+            container.setCount(count)
         }
 
     }
