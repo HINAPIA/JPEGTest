@@ -2,12 +2,12 @@ package com.example.camerax
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.camerax.PictureModule.Container
+import com.example.camerax.PictureModule.MCContainer
 
 class jpegViewModel : ViewModel() {
-    var jpegContainer = MutableLiveData<Container>()
+    var jpegMCContainer = MutableLiveData<MCContainer>()
 
-    fun setContainer(container: Container) {
-        jpegContainer.value = container
+    fun setContainer(MCContainer: MCContainer) {
+        jpegMCContainer.value = MCContainer
     }
 }

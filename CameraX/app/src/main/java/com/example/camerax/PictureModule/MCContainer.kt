@@ -1,18 +1,12 @@
 package com.example.camerax.PictureModule
 
 import android.app.Activity
-import android.os.Build
-import android.provider.ContactsContract.CommonDataKinds.Im
-import android.util.Log
-import androidx.annotation.RequiresApi
 import com.example.camerax.PictureModule.Contents.Attribute
-import com.example.camerax.PictureModule.Contents.Audio
 import com.example.camerax.PictureModule.Contents.ContentType
 import com.example.camerax.SaveModule.SaveResolver
-import java.nio.ByteBuffer
 
 
-class Container(_activity: Activity) {
+class MCContainer(_activity: Activity) {
     private var saveResolver : SaveResolver
     private lateinit var activity : Activity
     var header : Header
@@ -49,7 +43,6 @@ class Container(_activity: Activity) {
         //headerRenew()
         save()
     }
-
 
 
 

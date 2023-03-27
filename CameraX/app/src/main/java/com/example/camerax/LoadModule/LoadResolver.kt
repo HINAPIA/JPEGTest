@@ -2,17 +2,76 @@ package com.example.camerax.LoadModule
 
 import android.app.Activity
 import com.example.camerax.PictureModule.*
+import com.example.camerax.PictureModule.Contents.Attribute
+import com.google.firebase.components.ComponentRuntime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+
 class LoadResolver(_activity: Activity) {
+
+    fun ByteArraytoInt(byteArray: ByteArray, stratOffset : Int): Int {
+        var intNum :Int = ((byteArray[stratOffset].toInt() and 0xFF) shl 24) or
+                ((byteArray[stratOffset+1].toInt() and 0xFF) shl 16) or
+                ((byteArray[stratOffset+2].toInt() and 0xFF) shl 8) or
+                ((byteArray[stratOffset+3].toInt() and 0xFF))
+        return intNum
+    }
+    fun createMCContainer(activity: Activity, MCContainer: MCContainer, sourceByteArray: ByteArray) {
+        // var header : Header = Header()
+
+        // start header parsing ...
+        var imageContent : ImageContent= ImageContent()
+        val intList = mutableListOf<Int>()
+        //몇 개의 사진이 들어있는지 알아내기
+        // APP3의 마커의 인덱스 위치를 2로 고정 시켜서 데이터의 시작은 4 인덱스 부터로 확신하여 짠 코드
+        // 후에 App3 마커를 찾은 후부터 데이터를 parisng하도록 고쳐야함!
+
+        // Imgae Content Parsing
+        var imageInfoSize :Int = ByteArraytoInt(sourceByteArray,4)
+        var ImageStartOffset : Int = ByteArraytoInt(sourceByteArray,8)
+        var ImageCount : Int = ByteArraytoInt(sourceByteArray,12)
+        //기록된 헤더 데이터를 4 바이트씩 끊어서 intList에 저장
+        for (i in 16 .. 4 + imageInfoSize-1 step 4) {
+            // ByteArray의 4바이트를 읽어서 Int로 변환하여 List에 추가
+            intList.add(ByteArraytoInt(sourceByteArray,i))
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            // Picture 생성
+            for(i  in 0..intList.size-1 step 4){
+                // 추가한 APP3 데이터 크기만큼 offset 증가
+                var offset = if(i == 0)intList.get(i) else intList.get(i)+ imageInfoSize +1
+                var size = if(i == 0) intList.get(i+1) + imageInfoSize else intList.get(i+1)
+                var attribute =  intList.get(i+2)
+                var embeddedSize = intList.get(i+3)
+                if(embeddedSize > 0){
+                    var length = embeddedSize/4
+
+                }
+                var startIndex = offset
+                var endIndex = startIndex + size -1
+                var length = endIndex - startIndex + 1
+                val targetImageArray = ByteArray(length)
+                // sliceArray() 함수를 사용하여 잘라낸 ByteArray를 생성
+                sourceByteArray.sliceArray(startIndex..endIndex).copyInto(targetImageArray)
+                var picture = Picture(offset, targetImageArray, Attribute.focus, embeddedSize, null)
+                imageContent.insertPicture(picture)
+
+            }
+            MCContainer.imageContent = imageContent
+        }
+
+
+    }
+
     private var activity : Activity
     init{
         activity = _activity
     }
     //Jpeg 파일을 PictureContainer로 변환 하는 함수
-//    fun createPictureContainer(activity: Activity, container:Container, sourceByteArray: ByteArray) {
+//    fun createPictureContainer(activity: Activity, MCContainer:MCContainer, sourceByteArray: ByteArray) {
 //        var header : Header = Header()
 //
 //        // start header parsing ...
@@ -48,7 +107,7 @@ class LoadResolver(_activity: Activity) {
 //        // 헤더 생성
 //        var newHeader = pictureInfoList?.let { Header(it) }
 //        if (newHeader != null) {
-//            container.setHeader(newHeader)
+//            MCContainer.setHeader(newHeader)
 //        }
 //        // end header parsing ...
 //
@@ -69,10 +128,10 @@ class LoadResolver(_activity: Activity) {
 //                var picture : Picture = Picture(targetImageArray, ImageType.basic)
 //                pictureList.add(picture)
 //            }
-//            container.setPictureList(pictureList)
+//            MCContainer.setPictureList(pictureList)
 //            // end PictureList parsing ...
-//            container.setCount(count)
+//            MCContainer.setCount(count)
 //        }
-//
-//    }
+
+  // }
 }

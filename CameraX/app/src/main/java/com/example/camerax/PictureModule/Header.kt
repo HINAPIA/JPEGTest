@@ -1,18 +1,16 @@
 package com.example.camerax.PictureModule
 
-import android.util.Log
-import java.io.Serializable
 import java.nio.ByteBuffer
 
-class Header(_container : Container) {
+class Header(_MC_container : MCContainer) {
     val INFO_SIZE : Int = 16
     private lateinit var pictureList : ArrayList<Picture>
     private var count = 0
     private var offset = 0
-    private var container : Container
+    private var MCContainer : MCContainer
 
     init {
-        container =_container
+        MCContainer =_MC_container
     }
     // 파일을 parsing하여 새로운 Header를 만들 때 호출하는 생성자
 //    constructor(_pictureInfoList:ArrayList<PictureInfo>) : this(){
@@ -24,7 +22,7 @@ class Header(_container : Container) {
     fun getHeaderInfo() : ByteArray{
 
         // image Cotentn
-        var imageInfoByteArray :ByteArray= container.imageContent.getHeaderInfo()
+        var imageInfoByteArray :ByteArray= MCContainer.imageContent.getHeaderInfo()
         //text Content
 
         //audio Content

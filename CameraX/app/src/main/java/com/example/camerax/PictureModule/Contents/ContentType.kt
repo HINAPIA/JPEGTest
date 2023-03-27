@@ -6,7 +6,7 @@ enum class ContentType {
     Text
 
 }
-enum class Attribute(val code: Int ) {
+public enum class Attribute(val code: Int ) {
     general(0),
     focus(1),
     modified(2),

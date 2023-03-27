@@ -22,7 +22,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.camerax.PictureModule.Container
+import com.example.camerax.PictureModule.MCContainer
 import com.example.camerax.PictureModule.Contents.Attribute
 import com.example.camerax.PictureModule.Contents.ContentType
 import com.example.camerax.databinding.ActivityMainBinding
@@ -44,7 +44,7 @@ import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity()  {
-    private var container : Container = Container(this)
+    private var MCContainer : MCContainer = MCContainer(this)
     var byteArrayList : ArrayList<ByteArray> = arrayListOf()
     var jpegConstant : JpegConstant = JpegConstant()
     var markerHashMap: HashMap<Int?, String?> = jpegConstant.nameHashMap
@@ -435,7 +435,7 @@ class MainActivity : AppCompatActivity()  {
                     CoroutineScope(Dispatchers.IO).launch{
                         if(mode == 0){
                             byteArrayList.add(sourceByteArray)
-                            container.reFresh (byteArrayList, ContentType.Image, Attribute.general)
+                            MCContainer.reFresh (byteArrayList, ContentType.Image, Attribute.general)
                         }
                         else if (mode == 1){
                             byteArrayList.add(sourceByteArray)
@@ -444,7 +444,7 @@ class MainActivity : AppCompatActivity()  {
                             if(byteArrayList.size == pointArrayList.size){
                                 Log.d("이미지", "모두 저장 완료: "  +byteArrayList.size.toString())
                                 isImageArrayFull = true
-                                container.reFresh(byteArrayList, ContentType.Image, Attribute.focus)
+                                MCContainer.reFresh(byteArrayList, ContentType.Image, Attribute.focus)
                             }
                         }
                         CoroutineScope(Dispatchers.Main).launch {

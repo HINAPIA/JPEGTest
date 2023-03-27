@@ -14,18 +14,18 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import com.example.camerax.PictureModule.Container
+import com.example.camerax.PictureModule.MCContainer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.*
 
 
-class SaveResolver(_mainActivity: Activity, _Container: Container) {
-    private var container : Container
+class SaveResolver(_mainActivity: Activity, _MC_Container: MCContainer) {
+    private var MCContainer : MCContainer
     private var mainActivity : Activity
     init{
-        container = _Container
+        MCContainer = _MC_Container
         mainActivity = _mainActivity
     }
 
@@ -34,13 +34,13 @@ class SaveResolver(_mainActivity: Activity, _Container: Container) {
             val byteBuffer = ByteArrayOutputStream()
             try{
                 //첫번 째 이미지 버퍼에 작성
-                var firstPicture = container.imageContent.getPictureAtIndex(0)
+                var firstPicture = MCContainer.imageContent.getPictureAtIndex(0)
                 if(firstPicture == null) throw NullPointerException("empty first Picture")
                 //SOI 쓰기
                 byteBuffer.write(firstPicture.pictureByteArray,0,2)
                 //헤더 쓰기
                 //App3 마커
-                byteBuffer.write(container.getHeaderData())
+                byteBuffer.write(MCContainer.getHeaderData())
                 //나머지 첫번째 사진의 데이터 쓰기
                 byteBuffer.write(firstPicture.pictureByteArray,2,firstPicture.pictureByteArray.size-3)
             }catch (e : Exception){
@@ -51,8 +51,8 @@ class SaveResolver(_mainActivity: Activity, _Container: Container) {
             }
             // 순서는 이미지 > 텍스트 > 오디오
             // Imgaes write
-            for(i in 1.. container.imageContent.pictureCount-1){
-                var picture = container.imageContent.getPictureAtIndex(i)
+            for(i in 1.. MCContainer.imageContent.pictureCount-1){
+                var picture = MCContainer.imageContent.getPictureAtIndex(i)
                 byteBuffer.write(/* b = */ picture!!.pictureByteArray)
             }
 
