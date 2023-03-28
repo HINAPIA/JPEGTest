@@ -19,6 +19,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.toRect
 import com.example.test_cinemagraph.databinding.ActivityMainBinding
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.face.Face
+import com.google.mlkit.vision.face.FaceDetection
+import com.google.mlkit.vision.face.FaceDetector
+import com.google.mlkit.vision.face.FaceDetectorOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,10 +32,16 @@ import org.tensorflow.lite.task.vision.detector.ObjectDetector
 
 
 class MainActivity : AppCompatActivity() {
+
+
+
     private lateinit var binding: ActivityMainBinding
     private lateinit var context: Context
 
     private var resultToDisplay: List<DetectionResult>? = null
+    private lateinit var faceDetector: FaceDetector
+    private lateinit var customObjectDetector: ObjectDetector
+    private lateinit var FaceresultToDisplay: ArrayList<Face>
 
     private val ImageAttribute = "Cinemagraphs"
     private var testDrawble: ArrayList<Int> = arrayListOf()
@@ -55,6 +66,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setDetecter()
 
         context = this
 
@@ -91,7 +104,8 @@ class MainActivity : AppCompatActivity() {
         }
         // editButton을 클릭했을 때: edit하는 것, 즉 magic picture을 제작하고자 함
         editButton.setOnClickListener {
-            runObjectDetection(mainBitmap) // Main Picture 객체 감지(Object Detection) 실행
+            runFaceDetection(mainBitmap)
+            //runObjectDetection(mainBitmap) // Main Picture 객체 감지(Object Detection) 실행
         }
         // viewButton을 클릭했을 때: magic pricture 실행 (움직이게 하기)
         viewButton.setOnClickListener {
@@ -193,7 +207,8 @@ class MainActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.Main).launch {
             // boundingBox를 알아내고 이미지 크롭하는 함수 호출
-            setStandardBoundingBox()
+            //setStandardBoundingBox()
+            getFaceBoundingBox()
         }
     }
 
@@ -329,10 +344,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * getboundingBoxAndCrop(bitmap: Bitmap, x: Int, y: Int):
+     * getboundingBox(standardRect: Rect):
      *      전달된 bitmap과 x,y 값을 통해 해당 bitmap에 감지된 객체
      *      bounding Box 속에 (x, y) 좌표가 존재하는지 확인한다.
-     *      그리고 존재한다고 판단될 경우 해당 객체를 Crop해서 cropImage List에 추가한다.
      */
     private fun getboundingBox(standardRect: Rect) {
 
@@ -375,6 +389,54 @@ class MainActivity : AppCompatActivity() {
                             break
                         }
 
+                    }
+                }
+            }
+        }
+        cropImgListAddAndView()
+    }
+
+    /**
+     * getFaceBoundingBox():
+     *      전달된 bitmap과 x,y 값을 통해 해당 bitmap에 감지된 객체
+     *      bounding Box 속에 (x, y) 좌표가 존재하는지 확인한다.
+     */
+    private fun getFaceBoundingBox() {
+
+        for (j in 0 until bitmapArray.size) {
+            var bitmap = bitmapArray[j]
+
+            // Object Detection을 통한 결과 값을 얻을 수 있는 함수 호출
+            val detectionResult = getFaceDetectionOneByOne(bitmap)
+
+            // image[0]에서 클릭된 좌표에 존재하는 겹쳐진 바운딩 박스를 모은 박스 리스트
+            val overlapBoundingBoxList = arrayListOf<List<Int>>()
+
+            for (i in 0 until detectionResult!!.size) {
+                val it = detectionResult[i]
+
+                println("[i] x: " + it.boundingBox.left + " ~ " + it.boundingBox.right)
+                println("[i] y: " + it.boundingBox.top + " ~ " + it.boundingBox.bottom)
+
+                // 포인트가 boundingBox 안에 존재할 경우에만 실행
+                if (checkPointInRect(touchPoint, it.boundingBox)) {
+
+                    // index, boundingBox를 list로 담기
+                    val arrayBounding = listOf(
+                        j,
+                        it.boundingBox.left.toInt(),
+                        it.boundingBox.top.toInt(),
+                        it.boundingBox.right.toInt(),
+                        it.boundingBox.bottom.toInt()
+                    )
+                    println("result I: " + i)
+
+                    // 포인트가 boundingBox 안에 존재할 경우에만 실행
+                    if (checkPointInRect(touchPoint, it.boundingBox)) {
+                        // boundingBox에 추가
+                        boundingBox.add(arrayBounding)
+
+                        break
                     }
                 }
             }
@@ -528,6 +590,45 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
+     * runObjectDetection(bitmap: Bitmap)
+     *      TFLite Object Detection function
+     *      사진 속 객체를 감지하고, 감지된 객체에 boundingBox와 category를 적고 화면에 띄운다.
+     *      또한, category를 classification List에 추가해준다. (분류에 도움을 줌)
+     */
+    private fun runFaceDetection(bitmap: Bitmap) {
+
+        // Object Detection
+        FaceresultToDisplay = getFaceDetectionOneByOne(bitmap)!!
+
+        // ObjectDetection 결과(bindingBox) 그리기
+        val objectDetectionResult =
+            drawDetectionResult(bitmap, FaceresultToDisplay)
+
+        //추가할 커스텀 레이아웃 가져오기
+        val layoutInflater =
+            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+        // 사진에서 감지된 객체 개수만큼 반복 문
+        for (i in 0 until FaceresultToDisplay.size) {
+
+                // 넣고자 하는 layout 불러오기
+                val customLayout = layoutInflater.inflate(R.layout.object_classification, null)
+
+                // 위 불러온 layout에서 변경을 할 view 가져오기
+                val classificationBtn: Button =
+                    customLayout.findViewById<Button>(R.id.classificationBtn)
+
+        }
+
+        // 화면에 이미지 띄우기
+        runOnUiThread {
+            imageView.setImageBitmap(objectDetectionResult)
+        }
+    }
+
+
+
+    /**
      * getObjectDetection(bitmap: Bitmap):
      *         ObjectDetection 결과(bindingBox) 및 category 그리기
      */
@@ -535,19 +636,8 @@ class MainActivity : AppCompatActivity() {
         // Step 1: Create TFLite's TensorImage object
         val image = TensorImage.fromBitmap(bitmap)
 
-        // Step 2: Initialize the detector object
-        val options = ObjectDetector.ObjectDetectorOptions.builder()
-            .setMaxResults(10)
-            .setScoreThreshold(0.3f)
-            .build()
-        val detector = ObjectDetector.createFromFileAndOptions(
-            this,
-            "model.tflite",
-            options
-        )
-
         // Step 3: Feed given image to the detector
-        val results = detector.detect(image)
+        val results = customObjectDetector.detect(image)
 
         // Step 4: Parse the detection result and show it
         val resultToDisplay = results.map {
@@ -660,6 +750,53 @@ class MainActivity : AppCompatActivity() {
         return resultOverlayBmp
     }
 
+    private fun setDetecter() {
+        // High-accuracy landmark detection and face classification
+        val highAccuracyOpts = FaceDetectorOptions.Builder()
+            .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
+            .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
+            .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
+            .enableTracking()
+            .build()
+        faceDetector = FaceDetection.getClient(highAccuracyOpts)
+
+        // Step 2: Initialize the detector object
+        val options = ObjectDetector.ObjectDetectorOptions.builder()
+            .setMaxResults(10)          // 최대 결과 (모델에서 감지해야 하는 최대 객체 수)
+            .setScoreThreshold(0.3f)    // 점수 임계값 (감지된 객체를 반환하는 객체 감지기의 신뢰도)
+            .build()
+        customObjectDetector = ObjectDetector.createFromFileAndOptions(
+            this,
+            "model.tflite",
+            options
+        )
+
+    }
+
+    private fun getFaceDetectionOneByOne(bitmap: Bitmap): ArrayList<Face>? {
+        var returnFaces : ArrayList<Face>? = null
+        var returnState = false
+
+        val image = InputImage.fromBitmap(bitmap, 0)
+
+        faceDetector.process(image)
+            .addOnSuccessListener { faces ->
+                returnFaces = faces as ArrayList<Face>?
+                returnState = true
+            }
+            .addOnFailureListener { e ->
+                println("fail")
+                returnState = true
+            }
+        while(!returnState) {
+            System.out.println("wait || ")
+            Thread.sleep(1000)
+        }
+        return returnFaces
+    }
 }
+
+
+
 
 data class DetectionResult(val boundingBox: RectF, val text: String)

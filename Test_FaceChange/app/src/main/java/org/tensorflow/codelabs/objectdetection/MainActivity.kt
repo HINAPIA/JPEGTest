@@ -217,7 +217,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val faceList: ArrayList<List<Face>> = ArrayList()
 
         CoroutineScope(Dispatchers.Default).launch {
-            basicFacesResult = getFaceDetectionOneByOne(getSampleImage(testDrawble[0]),0)!!
+            basicFacesResult = getFaceDetectionOneByOne(getSampleImage(testDrawble[0]))!!
             faceList.add(basicFacesResult)
 
             val checkFaceDetection: ArrayList<Boolean> = arrayListOf()
@@ -234,7 +234,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     }
                     // j 번째 사진 faces 정보 얻기
                     val facesResult =
-                        getFaceDetectionOneByOne(getSampleImage(testDrawble[j]), j)
+                        getFaceDetectionOneByOne(getSampleImage(testDrawble[j]))
                     faceList.add(facesResult!!)
                     checkFaceDetection[j] = true
                 //}
@@ -457,7 +457,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         detector = FaceDetection.getClient(highAccuracyOpts)
     }
 
-    private fun getFaceDetectionOneByOne(bitmap: Bitmap, num: Int): ArrayList<Face>? {
+    private fun getFaceDetectionOneByOne(bitmap: Bitmap): ArrayList<Face>? {
         var returnFaces : ArrayList<Face>? = null
         var returnState = false
 
@@ -473,7 +473,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 returnState = true
             }
         while(!returnState) {
-            System.out.println("wait || "+num)
+            System.out.println("wait || ")
             Thread.sleep(1000)
         }
         return returnFaces
@@ -521,8 +521,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         // Note that we run this in the background thread to avoid blocking the app UI because
         // TFLite object detection is a synchronised process.
         lifecycleScope.launch(Dispatchers.Default) {
-            val originalFacesResult = getFaceDetectionOneByOne(originalImg,0)
-            val changeFacesResult = getFaceDetectionOneByOne(changeImg,0)
+            val originalFacesResult = getFaceDetectionOneByOne(originalImg)
+            val changeFacesResult = getFaceDetectionOneByOne(changeImg)
 
             var originalFaceLandmarks: List<FaceLandmark>? = null
             var changeFaceLandmarks: List<FaceLandmark>? = null
@@ -600,7 +600,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         // Note that we run this in the background thread to avoid blocking the app UI because
         // TFLite object detection is a synchronised process.
         lifecycleScope.launch(Dispatchers.Default) {
-            val originalFacesResult = getFaceDetectionOneByOne(originalImg,0)
+            val originalFacesResult = getFaceDetectionOneByOne(originalImg)
 
             var originalFaceLandmarks : List<FaceLandmark>?  = null
 
