@@ -1,24 +1,23 @@
 package com.example.camerax.PictureModule
 
-import com.example.camerax.PictureModule.Contents.Attribute
+import com.example.camerax.PictureModule.Contents.ContentAttribute
 import com.example.camerax.PictureModule.Contents.Audio
 
 class AudioContent {
-    lateinit var audio : Audio
+    var audio : Audio? = null
     var length = 0
     init {
 
     }
 
     fun init() {
+        audio = null
         length = 0
     }
-    suspend fun reFresh(byteArrayList: ArrayList<ByteArray>, attribute : Attribute){
-        for(i in 0..byteArrayList.size-1){
-            // audio 객체 생성
-            var audio = Audio(byteArrayList.get(i),attribute)
-            this.audio = audio
-        }
+    suspend fun setContent(byteArray: ArrayList<ByteArray>, contentAttribute: ContentAttribute){
+        // audio 객체 생성
+        var audio = Audio(byteArray.get(0),contentAttribute)
+        this.audio = audio
         length = audio.audioByteArray.size
     }
 

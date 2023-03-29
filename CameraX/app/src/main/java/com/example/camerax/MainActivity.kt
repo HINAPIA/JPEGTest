@@ -23,7 +23,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.camerax.PictureModule.MCContainer
-import com.example.camerax.PictureModule.Contents.Attribute
+import com.example.camerax.PictureModule.Contents.ContentAttribute
 import com.example.camerax.PictureModule.Contents.ContentType
 import com.example.camerax.databinding.ActivityMainBinding
 import com.google.mlkit.vision.common.InputImage
@@ -435,7 +435,7 @@ class MainActivity : AppCompatActivity()  {
                     CoroutineScope(Dispatchers.IO).launch{
                         if(mode == 0){
                             byteArrayList.add(sourceByteArray)
-                            MCContainer.reFresh (byteArrayList, ContentType.Image, Attribute.general)
+                            MCContainer.reFresh (byteArrayList, ContentType.Image, ContentAttribute.general)
                         }
                         else if (mode == 1){
                             byteArrayList.add(sourceByteArray)
@@ -444,7 +444,7 @@ class MainActivity : AppCompatActivity()  {
                             if(byteArrayList.size == pointArrayList.size){
                                 Log.d("이미지", "모두 저장 완료: "  +byteArrayList.size.toString())
                                 isImageArrayFull = true
-                                MCContainer.reFresh(byteArrayList, ContentType.Image, Attribute.focus)
+                                MCContainer.reFresh(byteArrayList, ContentType.Image, ContentAttribute.focus)
                             }
                         }
                         CoroutineScope(Dispatchers.Main).launch {

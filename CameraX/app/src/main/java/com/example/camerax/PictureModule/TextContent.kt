@@ -1,6 +1,6 @@
 package com.example.camerax.PictureModule
 
-import com.example.camerax.PictureModule.Contents.Attribute
+import com.example.camerax.PictureModule.Contents.ContentAttribute
 import com.example.camerax.PictureModule.Contents.Text
 
 class TextContent {
@@ -14,9 +14,9 @@ class TextContent {
         textCount = 0
     }
 
-    suspend fun reFresh(byteArrayList: ArrayList<ByteArray>, attribute : Attribute){
+    suspend fun setContent(byteArrayList: ArrayList<ByteArray>, contentAttribute : ContentAttribute){
         for(i in 0..byteArrayList.size-1){
-            var text = Text(byteArrayList.get(i), attribute)
+            var text = Text(byteArrayList.get(i), contentAttribute)
             insertText(text)
         }
     }

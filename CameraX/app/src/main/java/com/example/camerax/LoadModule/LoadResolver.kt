@@ -2,8 +2,7 @@ package com.example.camerax.LoadModule
 
 import android.app.Activity
 import com.example.camerax.PictureModule.*
-import com.example.camerax.PictureModule.Contents.Attribute
-import com.google.firebase.components.ComponentRuntime
+import com.example.camerax.PictureModule.Contents.ContentAttribute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -56,14 +55,12 @@ class LoadResolver(_activity: Activity) {
                 val targetImageArray = ByteArray(length)
                 // sliceArray() 함수를 사용하여 잘라낸 ByteArray를 생성
                 sourceByteArray.sliceArray(startIndex..endIndex).copyInto(targetImageArray)
-                var picture = Picture(offset, targetImageArray, Attribute.focus, embeddedSize, null)
+                var picture = Picture(offset, targetImageArray, ContentAttribute.focus, embeddedSize, null)
                 imageContent.insertPicture(picture)
 
             }
-            MCContainer.imageContent = imageContent
+          //  MCContainer.imageContent = imageContent
         }
-
-
     }
 
     private var activity : Activity
