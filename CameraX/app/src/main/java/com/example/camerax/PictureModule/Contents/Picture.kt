@@ -14,7 +14,6 @@ class Picture(_byteArray: ByteArray, _Content_attribute: ContentAttribute) {
     var embeddedData : ArrayList<Int>? = null
     var offset = 0
     init {
-
             pictureByteArray = _byteArray
             size = pictureByteArray.size
             contentAttribute = _Content_attribute

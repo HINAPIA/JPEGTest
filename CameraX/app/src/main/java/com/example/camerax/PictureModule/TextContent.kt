@@ -5,16 +5,21 @@ import com.example.camerax.PictureModule.Contents.Text
 
 class TextContent {
     var textList : ArrayList<Text> = arrayListOf()
-    var length = 0
     var textCount = 0
 
     fun init(){
         textList.clear()
-        length = 0
         textCount = 0
     }
 
-    suspend fun setContent(byteArrayList: ArrayList<ByteArray>, contentAttribute : ContentAttribute){
+    fun setContent(byteArrayList: ArrayList<ByteArray>, contentAttribute : ContentAttribute){
+        init()
+        for(i in 0..byteArrayList.size-1){
+            var text = Text(byteArrayList.get(i), contentAttribute)
+            insertText(text)
+        }
+    }
+    fun addContent(byteArrayList: ArrayList<ByteArray>, contentAttribute : ContentAttribute){
         for(i in 0..byteArrayList.size-1){
             var text = Text(byteArrayList.get(i), contentAttribute)
             insertText(text)

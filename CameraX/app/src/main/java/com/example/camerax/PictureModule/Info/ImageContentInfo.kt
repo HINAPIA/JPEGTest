@@ -64,7 +64,7 @@ class ImageContentInfo(imageContent: ImageContent, startOffset : Int) {
             buffer.putInt(imageInfo.embeddedDataSize)
             // Image Content - Image Info - embeddedData
             if(imageInfo.embeddedDataSize > 0){
-                for(p in 0..imageInfo.embeddedDataSize -1){
+                for(p in 0..imageInfo.embeddedDataSize/4 -1){
                     buffer.putInt(imageInfo.embeddedData.get(p))
                 }
             } // end of embeddedData

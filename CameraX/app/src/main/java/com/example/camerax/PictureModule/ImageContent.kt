@@ -8,24 +8,37 @@ import java.nio.ByteBuffer
 class ImageContent {
 
     var pictureList : ArrayList<Picture> = arrayListOf()
-    var length = 0
     var pictureCount = 0
 
+    lateinit var modifiedPicture : Picture
     fun init() {
         pictureList.clear()
-        length = 0
         pictureCount = 0
     }
-
+    // 모두 타입이 같을 때 ImageContent를 생성 - 주로 카메라 찍을 때 호출되는 함수
     fun setContent(byteArrayList: ArrayList<ByteArray>, contentAttribute : ContentAttribute){
+        init()
+        for(i in 0..byteArrayList.size-1){
+            // Picture 객체 생성
+            var picture = Picture(byteArrayList.get(i), contentAttribute)
+            var intList : ArrayList<Int> = arrayListOf(1,2,3,4,5)
+            picture.insertEmbeddedData(intList)
+            insertPicture(picture)
+        }
+    }
+    // 파일을 parsing할 때 ImageContent를 생성
+    fun setContent(_pictureList : ArrayList<Picture>){
+        init()
+        pictureList = _pictureList
+        pictureCount = _pictureList.size
+    }
+    fun addContent(byteArrayList: ArrayList<ByteArray>, contentAttribute : ContentAttribute){
         for(i in 0..byteArrayList.size-1){
             // Picture 객체 생성
             var picture = Picture(byteArrayList.get(i), contentAttribute)
             insertPicture(picture)
         }
     }
-
-
     // PictureList에 Picture를 삽입
     fun insertPicture(picture : Picture){
         pictureList.add(picture)
@@ -36,6 +49,8 @@ class ImageContent {
     fun getPictureAtIndex(index : Int): Picture? {
         return pictureList.get(index) ?: null
     }
+
+
 
 
 }

@@ -19,6 +19,7 @@ class Header(_MC_container : MCContainer) {
     
     // MC Container에 채워진 Content의 정보를 Info 클래스들로 생성
     fun settingHeaderInfo(){
+        groupInfoList.clear()
         var groupStartOffset = 0
         for(i in 0..MCContainer.groupContentList.size -1){
             var group = MCContainer.groupContentList.get(i)
@@ -28,7 +29,6 @@ class Header(_MC_container : MCContainer) {
         }
         groupCount = groupInfoList.size
         headerDataLength = getAPP3FieldLength()
-
         // 추가할 APP3 extension 만큼 offset 변경 - APP3 marker(2) + APP3 Data field length
         applyHeaderSize(2 + getAPP3FieldLength())
 
@@ -42,7 +42,7 @@ class Header(_MC_container : MCContainer) {
             if(i == 0){
                 pictureInfo.dataSize += headerLength
             }else{
-                pictureInfo.offset += headerLength
+                pictureInfo.offset += headerLength - 1
             }
         }
         firstGroup.audioContentInfo.dataStartOffset += headerLength

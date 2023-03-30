@@ -15,7 +15,10 @@ class GroupContent {
         textContent.init()
     }
 
-    suspend fun setContent(byteArrayList: ArrayList<ByteArray>, type : ContentType, contentAttribute : ContentAttribute){
+
+    fun setContent(byteArrayList: ArrayList<ByteArray>, type : ContentType, contentAttribute : ContentAttribute){
+        // 초기화
+        init()
         when (type){
             ContentType.Image -> imageContent.setContent(byteArrayList, contentAttribute)
             ContentType.Audio -> audioContent.setContent(byteArrayList, contentAttribute)
@@ -23,6 +26,13 @@ class GroupContent {
         }
     }
 
+    fun addContent(byteArrayList: ArrayList<ByteArray>, type : ContentType, contentAttribute : ContentAttribute){
+        when (type){
+            ContentType.Image -> imageContent.addContent(byteArrayList, contentAttribute)
+            ContentType.Audio -> audioContent.setContent(byteArrayList, contentAttribute)
+            ContentType.Text -> textContent.addContent(byteArrayList, contentAttribute)
+        }
+    }
 
 
 }
