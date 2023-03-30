@@ -61,7 +61,6 @@ class LoadResolver(_activity: Activity) {
 
             }
             MCContainer.imageContent = imageContent
-            MCContainer.test = 99
         }
     }
 

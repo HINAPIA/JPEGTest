@@ -3,12 +3,14 @@ package com.example.camerax.ViewerModule
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.fragment.app.Fragment
 
 import com.example.camerax.databinding.FragmentViewerBinding
@@ -57,6 +59,17 @@ class ViewerFragment : Fragment() {
                   3) jpegContainer 분석해서 main 및 내부 이미지들로 하단 스크롤뷰 채우기
         */
 
+        /* dummy data */
+        val images = listOf(
+            requireContext().getDrawable(R.drawable.santa2)!!,
+            requireContext().getDrawable(R.drawable.santa1)!!,
+            requireContext().getDrawable(R.drawable.santa)!!
+        )
+
+        val adapter = ViewPagerAdapter(images)
+        binding.viewPager2.adapter = adapter
+
+
 //        Log.d("fragment test songsong", ""+jpegViewModel.jpegMCContainer.value?.imageContent?.pictureList?.size)
 //        var size = jpegViewModel.jpegMCContainer.value?.imageContent?.pictureList?.size
 //
@@ -83,8 +96,8 @@ class ViewerFragment : Fragment() {
 
 
 
-        val source = BitmapFactory.decodeResource(getResources(), R.drawable.santa2)
-        binding.mainPictureView.setImageBitmap(source)
+//        val source = BitmapFactory.decodeResource(getResources(), R.drawable.santa2)
+//        binding.mainPictureView.setImageBitmap(source)
 //
 //        for (i in 1..5) {
 //            val imageView = ImageView(requireContext())

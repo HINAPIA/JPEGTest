@@ -71,24 +71,32 @@
             android:textSize="24sp" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/mainPictureView"
+<!--    <ImageView-->
+<!--        android:id="@+id/mainPictureView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:layout_marginLeft="15dp"-->
+<!--        android:layout_marginRight="15dp"-->
+<!--        android:layout_marginBottom="15dp"-->
+<!--        android:layout_weight="5"-->
+<!--        android:background="#B8C5BB"-->
+<!--        android:scaleType="fitCenter"-->
+<!--        tools:srcCompat="@tools:sample/avatars" />-->
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="15dp"
         android:layout_weight="5"
-        android:background="#B8C5BB"
-        android:scaleType="fitCenter"
-        tools:srcCompat="@tools:sample/avatars" />
+        android:background="#ffff0000"
+    />
 
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#ff000000">
+        android:background="#ffff00">
 
         <LinearLayout
             android:id="@+id/linear"

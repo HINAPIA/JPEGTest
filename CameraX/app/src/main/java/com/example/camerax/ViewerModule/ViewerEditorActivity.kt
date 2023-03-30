@@ -46,7 +46,7 @@ class ViewerEditorActivity : AppCompatActivity() {
         }
 
         jpegViewModels.imageUriLiveData.observe(this){
-           var size = jpegViewModels.imageUriLiveData.value!!.size
+           var size = jpegViewModels.imageUriLiveData.value?.size
             Log.d("[ViewerEditorActivity] imageUriLIst size : ",""+size)
             if (size != 0){
                 supportFragmentManager  // fragment 전환
@@ -54,6 +54,10 @@ class ViewerEditorActivity : AppCompatActivity() {
                     .replace(R.id.framelayout,viewerFragment)
                     .addToBackStack(null)
                     .commit()
+            }
+            else {
+                // TODO: 갤러리에 사진이 아무것도 없을 때 -> Empty Fragment 만들기
+                Log.d("[ViewerEditorActivity]","갤러리에 사진이 아무것도 없을 때 처리해야함")
             }
         }
     }
