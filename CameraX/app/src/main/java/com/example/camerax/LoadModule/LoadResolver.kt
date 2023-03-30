@@ -18,7 +18,7 @@ class LoadResolver(_activity: Activity) {
                 ((byteArray[stratOffset+3].toInt() and 0xFF))
         return intNum
     }
-    fun createMCContainer(activity: Activity, MCContainer: MCContainer, sourceByteArray: ByteArray) {
+    fun createMCContainer(activity: Activity, MCContainer: MCContainer, sourceByteArray: ByteArray){
         // var header : Header = Header()
 
         // start header parsing ...
@@ -61,9 +61,8 @@ class LoadResolver(_activity: Activity) {
 
             }
             MCContainer.imageContent = imageContent
+            MCContainer.test = 99
         }
-
-
     }
 
     private var activity : Activity

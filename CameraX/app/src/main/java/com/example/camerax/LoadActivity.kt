@@ -38,8 +38,13 @@ class LoadActivity : AppCompatActivity() {
                 1
             )
         }
+        jpegViewModels.setContainer(MCContainer)
+
+
         binding.btnSave.setOnClickListener{
-            MCContainer.save()
+
+            //MCContainer.save()
+
             Log.d("btnSave click: ","save 버튼이 눌림!!")
                 supportFragmentManager
                     .beginTransaction()
@@ -48,8 +53,9 @@ class LoadActivity : AppCompatActivity() {
                     .commit()
 
         }
-
-//        jpegViewModels.jpegContainer.observe(this){
+//
+//        jpegViewModels.jpegMCContainer.observe(this){
+//            Log.d("songyeon","여기가 변경됨")
 //
 //        }
     }
@@ -66,8 +72,8 @@ class LoadActivity : AppCompatActivity() {
                 val iStream: InputStream? = contentResolver.openInputStream(sourcePhotoUri!!)
                 var sourceByteArray = getBytes(iStream!!)
                 // 파일을 parsing해서 PictureContainer로 바꾸는 함수 호출
-                 loadResolver.createMCContainer(this,MCContainer,sourceByteArray)
-              //  jpegViewModels.setContainer(container)
+
+                 loadResolver.createMCContainer(this,jpegViewModels.jpegMCContainer.value!!,sourceByteArray)
 
             }else{
                 finish()

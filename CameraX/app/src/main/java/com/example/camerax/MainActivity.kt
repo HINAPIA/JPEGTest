@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat
 import com.example.camerax.PictureModule.MCContainer
 import com.example.camerax.PictureModule.Contents.Attribute
 import com.example.camerax.PictureModule.Contents.ContentType
+import com.example.camerax.ViewerModule.ViewerEditorActivity
 import com.example.camerax.databinding.ActivityMainBinding
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.DetectedObject
@@ -173,7 +174,7 @@ class MainActivity : AppCompatActivity()  {
         }
 
         viewBinding.btnLoad.setOnClickListener {
-            val intent = Intent(this, LoadActivity::class.java)
+            val intent = Intent(this, ViewerEditorActivity::class.java)
             // load activity로 전환
             startActivity(intent)
         }

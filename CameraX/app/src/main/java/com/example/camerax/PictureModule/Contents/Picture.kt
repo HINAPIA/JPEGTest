@@ -54,4 +54,8 @@ class Picture(_byteArray: ByteArray, _attribute: Attribute) {
         return 16 + embeddedSize
     }
 
+    fun getBitmap():Bitmap{
+        return bitmap
+    }
+
 }
