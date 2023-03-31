@@ -2,13 +2,14 @@ package com.example.camerax.PictureModule.Contents
 
 import android.util.Log
 
-class Audio (_audioByteArray : ByteArray, _attribute: Attribute){
+class Audio (_audioByteArray : ByteArray, _Content_attribute: ContentAttribute){
     var audioByteArray : ByteArray
-    var attribute = _attribute
-    private var length : Int = 0
+    var attribute = _Content_attribute
+    var size : Int = 0
     init {
         audioByteArray = _audioByteArray
-        attribute = _attribute
+        attribute = _Content_attribute
+        size = audioByteArray.size
         Log.d("Picture Module",
             "[create Audio]size :${audioByteArray.size}")
     }

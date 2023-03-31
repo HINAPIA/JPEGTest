@@ -6,9 +6,13 @@ enum class ContentType {
     Text
 
 }
-public enum class Attribute(val code: Int ) {
-    general(0),
-    focus(1),
-    modified(2),
-    edited(3)
+enum class ContentAttribute(val code: Int ) {
+    none(0),
+    general(1),
+    focus(2),
+    modified(3),
+    edited(4);
+    companion object {
+        fun fromCode(code: Int) = values().firstOrNull { it.code == code } ?: none
+    }
 }

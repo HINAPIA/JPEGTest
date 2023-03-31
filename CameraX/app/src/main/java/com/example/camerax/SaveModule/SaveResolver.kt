@@ -18,6 +18,7 @@ import com.example.camerax.PictureModule.MCContainer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.*
 
 
@@ -32,43 +33,52 @@ class SaveResolver(_mainActivity: Activity, _MC_Container: MCContainer) {
     fun save(){
         CoroutineScope(Dispatchers.IO).launch {
             val byteBuffer = ByteArrayOutputStream()
-            try{
-                //첫번 째 이미지 버퍼에 작성
-                var firstPicture = MCContainer.imageContent.getPictureAtIndex(0)
-                if(firstPicture == null) throw NullPointerException("empty first Picture")
-                //SOI 쓰기
-                byteBuffer.write(firstPicture.pictureByteArray,0,2)
-                //헤더 쓰기
-                //App3 마커
-                byteBuffer.write(MCContainer.getHeaderData())
-                //나머지 첫번째 사진의 데이터 쓰기
-                byteBuffer.write(firstPicture.pictureByteArray,2,firstPicture.pictureByteArray.size-3)
-            }catch (e : Exception){
-                CoroutineScope(Dispatchers.Main).launch{
-                    //예외 발생시 처리할 내용
-                    Toast.makeText(mainActivity, "사진을 다시 찍어주세요", Toast.LENGTH_SHORT).show();
+            for(i in 0..MCContainer.groupContentList.size-1){
+                var group = MCContainer.groupContentList.get(i)
+                if(i == 0){
+   //                 try{
+                        //첫번 째 이미지 버퍼에 작성
+                        var firstPicture = MCContainer.groupContentList.get(0).imageContent.getPictureAtIndex(0)
+                        if(firstPicture == null) throw NullPointerException("empty first Picture")
+                        //SOI 쓰기
+                        byteBuffer.write(firstPicture.pictureByteArray,0,2)
+                        //헤더 쓰기
+                        //App3 마커
+                        MCContainer.settingHeaderInfo()
+                        var byteArray = MCContainer.convertHeaderToBinaryData()
+                        withContext(Dispatchers.IO) {
+                            byteBuffer.write(byteArray)
+                        }
+                        //나머지 첫번째 사진의 데이터 쓰기
+                        byteBuffer.write(firstPicture.pictureByteArray,2,firstPicture.pictureByteArray.size-3)
+                    }
+//                    catch (e : Exception){
+//                        CoroutineScope(Dispatchers.Main).launch{
+//                            //예외 발생시 처리할 내용
+//                            Toast.makeText(mainActivity, "사진을 다시 찍어주세요", Toast.LENGTH_SHORT).show();
+//                        }
+   //                 }
+                    // Imgaes write
+                    for(i in 1.. group.imageContent.pictureCount -1){
+                        var picture = group.imageContent.getPictureAtIndex(i)
+                        byteBuffer.write(/* b = */ picture!!.pictureByteArray)
+                    }
+                    // Text Wirte
+                    for(i in 0.. group.textContent.textCount-1){
+                        var text = group.textContent.getTextAtIndex(i)
+                        byteBuffer.write(/* b = */ text!!.textByteArray)
+                    }
+
+                    // Audio Write
+                    if(group.audioContent.audio!= null){
+                        var audio = group.audioContent.audio
+                        byteBuffer.write(/* b = */ audio!!.audioByteArray)
+                    }
+
                 }
-            }
+
+
             // 순서는 이미지 > 텍스트 > 오디오
-            // Imgaes write
-            for(i in 1.. MCContainer.imageContent.pictureCount-1){
-                var picture = MCContainer.imageContent.getPictureAtIndex(i)
-                byteBuffer.write(/* b = */ picture!!.pictureByteArray)
-            }
-
-            // Text Wirte
-//            for(i in 0.. container.textContent.textCount-1){
-//                var text = container.textContent.getTextAtIndex(i)
-//                byteBuffer.write(/* b = */ text!!.textByteArray)
-//            }
-//
-//            // Audio Write
-//            if(container.audioContent.audio.audioByteArray.size > 0){
-//                var audio = container.audioContent.audio
-//                byteBuffer.write(/* b = */ audio!!.audioByteArray)
-//            }
-
-
             var resultByteArray = byteBuffer.toByteArray()
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
