@@ -15,10 +15,12 @@ class ImageContent {
         pictureList.clear()
         pictureCount = 0
     }
-    // 모두 타입이 같을 때 ImageContent를 생성 - 주로 카메라 찍을 때 호출되는 함수
+    // ImageContent 리셋 후 초기화 - 카메라 찍을 때 호출되는 함수
     fun setContent(byteArrayList: ArrayList<ByteArray>, contentAttribute : ContentAttribute){
         init()
         for(i in 0..byteArrayList.size-1){
+            // 헤더 분리
+            // frame 분리
             // Picture 객체 생성
             var picture = Picture(byteArrayList.get(i), contentAttribute)
             var intList : ArrayList<Int> = arrayListOf(1,2,3,4,5)
@@ -26,7 +28,7 @@ class ImageContent {
             insertPicture(picture)
         }
     }
-    // 파일을 parsing할 때 ImageContent를 생성
+    // ImageContent 리셋 후 초기화 - 파일을 parsing할 때 ImageContent를 생성
     fun setContent(_pictureList : ArrayList<Picture>){
         init()
         pictureList = _pictureList

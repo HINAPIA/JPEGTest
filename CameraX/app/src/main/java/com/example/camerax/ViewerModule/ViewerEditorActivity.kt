@@ -25,7 +25,7 @@ import java.io.InputStream
 class ViewerEditorActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityViewerEditorBinding
-    private var loadResolver : LoadResolver = LoadResolver(this)
+    private var loadResolver : LoadResolver = LoadResolver()
     private val viewerFragment = ViewerFragment()
     private val jpegViewModels: jpegViewModel by viewModels()
 

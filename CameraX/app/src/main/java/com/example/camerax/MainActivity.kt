@@ -436,7 +436,7 @@ class MainActivity : AppCompatActivity()  {
                     CoroutineScope(Dispatchers.IO).launch{
                         if(mode == 0){
                             byteArrayList.add(sourceByteArray)
-                            MCContainer.reFresh (byteArrayList, ContentType.Image, ContentAttribute.general)
+                            MCContainer.setContent (byteArrayList, ContentType.Image, ContentAttribute.general)
                         }
                         else if (mode == 1){
                             byteArrayList.add(sourceByteArray)
@@ -445,7 +445,7 @@ class MainActivity : AppCompatActivity()  {
                             if(byteArrayList.size == pointArrayList.size){
                                 Log.d("이미지", "모두 저장 완료: "  +byteArrayList.size.toString())
                                 isImageArrayFull = true
-                                MCContainer.reFresh(byteArrayList, ContentType.Image, ContentAttribute.focus)
+                                MCContainer.setContent(byteArrayList, ContentType.Image, ContentAttribute.focus)
                             }
                         }
                         CoroutineScope(Dispatchers.Main).launch {

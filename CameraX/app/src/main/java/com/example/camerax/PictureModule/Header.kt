@@ -1,71 +1,63 @@
 package com.example.camerax.PictureModule
 
 import android.util.Log
+import com.example.camerax.PictureModule.Info.AudioContentInfo
 import com.example.camerax.PictureModule.Info.GroupContentInfo
+import com.example.camerax.PictureModule.Info.ImageContentInfo
+import com.example.camerax.PictureModule.Info.TextContentInfo
 import java.nio.ByteBuffer
 
 class Header(_MC_container : MCContainer) {
 
     var headerDataLength = 0
-    var groupCount = 0
 
     private var MCContainer : MCContainer
-    var groupInfoList : ArrayList<GroupContentInfo>
+    lateinit var imageContentInfo : ImageContentInfo
+    lateinit var audioContentInfo : AudioContentInfo
+    lateinit var textContentInfo: TextContentInfo
 
     init {
         MCContainer =_MC_container
-        groupInfoList = arrayListOf()
     }
     
     // MC Container에 채워진 Content의 정보를 Info 클래스들로 생성
     fun settingHeaderInfo(){
-        groupInfoList.clear()
-        var groupStartOffset = 0
-        for(i in 0..MCContainer.groupContentList.size -1){
-            var group = MCContainer.groupContentList.get(i)
-            var groupContentInfo : GroupContentInfo = GroupContentInfo(group, groupStartOffset)
-            groupStartOffset += groupContentInfo.groupInfoLength
-            groupInfoList.add(groupContentInfo)
-        }
-        groupCount = groupInfoList.size
+        imageContentInfo = ImageContentInfo(MCContainer.imageContent,0)
+        textContentInfo = TextContentInfo(MCContainer.textContent,imageContentInfo.getEndOffset() +1)
+        audioContentInfo = AudioContentInfo(MCContainer.audioContent,textContentInfo.getEndOffset()+1)
         headerDataLength = getAPP3FieldLength()
         // 추가할 APP3 extension 만큼 offset 변경 - APP3 marker(2) + APP3 Data field length
         applyHeaderSize(2 + getAPP3FieldLength())
 
     }
-
     // 첫번째 그룹에 추가한 APP3 extension만큼 offset 변경
     fun applyHeaderSize(headerLength : Int){
-        var firstGroup = groupInfoList.get(0)
-        for(i in 0..firstGroup.imageContentInfo.imageCount-1){
-            var pictureInfo = firstGroup.imageContentInfo.imageInfoList.get(i)
+        for(i in 0..imageContentInfo.imageCount-1){
+            var pictureInfo = imageContentInfo.imageInfoList.get(i)
             if(i == 0){
                 pictureInfo.dataSize += headerLength
             }else{
                 pictureInfo.offset += headerLength - 1
             }
         }
-        firstGroup.audioContentInfo.dataStartOffset += headerLength
-        firstGroup.textContentInfo.dataStartOffset += headerLength
+        audioContentInfo.dataStartOffset += headerLength
+        textContentInfo.dataStartOffset += headerLength
     }
     fun getAPP3FieldLength(): Int{
         var size = 0
-        for(i in 0..groupInfoList.size-1){
-            size += groupInfoList.get(i).getInfoLength()
-        }
-        return size + 8
+        size += imageContentInfo.getLength()
+        size += textContentInfo.getLength()
+        size += audioContentInfo.getLength()
+        return size + 4
     }
     fun convertBinaryData() : ByteArray {
         val buffer: ByteBuffer = ByteBuffer.allocate(getAPP3FieldLength() + 2)
         buffer.put("ff".toInt(16).toByte())
         buffer.put("e3".toInt(16).toByte())
         buffer.putInt(headerDataLength)
-        buffer.putInt(groupCount)
-        //Group start
-        for(i in 0..groupCount-1){
-            var groupInfo = groupInfoList.get(i)
-            buffer.put(groupInfo.convertBinaryData())
-        }
+        buffer.put(imageContentInfo.converBinaryData())
+        buffer.put(textContentInfo.converBinaryData())
+        buffer.put(audioContentInfo.converBinaryData())
         return buffer.array()
     }
      //헤더의 내용을 바이너리 데이터로 변환하는 함수

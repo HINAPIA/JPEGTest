@@ -56,25 +56,16 @@ class LoadResolver() {
 
     fun createMCContainer(MCContainer: MCContainer, sourceByteArray: ByteArray) {
         var APP3_startOffset = 4
-        var groupContentList : ArrayList<GroupContent> = arrayListOf()
         // var header : Header = Header()
         var dataFieldLength = ByteArraytoInt(sourceByteArray, APP3_startOffset)
-        var groupCount = ByteArraytoInt(sourceByteArray, APP3_startOffset + 4)
+        // 1. ImageContent
+        var imageContentInfoSize = ByteArraytoInt(sourceByteArray, APP3_startOffset + 4)
+        var pictureList = imageContentParsing(sourceByteArray, sourceByteArray.copyOfRange(APP3_startOffset + 8, APP3_startOffset + 12 + imageContentInfoSize))
+        MCContainer.imageContent.setContent(pictureList)
+        // 2. TextContent
+        // 3. AudioContent
 
-        //groups parsing
-        for(i in 0..groupCount-1){
-            var groupContnt = GroupContent()
-            var groupStartOffset = ByteArraytoInt(sourceByteArray, APP3_startOffset + 8)
-            var GroupInfoSize = ByteArraytoInt(sourceByteArray, APP3_startOffset + 12)
-            // 1. ImageContent
-            var imageContentInfoSize = ByteArraytoInt(sourceByteArray, APP3_startOffset + 16)
-            var pictureList = imageContentParsing(sourceByteArray, sourceByteArray.copyOfRange(APP3_startOffset + 20, APP3_startOffset + 20 + imageContentInfoSize))
-            groupContnt.imageContent.setContent(pictureList)
-            // 2. TextContent
-            // 3. AudioContent
-            groupContentList.add(groupContnt)
-        }
-        MCContainer.setContainer(groupContentList)
+       // MCContainer.setContainer(groupContentList)
 
     }
 
