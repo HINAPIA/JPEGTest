@@ -10,9 +10,12 @@
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"
         android:layout_width="match_parent"
-        android:layout_height="540dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.9"
+        android:background="@color/white"
         app:layout_constraintTop_toTopOf="@+id/horizontal_centerline1"
-        app:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/horizontal_centerline2"
+        app:scaleType="fitStart"
         tools:layout_editor_absoluteX="-16dp" />
 
     <SeekBar
@@ -86,6 +89,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".06" />
+        app:layout_constraintGuide_percent="0.0" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontal_centerline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

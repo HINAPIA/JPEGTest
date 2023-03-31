@@ -1,22 +1,25 @@
 package com.example.test_editafterfocus
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraMetadata
 import android.hardware.camera2.CaptureRequest
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.util.Rational
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsSeekBar
+import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +29,8 @@ import androidx.camera.camera2.interop.CaptureRequestOptions
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.constraintlayout.widget.Guideline
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -34,6 +39,8 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.DetectedObject
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
+import java.lang.Thread.sleep
+import java.lang.reflect.Array.set
 import java.lang.reflect.InvocationTargetException
 import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
@@ -49,10 +56,13 @@ class CameraFragment : Fragment() {
     private lateinit var camera : Camera
     private var cameraController : CameraControl ?= null
     private lateinit var cameraExecutor: ExecutorService
+    private lateinit var camera2CameraInfo: Camera2CameraInfo
+    private var lensDistanceSteps : Float = 0F
     private lateinit var factory: MeteringPointFactory
     private var imageCapture: ImageCapture? = null
     private var isFocusSuccess : Boolean? = null
     lateinit var mainActivity: AppCompatActivity
+    private var minFocusDistance: Float = 0F
     private lateinit var viewBinding : FragmentCameraBinding
 
     private var pointArrayList: ArrayList<pointData> = arrayListOf()
@@ -82,12 +92,12 @@ class CameraFragment : Fragment() {
 
         val displayHeight = resources.displayMetrics.heightPixels
         val displayWidth = resources.displayMetrics.widthPixels
-        Log.v("Size Info", "hxw : ${displayHeight}x${displayWidth}")
+//        Log.v("Size Info", "hxw : ${displayHeight}x${displayWidth}")
 
-        val params: ConstraintLayout.LayoutParams = viewBinding.viewFinder.layoutParams as ConstraintLayout.LayoutParams
-        params.width = 1080
-        params.height = 1440
-        viewBinding.viewFinder.layoutParams = params
+//        val params: ConstraintLayout.LayoutParams = viewBinding.viewFinder.layoutParams as ConstraintLayout.LayoutParams
+//        params.width = 1080
+//        params.height = 1440
+//        viewBinding.viewFinder.layoutParams = params
 
 
         /**
@@ -95,7 +105,6 @@ class CameraFragment : Fragment() {
          */
         viewBinding.seekBar.setOnSeekBarChangeListener(object:SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                Log.v("Seek", "onProgressChanged")
                 val distance : Float = (10f/20f)*progress.toFloat()
                 Camera2CameraControl.from(camera.cameraControl).captureRequestOptions = CaptureRequestOptions.Builder()
                     .apply {
@@ -121,21 +130,29 @@ class CameraFragment : Fragment() {
         }
 
 
+//        /**
+//         * 임의로 3개 좌표 지정해서 Multi Focus 찍은 후 사진 저장하는 Button
+//         */
+//        viewBinding.multiFocusButton.setOnClickListener{
+//            factory = viewBinding.viewFinder.meteringPointFactory
+//
+//            // 임의의 좌표값 3개를 arrayList에 저장
+//            pointArrayList.clear()
+//            pointArrayList.add(pointData(289f, 800f))
+//            pointArrayList.add(pointData(640f, 800f))
+//            pointArrayList.add(pointData(760f, 800f))
+//
+//            //arraylist 에 있는 좌표들에 Focus 줘서 사진찍기
+////            takeFocusPhoto(0)
+//
+//        }
+
         /**
-         * 임의로 3개 좌표 지정해서 Multi Focus 찍은 후 사진 저장하는 Button
+         * Lens Focus Distance별로 사진 찍기
          */
-        viewBinding.multiFocusButton.setOnClickListener{
-            factory = viewBinding.viewFinder.meteringPointFactory
-
-            // 임의의 좌표값 3개를 arrayList에 저장
-            pointArrayList.clear()
-            pointArrayList.add(pointData(289f, 800f))
-            pointArrayList.add(pointData(640f, 800f))
-            pointArrayList.add(pointData(760f, 800f))
-
-            //arraylist 에 있는 좌표들에 Focus 줘서 사진찍기
-//            takeFocusPhoto(0)
-
+        viewBinding.multiFocusButton.setOnClickListener {
+            controlLensFocusDistance(0)
+//            captureLensFocusDistanceSeries(5)
         }
 
         /**
@@ -195,6 +212,70 @@ class CameraFragment : Fragment() {
         return viewBinding.root
     }
 
+    /**
+     * Lens Focus Distance 바꾸면서 사진 찍기
+     */
+    @androidx.annotation.OptIn(androidx.camera.camera2.interop.ExperimentalCamera2Interop::class)
+    private fun controlLensFocusDistance(photoCnt : Int){
+        if(photoCnt > DISTANCE_FOCUS_PHOTO_COUNT)
+            return
+
+//        for (i in 0 .. photoCnt){
+//            val distance: Float? = minFocusDistance?.div(photoCnt)?.times(i)
+            val distance : Float? = 0F + lensDistanceSteps * photoCnt
+            Log.v("focus", "distance : $distance")
+            Camera2CameraControl.from(camera.cameraControl).captureRequestOptions = CaptureRequestOptions.Builder()
+                .apply {
+                    setCaptureRequestOption(CaptureRequest.CONTROL_AF_MODE, CameraMetadata.CONTROL_AF_MODE_OFF)
+                    setCaptureRequestOption(CaptureRequest.LENS_FOCUS_DISTANCE, distance!!) }.build()
+//            sleep(300)
+            takePhotoDistanceFocus(photoCnt)
+//            sleep(300)
+//        }
+    }
+
+    private fun takePhotoDistanceFocus(index : Int){
+        // Get a stable reference of the modifiable image capture use case
+        val imageCapture = imageCapture ?: return
+
+        // Create time stamped name and MediaStore entry.
+        val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
+            .format(System.currentTimeMillis())
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image")
+            }
+        }
+
+        // Create output options object which contains file + metadata
+        val outputOptions = ImageCapture.OutputFileOptions
+            .Builder(mainActivity.contentResolver,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                contentValues)
+            .build()
+
+        // Set up image capture listener, which is triggered after photo has
+        // been taken
+        imageCapture.takePicture(
+            outputOptions,
+            ContextCompat.getMainExecutor(mainActivity),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onError(exc: ImageCaptureException) {
+                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                }
+
+                override fun
+                        onImageSaved(output: ImageCapture.OutputFileResults){
+                    val msg = "Photo capture succeeded: ${output.savedUri}"
+                    Toast.makeText(mainActivity, msg, Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, msg)
+                    controlLensFocusDistance(index+1)
+                }
+            }
+        )
+    }
 
     /**
      * 카메라 Preview에서 Bitmap 가져오고 runObjectDetection에 넘겨주기
@@ -208,6 +289,7 @@ class CameraFragment : Fragment() {
 
         imageCapture.takePicture(cameraExecutor, object :
             ImageCapture.OnImageCapturedCallback() {
+            @SuppressLint("RestrictedApi")
             override fun onCaptureSuccess(image: ImageProxy) {
                 //get bitmap from image
                 val bitmap = imageProxyToBitmap(image)
@@ -315,22 +397,6 @@ class CameraFragment : Fragment() {
      *     takeFocusPhoto() 함수에서 호출하는 함수
      */
     private fun processCapturedImages(images: ArrayList<ByteArray>) {
-//        // 파일 경로 지정해서 넘겨주는 방법 생각 중 ...
-//        val file = File(filePath, fileName)
-//
-//        val outputFileOptions = ImageCapture.OutputFileOptions.Builder(file).build()
-
-
-//        imageCapture?.takePicture(outputFileOptions, cameraExecutor, object : ImageCapture.OnImageSavedCallback {
-//            override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-//                // 이미지 저장 성공
-//            }
-//
-//            override fun onError(exception: ImageCaptureException) {
-//                // 이미지 저장 실패
-//            }
-//        })
-
 
         val bundle = Bundle()
         bundle.putSerializable("image", images)
@@ -400,6 +466,7 @@ class CameraFragment : Fragment() {
         })
     }
 
+
     /**
      * 사진 촬영 후 저장
      */
@@ -440,6 +507,7 @@ class CameraFragment : Fragment() {
                     val msg = "Photo capture succeeded: ${output.savedUri}"
                     Toast.makeText(mainActivity, msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
+
                 }
             }
         )
@@ -469,6 +537,29 @@ class CameraFragment : Fragment() {
                     it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
                 }
 
+//            val params: ConstraintLayout.LayoutParams = viewBinding.viewFinder.layoutParams as ConstraintLayout.LayoutParams
+            val params = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT
+            , 0)
+            params.width = viewBinding.viewFinder.width //1080
+            params.height = (viewBinding.viewFinder.width.toFloat() * (4F/3F)).toInt()
+            params.topToTop = viewBinding.horizontalCenterline1.top
+            params.bottomToBottom = viewBinding.horizontalCenterline2.bottom
+
+//            val guideLine1Params = viewBinding.horizontalCenterline1.layoutParams as ConstraintLayout.LayoutParams
+//            guideLine1Params.guidePercent = 0.1f
+//            viewBinding.horizontalCenterline1.layoutParams = guideLine1Params
+//            val guideLine2Params = viewBinding.horizontalCenterline2.layoutParams as ConstraintLayout.LayoutParams
+//            guideLine2Params.guidePercent = 1f
+//            viewBinding.horizontalCenterline2.layoutParams = guideLine2Params
+//            viewBinding.horizontalCenterline1.setGuidelinePercent(0.0f)
+//            params.topToTop = viewBinding.horizontalCenterline1.top
+//            params.bottomToBottom = viewBinding.horizontalCenterline2.id
+
+            Log.v("Size", "width X height : ${params.width} X ${params.height}")
+            viewBinding.viewFinder.layoutParams = params
+
+
+
             imageCapture = ImageCapture.Builder().build()
 
             // 3-2. 카메라 세팅
@@ -488,6 +579,15 @@ class CameraFragment : Fragment() {
 
                 cameraController = camera!!.cameraControl
 
+                camera2CameraInfo = Camera2CameraInfo.from(camera.cameraInfo)
+
+                // 스마트폰 기기 별 min Focus Distance 알아내기 ( 가장 `가까운` 곳에 초점을 맞추기 위한 렌즈 초점 거리 )
+                minFocusDistance =
+                    camera2CameraInfo.getCameraCharacteristic(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE)!! //10f
+                lensDistanceSteps = minFocusDistance/(DISTANCE_FOCUS_PHOTO_COUNT.toFloat())
+
+                Log.v("focus", "lensDistanceSteps : ${lensDistanceSteps}")
+
 //                val extender = Camera2Interop.Extender(preview)
 //                extender.setCaptureRequestOption(
 //                    CaptureRequest.CONTROL_AF_MODE,
@@ -496,10 +596,6 @@ class CameraFragment : Fragment() {
 //                extender.setCaptureRequestOption(CaptureRequest.LENS_FOCUS_DISTANCE, distance)
 //
 
-                val camera2CameraInfo = Camera2CameraInfo.from(camera.cameraInfo)
-                val minFocusDistance = camera2CameraInfo.getCameraCharacteristic(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE)
-
-                Log.v("LensFocusDistance", "minFocusDistance : $minFocusDistance")
 
                 Camera2CameraControl.from(camera.cameraControl).captureRequestOptions = CaptureRequestOptions.Builder()
                     .apply {
@@ -549,6 +645,7 @@ class CameraFragment : Fragment() {
         private const val TAG = "TEST_EditAfterFocus"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val REQUEST_CODE_PERMISSIONS = 10
+        private const val DISTANCE_FOCUS_PHOTO_COUNT = 10
         private val REQUIRED_PERMISSIONS = // Array<String>
             mutableListOf (
                 android.Manifest.permission.CAMERA,
