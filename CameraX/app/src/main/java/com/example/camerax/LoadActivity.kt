@@ -17,7 +17,7 @@ import java.io.InputStream
 
 class LoadActivity : AppCompatActivity() {
     private lateinit var binding : ActivityLoadBinding
-    private var loadResolver : LoadResolver = LoadResolver(this)
+    private var loadResolver : LoadResolver = LoadResolver()
     private var MCContainer : MCContainer = MCContainer(this)
     private val viewerFragment = ViewerFragment()
     private val jpegViewModels:jpegViewModel by viewModels()
@@ -72,8 +72,7 @@ class LoadActivity : AppCompatActivity() {
                 val iStream: InputStream? = contentResolver.openInputStream(sourcePhotoUri!!)
                 var sourceByteArray = getBytes(iStream!!)
                 // 파일을 parsing해서 PictureContainer로 바꾸는 함수 호출
-
-                 loadResolver.createMCContainer(this,jpegViewModels.jpegMCContainer.value!!,sourceByteArray)
+                 loadResolver.createMCContainer(jpegViewModels.jpegMCContainer.value!!,sourceByteArray)
 
             }else{
                 finish()

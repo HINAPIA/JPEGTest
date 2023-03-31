@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class LoadResolver(_activity: Activity) {
+class LoadResolver() {
 
     fun ByteArraytoInt(byteArray: ByteArray, stratOffset : Int): Int {
         var intNum :Int = ((byteArray[stratOffset].toInt() and 0xFF) shl 24) or
@@ -54,7 +54,7 @@ class LoadResolver(_activity: Activity) {
         return pictureList
     }
 
-    fun createMCContainer(activity: Activity, MCContainer: MCContainer, sourceByteArray: ByteArray) {
+    fun createMCContainer(MCContainer: MCContainer, sourceByteArray: ByteArray) {
         var APP3_startOffset = 4
         var groupContentList : ArrayList<GroupContent> = arrayListOf()
         // var header : Header = Header()
@@ -78,9 +78,5 @@ class LoadResolver(_activity: Activity) {
 
     }
 
-    private var activity : Activity
-    init{
-        activity = _activity
-    }
 
 }

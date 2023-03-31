@@ -174,7 +174,7 @@ class MainActivity : AppCompatActivity()  {
         }
 
         viewBinding.btnLoad.setOnClickListener {
-            val intent = Intent(this, ViewerEditorActivity::class.java)
+            val intent = Intent(this, LoadActivity::class.java)
             // load activity로 전환
             startActivity(intent)
         }
