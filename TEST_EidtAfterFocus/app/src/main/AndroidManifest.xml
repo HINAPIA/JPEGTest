@@ -20,6 +20,9 @@
         android:theme="@style/Theme.TEST_EditAfterFocus"
         tools:targetApi="31">
         <activity
+            android:name=".FindError"
+            android:exported="false" />
+        <activity
             android:name=".FastFocusEditorActivity"
             android:exported="true" />
         <activity
