@@ -62,7 +62,7 @@ class ViewerEditorActivity : AppCompatActivity() {
         }
     }
 
-    private fun getAllPhotosURI(){
+    private fun getAllPhotosURI(){ // 이미지는 glider 써서 불러와야함
         val cursor = contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             null,

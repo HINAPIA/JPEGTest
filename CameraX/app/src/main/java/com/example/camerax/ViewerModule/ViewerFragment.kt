@@ -54,46 +54,48 @@ class ViewerFragment : Fragment() {
 
     fun init() {
 
-        /** TODO: 1) main uri, previous uri, next uri 로 메인 스크롤뷰 채우기(main 이미지)
-                  2) jpegContainer 만들기 - main uri로
-                  3) jpegContainer 분석해서 main 및 내부 이미지들로 하단 스크롤뷰 채우기
+        /** TODO: 1) ViewModel의 image uri list -> drawable list
+                  2) ViewPager로 메인 스크롤뷰 채우기(main 이미지)
+                  3) jpegContainer 만들기 - main uri로
+                  4) jpegContainer 분석해서 main 및 내부 이미지들로 하단 스크롤뷰 채우기
         */
 
+        
         /* dummy data */
         val images = listOf(
             requireContext().getDrawable(R.drawable.santa2)!!,
             requireContext().getDrawable(R.drawable.santa1)!!,
-            requireContext().getDrawable(R.drawable.santa)!!
+            requireContext().getDrawable(R.drawable.santa)!!,
         )
 
-        val adapter = ViewPagerAdapter(images)
+        val adapter = ViewPagerAdapter(requireContext(),images)//jpegViewModel.imageUriLiveData.value!!
         binding.viewPager2.adapter = adapter
 
 
 //        Log.d("fragment test songsong", ""+jpegViewModel.jpegMCContainer.value?.imageContent?.pictureList?.size)
-//        var size = jpegViewModel.jpegMCContainer.value?.imageContent?.pictureList?.size
+        var size = 5//jpegViewModel.jpegMCContainer.value?.imageContent?.pictureList?.size
 //
 //        val imageContent = jpegViewModel.jpegMCContainer.value?.imageContent
 //
 //        mainPicture = imageContent?.getPictureAtIndex(0)!!
 //        binding.mainPictureView.setImageBitmap(mainPicture?.getBitmap())
-//
-//
-//        for (i in 0 until size!!) {
-//
-//            val image = imageContent.getPictureAtIndex(i)!!.getBitmap()
-//
-//            // 넣고자 하는 layout 불러오기
-//            val scollItemLayout = layoutInflater.inflate(R.layout.scroll_item_layout, null)
-//
-//            // 위 불러온 layout에서 변경을 할 view가져오기
-//            val scrollImageView: ImageView =
-//                scollItemLayout.findViewById(R.id.scrollImageView)
-//
-//            scrollImageView.setImageBitmap(image)
-//            binding.linear.addView(scollItemLayout)
-//        }
 
+
+        /* dummy data -> 여기가 delay 원인 */
+        for (i in 0 until 5) {
+
+            val image = BitmapFactory.decodeResource(getResources(), R.drawable.santa2)//imageContent.getPictureAtIndex(i)!!.getBitmap()
+
+            // 넣고자 하는 layout 불러오기
+            val scollItemLayout = layoutInflater.inflate(R.layout.scroll_item_layout, null)
+
+            // 위 불러온 layout에서 변경을 할 view가져오기
+            val scrollImageView: ImageView =
+                scollItemLayout.findViewById(R.id.scrollImageView)
+
+            scrollImageView.setImageBitmap(image)
+            binding.linear.addView(scollItemLayout)
+        }
 
 
 //        val source = BitmapFactory.decodeResource(getResources(), R.drawable.santa2)
