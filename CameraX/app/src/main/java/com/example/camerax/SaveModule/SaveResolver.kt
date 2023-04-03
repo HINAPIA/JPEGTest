@@ -34,26 +34,32 @@ class SaveResolver(_mainActivity: Activity, _MC_Container: MCContainer) {
         CoroutineScope(Dispatchers.IO).launch {
             val byteBuffer = ByteArrayOutputStream()
 
-            //첫번 째 이미지 버퍼에 작성
-            var firstPicture = MCContainer.imageContent.getPictureAtIndex(0)
-            if(firstPicture == null) throw NullPointerException("empty first Picture")
+            //Jpeg Meta
+            var jpegMetaData = MCContainer.imageContent.jpegMetaData
+            //if(firstPicture == null) throw NullPointerException("empty first Picture")
             //SOI 쓰기
-            byteBuffer.write(firstPicture.pictureByteArray,0,2)
+            byteBuffer.write(jpegMetaData,0,2)
             //헤더 쓰기
-            //App3 마커
+            //App3 Extension 데이터 생성
             MCContainer.settingHeaderInfo()
-            var byteArray = MCContainer.convertHeaderToBinaryData()
-            withContext(Dispatchers.IO) {
-                byteBuffer.write(byteArray)
-            }
-            //나머지 첫번째 사진의 데이터 쓰기
-            byteBuffer.write(firstPicture.pictureByteArray,2,firstPicture.pictureByteArray.size-3)
+            var APP3ExtensionByteArray = MCContainer.convertHeaderToBinaryData()
 
+            byteBuffer.write(APP3ExtensionByteArray)
+
+            //나머지 첫번째 사진의 데이터 쓰기
+            byteBuffer.write(jpegMetaData,2,jpegMetaData.size-2)
+           // byteBuffer.write(jpegMetaData)
 
             // Imgaes write
-            for(i in 1.. MCContainer.imageContent.pictureCount -1){
+            for(i in 0.. MCContainer.imageContent.pictureCount -1){
                 var picture = MCContainer.imageContent.getPictureAtIndex(i)
                 byteBuffer.write(/* b = */ picture!!.pictureByteArray)
+                if(i == 0){
+                    //EOI 작성
+                    byteBuffer.write(0xff)
+                    byteBuffer.write(0xd9)
+
+                }
             }
             // Text Wirte
             for(i in 0.. MCContainer.textContent.textCount-1){
@@ -66,8 +72,6 @@ class SaveResolver(_mainActivity: Activity, _MC_Container: MCContainer) {
                 var audio = MCContainer.audioContent.audio
                 byteBuffer.write(/* b = */ audio!!.audioByteArray)
             }
-
-
 
             // 순서는 이미지 > 텍스트 > 오디오
             var resultByteArray = byteBuffer.toByteArray()
@@ -145,7 +149,7 @@ class SaveResolver(_mainActivity: Activity, _MC_Container: MCContainer) {
     }
     //Android Q (Android 10, API 29 이상에서는 이 메서드를 통해서 이미지를 저장한다.)
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun saveImageOnAboveAndroidQ(byteArray: ByteArray) {
+    fun saveImageOnAboveAndroidQ(byteArray: ByteArray) {
         Log.d("Picture Module", "이미지 저장 함수 :saveImageOnAboveAndroidQ 111")
 
         val fileName = System.currentTimeMillis().toString() + ".jpg" // 파일이름 현재시간.jpg

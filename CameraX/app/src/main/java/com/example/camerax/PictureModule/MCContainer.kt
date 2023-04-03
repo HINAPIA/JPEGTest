@@ -2,14 +2,16 @@ package com.example.camerax.PictureModule
 
 import android.app.Activity
 import android.media.Image
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.example.camerax.PictureModule.Contents.ContentAttribute
 import com.example.camerax.PictureModule.Contents.ContentType
 import com.example.camerax.SaveModule.SaveResolver
 
 
 class MCContainer(_activity: Activity) {
-    private var saveResolver : SaveResolver
+     var saveResolver : SaveResolver
     private lateinit var activity : Activity
     var header : Header
 
@@ -23,12 +25,14 @@ class MCContainer(_activity: Activity) {
         activity = _activity
         saveResolver = SaveResolver(activity ,this)
         header = Header(this)
+
     }
 
     fun init(){
         imageContent.init()
         audioContent.init()
         textContent.init()
+
     }
 
 
@@ -61,15 +65,9 @@ class MCContainer(_activity: Activity) {
 
     /*Edit modules에서 호출하는 함수 끝 */
 
-    fun addContent(byteArrayList: ArrayList<ByteArray>, type : ContentType, contentAttribute : ContentAttribute){
-        when (type){
-            ContentType.Image -> imageContent.addContent(byteArrayList, contentAttribute)
-            ContentType.Audio -> audioContent.setContent(byteArrayList, contentAttribute)
-            ContentType.Text -> textContent.addContent(byteArrayList, contentAttribute)
-        }
-    }
 
     // 사진을 찍은 후에 호출되는 함수로 MC Container를 초기화하고 찍은 사진 내용으로 MC Container를 채운다
+
     fun setContent(byteArrayList: ArrayList<ByteArray>, type: ContentType, contentAttribute : ContentAttribute){
         init()
         when (type){
@@ -77,6 +75,9 @@ class MCContainer(_activity: Activity) {
             ContentType.Audio -> audioContent.setContent(byteArrayList, contentAttribute)
             ContentType.Text -> textContent.setContent(byteArrayList, contentAttribute)
         }
+       // saveResolver.saveImageOnAboveAndroidQ(imageContent.getJpegBytes(imageContent.getPictureAtIndex(0)!!))
+       // saveResolver.saveImageOnAboveAndroidQ(imageContent.getJpegBytes(imageContent.getPictureAtIndex(1)!!))
+       Log.d("fffff", "save 함수 호출 직전")
         save()
     }
 
@@ -95,6 +96,15 @@ class MCContainer(_activity: Activity) {
         saveResolver.save()
     }
 
+    fun getJpegMetaBytes() : ByteArray{
+        if(imageContent.jpegMetaData.size == 0){
+            Log.e("user error", "JpegMetaData size가 0입니다.")
+        }
+        return imageContent.jpegMetaData
+    }
+    fun setJpegMetaBytes(_jpegMetaData : ByteArray){
+        imageContent.jpegMetaData = _jpegMetaData
+    }
 
 }
 

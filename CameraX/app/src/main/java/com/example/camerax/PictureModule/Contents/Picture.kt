@@ -17,12 +17,6 @@ class Picture(_byteArray: ByteArray, _Content_attribute: ContentAttribute) {
             pictureByteArray = _byteArray
             size = pictureByteArray.size
             contentAttribute = _Content_attribute
-//        CoroutineScope(Dispatchers.IO).launch {
-//            bitmap = byteArrayToBitmap(_byteArray)
-//            Log.d("Picture Module",
-//                "[create Picture]size :${pictureByteArray.size}, attribute: ${attribute}")
-//        }
-
     }
     constructor(
         _offset: Int,
@@ -42,9 +36,6 @@ class Picture(_byteArray: ByteArray, _Content_attribute: ContentAttribute) {
     fun byteArrayToBitmap(_byteArray: ByteArray): Bitmap {
         return BitmapFactory.decodeByteArray(_byteArray, 0, _byteArray.size)
     }
-
-
-
     fun getBitmap():Bitmap{
         return bitmap
     }
