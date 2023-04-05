@@ -39,6 +39,8 @@ class ImageContent {
             // Picture 객체 생성
             var picture = Picture(frameBytes, contentAttribute)
             insertPicture(picture)
+            if(i==0)
+                modifiedPicture = picture
         }
     }
     // ImageContent 리셋 후 초기화 - 파일을 parsing할 때 ImageContent를 생성
@@ -47,6 +49,15 @@ class ImageContent {
         pictureList = _pictureList
         pictureCount = _pictureList.size
 
+    }
+    // ImageContent 리셋 후 초기화 - 파일을 parsing할 때 일반 JPEG 생성
+    fun setBasicContent(sourceByteArray: ByteArray){
+        init()
+        jpegMetaData = extractJpegMeta(sourceByteArray)
+        var frameBytes : ByteArray = extractFrame(sourceByteArray)
+        // Picture 객체 생성
+        var picture = Picture(frameBytes, ContentAttribute.general)
+        insertPicture(picture)
     }
     fun addContent(byteArrayList: ArrayList<ByteArray>, contentAttribute : ContentAttribute){
         for(i in 0..byteArrayList.size-1){
@@ -73,6 +84,44 @@ class ImageContent {
         buffer.put("ff".toInt(16).toByte())
         buffer.put("d9".toInt(16).toByte())
         return buffer.array()
+    }
+
+    fun extractJFIFinJPEG(jpegBytes: ByteArray) : ByteArray{
+        var n1: Int
+        var n2: Int
+        var resultByte: ByteArray
+        var startIndex = 0
+        var isFindStartMarker = false // 시작 마커를 찾았는지 여부
+
+        for (i in 0 until jpegBytes.size - 1) {
+            n1 = Integer.valueOf(jpegBytes[i].toInt())
+            if (n1 < 0) {
+                n1 += 256
+            }
+            n2 = Integer.valueOf(jpegBytes[i+1].toInt())
+            if (n2 < 0) {
+                n2 += 256
+            }
+
+            val twoByteToNum = n1 + n2
+            if (markerHashMap.containsKey(twoByteToNum) && n1 == 255) {
+                if (twoByteToNum == jpegConstant.JFIF_MARKER) {
+                    startIndex = i
+                    isFindStartMarker = true
+                    break
+                }
+            }
+        }
+        if (!isFindStartMarker) {
+            println("startIndex :${startIndex}")
+            Log.d("이미지","Error: SOF가 존재하지 않음")
+            return ByteArray(0)
+        }
+        // 추출
+        resultByte = jpegBytes.copyOfRange(0, startIndex )
+        // start 마커부터 end 마커를 포함한 영역까지 복사해서 resultBytes에 저장
+        // System.arraycopy(jpegBytes, startIndex, resultByte, 0, endIndex - startIndex + 2)
+        return resultByte
     }
 
     fun extractJpegMeta(jpegBytes: ByteArray) : ByteArray{

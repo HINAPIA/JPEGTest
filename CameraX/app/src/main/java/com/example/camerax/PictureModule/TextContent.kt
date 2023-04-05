@@ -11,20 +11,31 @@ class TextContent {
         textList.clear()
         textCount = 0
     }
-
-    fun setContent(byteArrayList: ArrayList<ByteArray>, contentAttribute : ContentAttribute){
+//    fun setContent(byteArrayList: ArrayList<ByteArray>, contentAttribute : ContentAttribute){
+//        init()
+//        for(i in 0..byteArrayList.size-1){
+//            var text = Text(byteArrayList.get(i), contentAttribute)
+//            insertText(text)
+//        }
+//    }
+    fun setContent(contentAttribute: ContentAttribute, textList : ArrayList<String>){
+    for(i in 0..textList.size-1){
+            var text = Text(textList.get(i), contentAttribute)
+            insertText(text)
+        }
+    }
+    fun setContent(_textList : ArrayList<Text>){
         init()
-        for(i in 0..byteArrayList.size-1){
-            var text = Text(byteArrayList.get(i), contentAttribute)
-            insertText(text)
-        }
+        textList = _textList
+        textCount = _textList.size
+
     }
-    fun addContent(byteArrayList: ArrayList<ByteArray>, contentAttribute : ContentAttribute){
-        for(i in 0..byteArrayList.size-1){
-            var text = Text(byteArrayList.get(i), contentAttribute)
-            insertText(text)
-        }
-    }
+//    fun addContent(byteArrayList: ArrayList<ByteArray>, contentAttribute : ContentAttribute){
+//        for(i in 0..byteArrayList.size-1){
+//            var text = Text(byteArrayList.get(i), contentAttribute)
+//            insertText(text)
+//        }
+//    }
     fun insertText(text : Text){
         textList.add(text)
         textCount = textCount + 1

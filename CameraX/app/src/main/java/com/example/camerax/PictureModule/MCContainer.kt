@@ -1,13 +1,15 @@
 package com.example.camerax.PictureModule
 
 import android.app.Activity
-import android.media.Image
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.camerax.PictureModule.Contents.ContentAttribute
 import com.example.camerax.PictureModule.Contents.ContentType
 import com.example.camerax.SaveModule.SaveResolver
+import java.io.ByteArrayOutputStream
 
 
 class MCContainer(_activity: Activity) {
@@ -68,20 +70,40 @@ class MCContainer(_activity: Activity) {
 
     // 사진을 찍은 후에 호출되는 함수로 MC Container를 초기화하고 찍은 사진 내용으로 MC Container를 채운다
 
-    fun setContent(byteArrayList: ArrayList<ByteArray>, type: ContentType, contentAttribute : ContentAttribute){
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun setImageContent(byteArrayList: ArrayList<ByteArray>, type: ContentType, contentAttribute : ContentAttribute){
         init()
-        when (type){
-            ContentType.Image -> imageContent.setContent(byteArrayList, contentAttribute)
-            ContentType.Audio -> audioContent.setContent(byteArrayList, contentAttribute)
-            ContentType.Text -> textContent.setContent(byteArrayList, contentAttribute)
-        }
-       // saveResolver.saveImageOnAboveAndroidQ(imageContent.getJpegBytes(imageContent.getPictureAtIndex(0)!!))
+        imageContent.setContent(byteArrayList, contentAttribute)
+        var testString : ArrayList<String> = arrayListOf("안녕하세요", "2071231 김유진")
+        textContent.setContent(ContentAttribute.general, testString)
+//        when (type){
+//            ContentType.Image -> imageContent.setContent(byteArrayList, contentAttribute)
+//            ContentType.Audio -> audioContent.setContent(byteArrayList, contentAttribute)
+//           // ContentType.Text -> textContent.setContent(byteArrayList, contentAttribute)
+//            else -> {}
+//        }
+     //   val mainBitmap = byteArrayToBitmap(imageContent.getJpegBytes(imageContent.modifiedPicture))
+       // val byte = bitmapToByteArray(mainBitmap)
+        //saveResolver.saveImageOnAboveAndroidQ(byte)
        // saveResolver.saveImageOnAboveAndroidQ(imageContent.getJpegBytes(imageContent.getPictureAtIndex(1)!!))
        Log.d("fffff", "save 함수 호출 직전")
         save()
     }
-
-    // pasrsing할 때 쓰는 Conatiner를 채우는 함수
+    fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+        var outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        return outputStream.toByteArray()
+    }
+    fun byteArrayToBitmap(byteArray: ByteArray): Bitmap {
+        //  val options = BitmapFactory.Options()
+        //options.inMutable = true
+        val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+        return bitmap
+    }
+    // Text Content를 초기화. 뷰어에서 텍스트를 추가 후 Container에게 넣기
+    fun setTextConent(contentAttribute: ContentAttribute, textList : ArrayList<String>){
+        textContent.setContent(contentAttribute, textList)
+    }
 
 
 
@@ -104,6 +126,15 @@ class MCContainer(_activity: Activity) {
     }
     fun setJpegMetaBytes(_jpegMetaData : ByteArray){
         imageContent.jpegMetaData = _jpegMetaData
+    }
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun createBasicJpeg(sourceByteArray: ByteArray) {
+        // 헤더 따로 프레임 따로 저장
+        imageContent.setBasicContent(sourceByteArray)
+        //saveResolver.saveImageOnAboveAndroidQ(imageContent.getJpegBytes(imageContent.getPictureAtIndex(0)!!))
+
+        // metadata + frame 합친 bytes 리턴하는 함수
+        // imageContent.getJpegBytes(imageContent.getPictureAtIndex(0))
     }
 
 }

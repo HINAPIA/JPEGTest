@@ -24,7 +24,7 @@ class Header(_MC_container : MCContainer) {
     fun settingHeaderInfo(){
         imageContentInfo = ImageContentInfo(MCContainer.imageContent,0)
         textContentInfo = TextContentInfo(MCContainer.textContent,imageContentInfo.getEndOffset() +1)
-        audioContentInfo = AudioContentInfo(MCContainer.audioContent,textContentInfo.getEndOffset()+1)
+        audioContentInfo = AudioContentInfo(MCContainer.audioContent,imageContentInfo.getEndOffset()+1)
         headerDataLength = getAPP3FieldLength()
 
         applyAddedSize()
@@ -32,19 +32,19 @@ class Header(_MC_container : MCContainer) {
     }
     //추가한 APP3 extension + JpegMeta data 만큼 offset 변경
     fun applyAddedSize(){
-        // 추가할 APP3 extension 만큼 offset 변경 - APP3 marker(2) + APP3 Data field length
+        // 추가할 APP3 extension 만큼 offset 변경 - APP3 marker(2) + APP3 Data field length + EOI
         var headerLength = 2 + getAPP3FieldLength()
         var jpegMetaLength = MCContainer.getJpegMetaBytes().size
         for(i in 0..imageContentInfo.imageCount-1){
             var pictureInfo = imageContentInfo.imageInfoList.get(i)
             if(i == 0){
-                pictureInfo.dataSize += (headerLength+jpegMetaLength) + 1
+                pictureInfo.dataSize += (headerLength+jpegMetaLength) + 3
             }else{
                 pictureInfo.offset += (headerLength+jpegMetaLength) + 2
             }
         }
         audioContentInfo.dataStartOffset += (headerLength+jpegMetaLength)
-        textContentInfo.dataStartOffset += (headerLength+jpegMetaLength)
+        //textContentInfo.dataStartOffset += (headerLength+jpegMetaLength)
     }
     fun getAPP3FieldLength(): Int{
         var size = 0

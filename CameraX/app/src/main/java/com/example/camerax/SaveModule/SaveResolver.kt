@@ -14,12 +14,15 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import com.example.camerax.MainActivity
 import com.example.camerax.PictureModule.MCContainer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class SaveResolver(_mainActivity: Activity, _MC_Container: MCContainer) {
@@ -62,10 +65,10 @@ class SaveResolver(_mainActivity: Activity, _MC_Container: MCContainer) {
                 }
             }
             // Text Wirte
-            for(i in 0.. MCContainer.textContent.textCount-1){
-                var text = MCContainer.textContent.getTextAtIndex(i)
-                byteBuffer.write(/* b = */ text!!.textByteArray)
-            }
+//            for(i in 0.. MCContainer.textContent.textCount-1){
+//                var text = MCContainer.textContent.getTextAtIndex(i)
+//                byteBuffer.write(/* b = */ text!!.textByteArray)
+//            }
 
             // Audio Write
             if(MCContainer.audioContent.audio!= null){
@@ -157,9 +160,10 @@ class SaveResolver(_mainActivity: Activity, _MC_Container: MCContainer) {
         * ContentValues() 객체 생성.
         * ContentValues는 ContentResolver가 처리할 수 있는 값을 저장해둘 목적으로 사용된다.
         * */
-
+//        val name = SimpleDateFormat(mainActivity.FILENAME_FORMAT, Locale.US)
+//            .format(System.currentTimeMillis())
         val values = ContentValues()
-        values.put(MediaStore.Images.Media.RELATIVE_PATH, "DCIM/ImageSave")
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image")
         values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
 
