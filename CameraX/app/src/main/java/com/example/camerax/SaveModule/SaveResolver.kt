@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -14,14 +15,11 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import com.example.camerax.MainActivity
 import com.example.camerax.PictureModule.MCContainer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -40,8 +38,26 @@ class SaveResolver(_mainActivity: Activity, _MC_Container: MCContainer) {
             //Jpeg Meta
             var jpegMetaData = MCContainer.imageContent.jpegMetaData
             //if(firstPicture == null) throw NullPointerException("empty first Picture")
-            //SOI 쓰기
-            byteBuffer.write(jpegMetaData,0,2)
+
+            // app1의 크기
+            // APP1 세그먼트의 시작 위치를 찾음
+            var pos = 2
+            while (pos < jpegMetaData.size - 1) {
+                if (jpegMetaData[pos] == 0xFF.toByte() && jpegMetaData[pos + 1] == 0xE1.toByte()) {
+                    break
+                }
+                pos++
+            }
+            if (pos == jpegMetaData.size - 1) {
+                // APP1 세그먼트를 찾지 못함
+                Log.d("test_test", "APP1 세그먼트를 찾지 못함")
+                return@launch
+            }
+            val exifDataLength = ((jpegMetaData[pos+2].toInt() and 0xFF) shl 8) or
+                    ((jpegMetaData[pos+3].toInt() and 0xFF) shl 0)
+
+            //SOI + APP1 쓰기
+            byteBuffer.write(jpegMetaData,0,4 + exifDataLength)
             //헤더 쓰기
             //App3 Extension 데이터 생성
             MCContainer.settingHeaderInfo()
@@ -50,7 +66,7 @@ class SaveResolver(_mainActivity: Activity, _MC_Container: MCContainer) {
             byteBuffer.write(APP3ExtensionByteArray)
 
             //나머지 첫번째 사진의 데이터 쓰기
-            byteBuffer.write(jpegMetaData,2,jpegMetaData.size-2)
+            byteBuffer.write(jpegMetaData,4 + exifDataLength,jpegMetaData.size-(4 + exifDataLength))
            // byteBuffer.write(jpegMetaData)
 
             // Imgaes write
@@ -116,40 +132,11 @@ class SaveResolver(_mainActivity: Activity, _MC_Container: MCContainer) {
 
     }
 
-//    //Android Q (Android 10, API 29 이상에서는 이 메서드를 통해서 이미지를 저장한다.)
-//    @RequiresApi(Build.VERSION_CODES.Q)
-//    fun saveImage() {
-//        val fileName = System.currentTimeMillis().toString() + ".jpg" // 파일이름 현재시간.jpg
-//
-//        val values = ContentValues()
-//        values.put(MediaStore.Images.Media.RELATIVE_PATH, "DCIM/ImageSave")
-//        values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
-//        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-//        val uri: Uri? =
-//            mainActivity.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-//        try {
-//            val outputStream: OutputStream? = uri?.let {
-//                mainActivity.getContentResolver().openOutputStream(
-//                    it
-//                )
-//            }
-//
-//            if (outputStream != null) {
-//                outputStream.close()
-//            }
-//            Toast.makeText(mainActivity, "Image saved successfully", Toast.LENGTH_SHORT).show()
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//            Toast.makeText(mainActivity, "Failed to save image", Toast.LENGTH_SHORT).show()
-//        } catch(e: FileNotFoundException) {
-//            e.printStackTrace()
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-//    }
     fun byteArrayToBitmap(byteArray: ByteArray): Bitmap {
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
     }
+
+
     //Android Q (Android 10, API 29 이상에서는 이 메서드를 통해서 이미지를 저장한다.)
     @RequiresApi(Build.VERSION_CODES.Q)
     fun saveImageOnAboveAndroidQ(byteArray: ByteArray) {
@@ -160,10 +147,9 @@ class SaveResolver(_mainActivity: Activity, _MC_Container: MCContainer) {
         * ContentValues() 객체 생성.
         * ContentValues는 ContentResolver가 처리할 수 있는 값을 저장해둘 목적으로 사용된다.
         * */
-//        val name = SimpleDateFormat(mainActivity.FILENAME_FORMAT, Locale.US)
-//            .format(System.currentTimeMillis())
+
         val values = ContentValues()
-        values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image")
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, "DCIM/ImageSave")
         values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
 
@@ -182,11 +168,8 @@ class SaveResolver(_mainActivity: Activity, _MC_Container: MCContainer) {
             if (outputStream != null) {
                 outputStream.write(byteArray)
                 outputStream.close()
-                Toast.makeText(mainActivity, "Image saved successfully", Toast.LENGTH_SHORT).show()
-
+       //         Toast.makeText(mainActivity, "Image saved successfully", Toast.LENGTH_SHORT).show()
             }
-
-
         } catch(e: FileNotFoundException) {
             e.printStackTrace()
         } catch (e: IOException) {
@@ -195,7 +178,104 @@ class SaveResolver(_mainActivity: Activity, _MC_Container: MCContainer) {
             e.printStackTrace()
         }
     }
+    fun rotateImage(jpegData: ByteArray, degrees: Int): ByteArray {
+        val width = getJpegWidth(jpegData)
+        val height = getJpegHeight(jpegData)
+        val rotatedData = ByteArray(jpegData.size)
 
+        // 회전한 이미지의 가로 및 세로 길이를 계산
+        val rotatedWidth = if (degrees == 90 || degrees == 270) height else width
+        val rotatedHeight = if (degrees == 90 || degrees == 270) width else height
+
+        // 회전한 이미지의 각 픽셀을 계산하고, rotatedData에 저장
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val oldX = x
+                val oldY = y
+                val newX: Int
+                val newY: Int
+
+                // 회전 각도에 따라 새로운 좌표 계산
+                when (degrees) {
+                    90 -> {
+                        newX = oldY
+                        newY = rotatedHeight - oldX - 1
+                    }
+                    180 -> {
+                        newX = rotatedWidth - oldX - 1
+                        newY = rotatedHeight - oldY - 1
+                    }
+                    270 -> {
+                        newX = rotatedWidth - oldY - 1
+                        newY = oldX
+                    }
+                    else -> {
+                        newX = oldX
+                        newY = oldY
+                    }
+                }
+
+                // 회전한 픽셀 값을 rotatedData에 저장
+                val oldIndex = (y * width + x) * 3
+                val newIndex = (newY * rotatedWidth + newX) * 3
+                rotatedData[newIndex] = jpegData[oldIndex]
+                rotatedData[newIndex + 1] = jpegData[oldIndex + 1]
+                rotatedData[newIndex + 2] = jpegData[oldIndex + 2]
+            }
+        }
+
+        return rotatedData
+    }
+
+    fun getJpegWidth(jpegData: ByteArray): Int {
+        var pos = 2
+        while (pos < jpegData.size - 1) {
+            if (jpegData[pos] == 0xFF.toByte() && jpegData[pos + 1] == 0xC0.toByte()) {
+                break
+            } else {
+                //pos += ((jpegData[pos + 2].toInt() and 0xFF) shl 8) or (jpegData[pos + 3].toInt() and 0xFF) + 2
+                pos ++
+            }
+        }
+        return ((jpegData[pos + 5].toInt() and 0xFF) shl 8) or (jpegData[pos + 6].toInt() and 0xFF)
+    }
+
+    fun getJpegHeight(jpegData: ByteArray): Int {
+        var pos = 2
+        while (pos < jpegData.size - 1) {
+            if (jpegData[pos] == 0xFF.toByte() && jpegData[pos + 1] == 0xC0.toByte()) {
+                break
+            } else {
+                pos ++
+                // pos += ((jpegData[pos + 2].toInt() and 0xFF) shl 8) or (jpegData[pos + 3].toInt() and 0xFF) + 2
+            }
+        }
+        return ((jpegData[pos + 7].toInt() and 0xFF) shl 8) or (jpegData[pos + 8].toInt() and 0xFF)
+    }
+    fun ratateImage90 (jpegData: ByteArray) : ByteArray{
+        var rotatedData = ByteArray(jpegData.size)
+        // 이미지를 회전시킴
+//        if (rotateDirection != RotateDirection.NONE) {
+        val width =getJpegWidth(jpegData)
+        val height = getJpegHeight(jpegData)
+
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val oldX = x
+                val oldY = y
+                val newX: Int
+                val newY: Int
+                newX = oldY
+                newY = width - oldX - 1
+                val oldIndex = (y * width + x) * 3
+                val newIndex = (newY * width + newX) * 3
+                rotatedData[newIndex] = jpegData[oldIndex]
+                rotatedData[newIndex + 1] = jpegData[oldIndex + 1]
+                rotatedData[newIndex + 2] = jpegData[oldIndex + 2]
+            }
+        }
+        return rotatedData
+    }
     private fun saveImageOnUnderAndroidQ(byteArray: ByteArray) {
         val fileName = System.currentTimeMillis().toString() + ".jpg"
         val externalStorage = Environment.getExternalStorageDirectory().absolutePath
@@ -227,5 +307,213 @@ class SaveResolver(_mainActivity: Activity, _MC_Container: MCContainer) {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    fun rotateImage(jpegData: ByteArray): ByteArray {
+        // APP1 세그먼트의 시작 위치를 찾음
+        var pos = 2
+        while (pos < jpegData.size - 1) {
+            if (jpegData[pos] == 0xFF.toByte() && jpegData[pos + 1] == 0xE1.toByte()) {
+                break
+            }
+            pos++
+        }
+        if (pos == jpegData.size - 1) {
+            // APP1 세그먼트를 찾지 못함
+            return jpegData
+        }
+
+        // APP1 세그먼트 길이를 읽음
+        val segmentLength =
+            ((jpegData[pos + 2].toInt() and 0xFF) shl 8) or (jpegData[pos + 3].toInt() and 0xFF)
+
+        // EXIF 정보 시작 위치를 계산함
+        var exifStartPos = pos + 4
+        while (exifStartPos < jpegData.size - 1) {
+            if (jpegData[exifStartPos] == 'E'.toByte() &&
+                jpegData[exifStartPos + 1] == 'x'.toByte() &&
+                jpegData[exifStartPos + 2] == 'i'.toByte() &&
+                jpegData[exifStartPos + 3] == 'f'.toByte()
+            ) {
+                exifStartPos += 6
+                break
+            }
+            exifStartPos++
+        }
+        if (exifStartPos == jpegData.size - 1) {
+            // EXIF 정보를 찾지 못함
+            return jpegData
+        }
+
+        // 회전 정보를 찾음
+        var orientation = ExifInterface.ORIENTATION_UNDEFINED
+        var curPos = exifStartPos
+        while (curPos < exifStartPos + segmentLength - 2) {
+            if (jpegData[curPos] == 0x01.toByte() && jpegData[curPos + 1] == 0x12.toByte()) {
+                orientation = jpegData[curPos + 9].toInt()
+                break
+            }
+            curPos++
+        }
+
+        // 회전 각도와 방향을 계산함
+        val rotateDegrees = when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> 90
+            ExifInterface.ORIENTATION_ROTATE_180 -> 180
+            ExifInterface.ORIENTATION_ROTATE_270 -> 270
+            else -> 0
+        }
+        val rotateDirection = when (orientation) {
+            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> RotateDirection.FLIP
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> RotateDirection.FLIP
+            ExifInterface.ORIENTATION_TRANSPOSE -> RotateDirection.COUNTER_CLOCKWISE
+            ExifInterface.ORIENTATION_TRANSVERSE -> RotateDirection.CLOCKWISE
+            else -> RotateDirection.NONE
+        }
+        var rotatedData = ByteArray(jpegData.size)
+        // 이미지를 회전시킴
+//        if (rotateDirection != RotateDirection.NONE) {
+        val width = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.size).width
+        val height = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.size).height
+
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val oldX = x
+                val oldY = y
+                val newX: Int
+                val newY: Int
+                when (rotateDirection) {
+                    RotateDirection.CLOCKWISE -> {
+                        newX = oldY
+                        newY = width - oldX - 1
+                    }
+                    RotateDirection.COUNTER_CLOCKWISE -> {
+                        newX = height - oldY - 1
+                        newY = oldX
+                    }
+                    RotateDirection.FLIP -> {
+                        newX = oldX
+                        newY = height - oldY - 1
+                    }
+                    RotateDirection.CLOCKWISE -> {
+                        newX = height - oldY - 1
+                        newY = width - oldX - 1
+                    }
+                    RotateDirection.COUNTER_CLOCKWISE -> {
+                        newX = oldY
+                        newY = oldX
+                    }
+                    else -> {
+                        newX = oldY
+                        newY = width - oldX - 1
+                    }
+                }
+                val oldIndex = (y * width + x) * 3
+                val newIndex = (newY * width + newX) * 3
+                rotatedData[newIndex] = jpegData[oldIndex]
+                rotatedData[newIndex + 1] = jpegData[oldIndex + 1]
+                rotatedData[newIndex + 2] = jpegData[oldIndex + 2]
+            }
+        }
+        when (rotateDegrees) {
+            90 -> {
+                    // 시계방
+                    for (y in 0 until height) {
+                        for (x in 0 until width) {
+                            val oldX = x
+                            val oldY = y
+                            val newX: Int
+                            val newY: Int
+                            when (rotateDirection) {
+                                RotateDirection.CLOCKWISE -> {
+                                    newX = oldY
+                                    newY = width - oldX - 1
+                                }
+                                RotateDirection.COUNTER_CLOCKWISE -> {
+                                    newX = height - oldY - 1
+                                    newY = oldX
+                                }
+                                RotateDirection.FLIP -> {
+                                    newX = oldX
+                                    newY = height - oldY - 1
+                                }
+                                RotateDirection.CLOCKWISE -> {
+                                    newX = height - oldY - 1
+                                    newY = width - oldX - 1
+                                }
+                                RotateDirection.COUNTER_CLOCKWISE -> {
+                                    newX = oldY
+                                    newY = oldX
+                                }
+                                else -> {
+                                    newX = oldY
+                                    newY = width - oldX - 1
+                                }
+                            }
+                            val oldIndex = (y * width + x) * 3
+                            val newIndex = (newY * width + newX) * 3
+                            rotatedData[newIndex] = jpegData[oldIndex]
+                            rotatedData[newIndex + 1] = jpegData[oldIndex + 1]
+                            rotatedData[newIndex + 2] = jpegData[oldIndex + 2]
+                        }
+                    }
+            }
+                180 -> {
+                    for (i in 0 until jpegData.size) {
+                        rotatedData[i] = jpegData[jpegData.size - i - 1]
+                    }
+                }
+                270 -> {
+                    for (y in 0 until height) {
+                        for (x in 0 until width) {
+                            val oldX = x
+                            val oldY = y
+                            val newX: Int
+                            val newY: Int
+                            when (rotateDirection) {
+                                RotateDirection.CLOCKWISE -> {
+                                    newX = height - oldY - 1
+                                    newY = oldX
+                                }
+                                RotateDirection.COUNTER_CLOCKWISE -> {
+                                    newX = oldY
+                                    newY = width - oldX - 1
+                                }
+                                RotateDirection.FLIP -> {
+                                    newX = width - oldX - 1
+                                    newY = oldY
+                                }
+                                RotateDirection.CLOCKWISE -> {
+                                    newX = height - oldY - 1
+                                    newY = width - oldX - 1
+                                }
+                                RotateDirection.COUNTER_CLOCKWISE -> {
+                                    newX = oldY
+                                    newY = oldX
+                                }
+                                else -> {
+                                    newX = oldX
+                                    newY = oldY
+                                }
+                            }
+                            val oldIndex = (y * width + x) * 3
+                            val newIndex = (newY * width + newX) * 3
+                            rotatedData[newIndex] = jpegData[oldIndex]
+                            rotatedData[newIndex + 1] = jpegData[oldIndex + 1]
+                            rotatedData[newIndex + 2] = jpegData[oldIndex + 2]
+                        }
+                    }
+                }
+            else -> {
+                rotatedData = jpegData.copyOf()
+            }
+        }
+        return rotatedData
+    }
+    enum class RotateDirection {
+        NONE,
+        CLOCKWISE,
+        COUNTER_CLOCKWISE,
+        FLIP
     }
 }

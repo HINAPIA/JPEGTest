@@ -1,6 +1,8 @@
 package com.example.camerax.PictureModule
 
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
@@ -30,10 +32,8 @@ class ImageContent {
         init()
         // 메타 데이터 분리
         jpegMetaData = extractJpegMeta(byteArrayList.get(0))
+        //jpegMetaData = getOrientationFromJpeg(jpegMetaData)
         for(i in 0..byteArrayList.size-1){
-            if(i == 0){
-                Log.d("testtest", "(1)" +byteArrayList.get(i).size.toString())
-            }
             // frame 분리
             var frameBytes : ByteArray = extractFrame(byteArrayList.get(i))
             // Picture 객체 생성
@@ -43,6 +43,7 @@ class ImageContent {
                 modifiedPicture = picture
         }
     }
+
     // ImageContent 리셋 후 초기화 - 파일을 parsing할 때 ImageContent를 생성
     fun setContent(_pictureList : ArrayList<Picture>){
         init()
@@ -72,6 +73,57 @@ class ImageContent {
         pictureCount = pictureCount + 1
     }
 
+    // EXIF 부분만 떼서 매개변수로 받고 수정된 EXIF를 ByteArray로 리턴
+    fun getOrientationFromJpeg(jpegData: ByteArray): ByteArray {
+        // APP1 세그먼트의 시작 위치를 찾음
+        var pos = 2
+        while (pos < jpegData.size - 1) {
+            if (jpegData[pos] == 0xFF.toByte() && jpegData[pos + 1] == 0xE1.toByte()) {
+                break
+            }
+            pos++
+        }
+        if (pos == jpegData.size - 1) {
+            // APP1 세그먼트를 찾지 못함
+            return ByteArray(0)
+        }
+
+        // APP1 세그먼트 길이를 읽음
+        val segmentLength = ((jpegData[pos + 2].toInt() and 0xFF) shl 8) or (jpegData[pos + 3].toInt() and 0xFF)
+
+        // EXIF 정보 시작 위치를 계산함
+        var exifStartPos = pos + 4
+        while (exifStartPos < jpegData.size - 1) {
+            if (jpegData[exifStartPos] == 'E'.toByte() &&
+                jpegData[exifStartPos + 1] == 'x'.toByte() &&
+                jpegData[exifStartPos + 2] == 'i'.toByte() &&
+                jpegData[exifStartPos + 3] == 'f'.toByte()
+            ) {
+                exifStartPos += 6
+                break
+            }
+            exifStartPos++
+        }
+        if (exifStartPos == jpegData.size - 1) {
+            // EXIF 정보를 찾지 못함
+            return ByteArray(0)
+        }
+
+        // 회전 정보를 찾음
+        var orientation = ExifInterface.ORIENTATION_UNDEFINED
+        var curPos = exifStartPos
+        while (curPos < exifStartPos + segmentLength - 2) {
+            if (jpegData[curPos] == 0x01.toByte() && jpegData[curPos + 1] == 0x12.toByte()) {
+                orientation = jpegData[curPos + 9].toInt()
+               // jpegData[curPos + 9] = 0x01.toByte() // 회전 정보를 0으로 수정
+                jpegData[curPos + 9] =  // 회전 정보를 0으로 수정
+                break
+            }
+            curPos++
+        }
+
+        return jpegData
+    }
     // PictureList의 index번째 요소를 찾아 반환
     fun getPictureAtIndex(index : Int): Picture? {
         return pictureList.get(index) ?: null

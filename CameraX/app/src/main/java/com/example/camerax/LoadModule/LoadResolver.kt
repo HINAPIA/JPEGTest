@@ -3,6 +3,7 @@ package com.example.camerax.LoadModule
 import android.app.Activity
 import android.media.Image
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.camerax.PictureModule.*
 import com.example.camerax.PictureModule.Contents.ContentAttribute
@@ -73,7 +74,21 @@ class LoadResolver() {
 
     @RequiresApi(Build.VERSION_CODES.Q)
     fun createMCContainer(MCContainer: MCContainer, sourceByteArray: ByteArray) {
-        var APP3_startOffset = 4
+
+        // APP3 세그먼트의 시작 위치를 찾음
+        var pos = 2
+        while (pos < sourceByteArray.size - 1) {
+            if (sourceByteArray[pos] == 0xFF.toByte() && sourceByteArray[pos + 1] == 0xE3.toByte()) {
+                break
+            }
+            pos++
+        }
+        if (pos == sourceByteArray.size - 1) {
+            // APP1 세그먼트를 찾지 못함
+            Log.d("test_test", "APP3 세그먼트를 찾지 못함")
+            return
+        }
+        var APP3_startOffset = pos
 //        if(sourceByteArray.copyOfRange(APP3_startOffset, APP3_startOffset+2)!= byteArrayOf(0xff.toByte(), 0xe3.toByte())){
 //            // 일반 JPEG
 //            MCContainer.createBasicJpeg(sourceByteArray)

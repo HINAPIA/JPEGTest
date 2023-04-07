@@ -436,6 +436,11 @@ class MainActivity : AppCompatActivity()  {
                         if(mode == 0){
                             byteArrayList.add(sourceByteArray)
                             MCContainer.setImageContent (byteArrayList, ContentType.Image, ContentAttribute.general)
+                            CoroutineScope(Dispatchers.Main).launch {
+                                val msg = "Photo capture succeeded: ${output.savedUri}"
+                                Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                                Log.d(TAG, msg)
+                            }
                         }
                         else if (mode == 1){
                             byteArrayList.add(sourceByteArray)
@@ -445,13 +450,14 @@ class MainActivity : AppCompatActivity()  {
                                 Log.d("이미지", "모두 저장 완료: "  +byteArrayList.size.toString())
                                 isImageArrayFull = true
                                 MCContainer.setImageContent(byteArrayList, ContentType.Image, ContentAttribute.focus)
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    val msg = "Photo capture succeeded: ${output.savedUri}"
+                                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                                    Log.d(TAG, msg)
+                                }
                             }
                         }
-                        CoroutineScope(Dispatchers.Main).launch {
-                            val msg = "Photo capture succeeded: ${output.savedUri}"
-                            Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                            Log.d(TAG, msg)
-                        }
+
                     }
 
 
