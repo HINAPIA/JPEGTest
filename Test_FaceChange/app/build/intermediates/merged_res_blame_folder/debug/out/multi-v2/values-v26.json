@@ -4,7 +4,7 @@
             "outputFile": "org.tensorflow.codelabs.objectdetection.app-mergeDebugResources-26:/values-v26/values-v26.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\user\\.gradle\\caches\\transforms-3\\b10e30381a20197a97c1c31e2134aacc\\transformed\\appcompat-1.2.0\\res\\values-v26\\values-v26.xml",
+                    "source": "/Users/hscomputerengineering/.gradle/caches/transforms-3/b10e30381a20197a97c1c31e2134aacc/transformed/appcompat-1.2.0/res/values-v26/values-v26.xml",
                     "from": {
                         "startLines": "2,3,4,8,12,16",
                         "startColumns": "4,4,4,4,4,4",

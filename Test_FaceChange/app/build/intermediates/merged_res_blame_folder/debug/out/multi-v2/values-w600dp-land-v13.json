@@ -4,7 +4,7 @@
             "outputFile": "org.tensorflow.codelabs.objectdetection.app-mergeDebugResources-26:/values-w600dp-land-v13/values-w600dp-land-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\user\\.gradle\\caches\\transforms-3\\1e36558b37e4cedc956657d00b3bbbc4\\transformed\\material-1.3.0\\res\\values-w600dp-land-v13\\values-w600dp-land-v13.xml",
+                    "source": "/Users/hscomputerengineering/.gradle/caches/transforms-3/1e36558b37e4cedc956657d00b3bbbc4/transformed/material-1.3.0/res/values-w600dp-land-v13/values-w600dp-land-v13.xml",
                     "from": {
                         "startLines": "2,3",
                         "startColumns": "4,4",

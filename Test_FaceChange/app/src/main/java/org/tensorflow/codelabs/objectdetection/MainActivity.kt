@@ -209,61 +209,73 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun autoBestFaceChange(testDrawble: Array<Int>, bestFaceStandard: Int) {
 
-        var basicFacesResult: List<Face>
-        val basicInformation: HashMap<Int, Face> = hashMapOf()
+    private fun autoBestFaceChange(testDrawble: Array<Int>, bestFaceStandart: Int) {
+        lateinit var basicInformation: List<Face>
 
-        val faceList: ArrayList<List<Face>> = ArrayList()
+        val bestFaceIndex: ArrayList<Int?> = ArrayList()
+        val bestFace : ArrayList<Face> = ArrayList()
 
-        CoroutineScope(Dispatchers.Default).launch {
-            basicFacesResult = getFaceDetectionOneByOne(getSampleImage(testDrawble[0]))!!
-            faceList.add(basicFacesResult)
-
-            val checkFaceDetection: ArrayList<Boolean> = arrayListOf()
-
-            for(i in 0 until testDrawble.size)
-                checkFaceDetection.add(false)
-
-            for (j in 0 until testDrawble.size) {
-                //CoroutineScope(Dispatchers.Default).launch {
-                    if(j==0) {
-                        for (i in basicFacesResult.indices1) {
-                            basicInformation[i] = basicFacesResult[i]
+        lifecycleScope.launch(Dispatchers.Default) {
+            for(j in 0 until testDrawble.size) {
+                // j 번째 사진 faces 정보 얻기
+                val facesResult = getFaceDetectionOneByOne(getSampleImage(testDrawble[j]))
+                if (facesResult != null) {
+                    if(j == 0) {
+                        // 첫번째 인덱스일 경우 비교를 위한 변수 초기화
+                        for(i in 0 until facesResult.size) {
+                            bestFaceIndex.add(0)
+                            bestFace.add(facesResult[i])
                         }
+                        basicInformation = facesResult
                     }
-                    // j 번째 사진 faces 정보 얻기
-                    val facesResult =
-                        getFaceDetectionOneByOne(getSampleImage(testDrawble[j]))
-                    faceList.add(facesResult!!)
-                    checkFaceDetection[j] = true
-                //}
-                //Thread.sleep(3000)
-            }
-//            while (true) {
-//                var allTrue = true
-//                for (i in 0 until testDrawble.size) {
-//                    if (!checkFaceDetection[i]) {
-//                        allTrue = false
-//                        break
-//                    }
-//                }
-//                Thread.sleep(500)
-//                if (allTrue)
-//                    break
-//            }
 
-            val bestFaceMap = getBestFaceList(faceList, bestFaceStandard)
+                    else
+                    // 그 이후 인덱스일 경우, 각 face을 비교
+                        for (i in 0 until facesResult.size) {
+                            // 비교할 face = checkFace
+                            val checkFace = facesResult[i]
+
+                            // 현재 face가 비교될 face 배열의 index 값
+                            var index = getBoxComparisonIndex(checkFace, bestFace)
+
+                            // bestFace 정보 알아내기
+                            val best = bestFace[index]
+
+                            if(bestFaceStandart == 0) { // 베스트 사진의 기준이 눈일 때
+                                // 가장 눈을 뜬 사진 알아내기
+                                if(best.leftEyeOpenProbability!! < checkFace.leftEyeOpenProbability!! ||
+                                    best.rightEyeOpenProbability!! < checkFace.rightEyeOpenProbability!!) {
+                                    bestFace[index] = checkFace
+                                    bestFaceIndex[index] = j
+                                }
+                            }
+                            else if(bestFaceStandart == 1)  // 베스트 사진의 기준이 입일 때
+                                if(best.smilingProbability!! < checkFace.smilingProbability!!) {
+                                    bestFace[index] = checkFace
+                                    bestFaceIndex[index] = j
+                                }
+
+                                else {  // 베스트 사진의 기준이 눈,입일 때
+                                    if(best.leftEyeOpenProbability!! < checkFace.leftEyeOpenProbability!! ||
+                                        best.rightEyeOpenProbability!! < checkFace.rightEyeOpenProbability!! &&
+                                        best.smilingProbability!! < checkFace.smilingProbability!!) {
+                                        bestFace[index] = checkFace
+                                        bestFaceIndex[index] = j
+                                    }
+                                }
+                        }
+                }
+            }
+            println(bestFaceIndex)
             var resultBitmap = getSampleImage(testDrawble[0])
 
-            for (i in 0 until bestFaceMap.size) {
+            for (i in 0 until bestFace.size) {
                 // 현재 face가 비교될 face 배열의 index 값
-                val index = getBoxComparisonIndex(bestFaceMap[i]!!, basicInformation)
-                resultBitmap = getFaceChangeBitmap(
-                    resultBitmap, getSampleImage(testDrawble[i]),
-                    basicInformation[index]!!.boundingBox.toRectF(),
-                    basicInformation[index]!!.allLandmarks, bestFaceMap[i]!!.allLandmarks
-                )
+                val index = getBoxComparisonIndex(bestFace[i], basicInformation)
+                resultBitmap = getFaceChangeBitmap(resultBitmap, getSampleImage(testDrawble[bestFaceIndex[i]!!]),
+                    basicInformation[index].boundingBox.toRectF(),
+                    basicInformation[index].allLandmarks, bestFace[i].allLandmarks)
             }
 
             runOnUiThread {
@@ -271,72 +283,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 errorMessage.setText("")
             }
         }
-
     }
 
-    private fun getBestFaceList(faceList : ArrayList<List<Face>>, bestFaceStandard: Int) : HashMap<Int, Face> {
-        val bestFaceMap : HashMap<Int, Face> = hashMapOf()
-
-        for(j in 0 until faceList.size){
-            val facesResult = faceList[j]
-            if(j == 0) {
-                // 첫번째 인덱스일 경우 비교를 위한 변수 초기화
-                for(checkFace in facesResult) {
-                    bestFaceMap[j] = checkFace
-                }
-            }
-
-            else  {
-            // 그 이후 인덱스일 경우, 각 face을 비교
-                for (checkFace in facesResult) {
-                    // 현재 face가 비교될 face 배열의 index 값
-                    var index = getBoxComparisonIndex(checkFace, bestFaceMap)
-
-                    // bestFace 정보 알아내기
-                    val best = bestFaceMap[index]
-
-                    if(bestFaceStandard == 0) { // 베스트 사진의 기준이 눈일 때
-                        // 가장 눈을 뜬 사진 알아내기
-                        if(best!!.leftEyeOpenProbability!! < checkFace.leftEyeOpenProbability!! ||
-                            best.rightEyeOpenProbability!! < checkFace.rightEyeOpenProbability!!) {
-                            bestFaceMap[j] = checkFace
-                        }
-                    }
-                    else if(bestFaceStandard == 1) { // 베스트 사진의 기준이 입일 때
-                        if(best!!.smilingProbability!! < checkFace.smilingProbability!!) {
-                            bestFaceMap[j] = checkFace
-                        }
-                        else {  // 베스트 사진의 기준이 눈,입일 때
-                            if(best.leftEyeOpenProbability!! < checkFace.leftEyeOpenProbability!! ||
-                                best.rightEyeOpenProbability!! < checkFace.rightEyeOpenProbability!! &&
-                                best.smilingProbability!! < checkFace.smilingProbability!!) {
-                                bestFaceMap[j] = checkFace
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return bestFaceMap
-    }
-
-    private fun getBoxComparisonIndex(check: Face, originalHashMap: HashMap<Int, Face>) : Int{
+    private fun getBoxComparisonIndex(check: Face, original: List<Face>) : Int{
         var index = 0
         // 현재 face가 어떤 face인지 알기 도와주는 중간 값
         val checkPointX = check.boundingBox.left + (check.boundingBox.right - check.boundingBox.left)/2
         val checkPointY = check.boundingBox.top + (check.boundingBox.bottom - check.boundingBox.top)/2
-        for(k in 0 until originalHashMap.size) {
-            println("~~~~~~~~~"+checkPointX+" || "+checkPointY)
-            if (originalHashMap != null && checkPointX >= originalHashMap[k]!!.boundingBox.left && checkPointX <= originalHashMap[k]!!.boundingBox.right &&
-                checkPointY >= originalHashMap[k]!!.boundingBox.top && checkPointY <= originalHashMap[k]!!.boundingBox.bottom) {
+        for(k in 0 until original.size) {
+            if (checkPointX >= original[k].boundingBox.left && checkPointX <= original[k].boundingBox.right &&
+                checkPointY >= original[k].boundingBox.top && checkPointY <= original[k].boundingBox.bottom) {
                 index = k
                 break
             }
-
         }
         return index
     }
-
     private fun getBitmapClickPoint( clickPoint: PointF, imageView: ImageView) : Point {
 
         val bitmap:Bitmap = imageView.drawable.toBitmap()

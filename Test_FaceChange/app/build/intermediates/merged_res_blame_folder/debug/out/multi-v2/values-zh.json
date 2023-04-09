@@ -4,7 +4,7 @@
             "outputFile": "org.tensorflow.codelabs.objectdetection.app-mergeDebugResources-26:/values-zh/values-zh.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\user\\.gradle\\caches\\transforms-3\\a63a4c5c05de6949ea0833a132079b8e\\transformed\\jetified-android-image-cropper-2.8.0\\res\\values-zh\\values-zh.xml",
+                    "source": "/Users/hscomputerengineering/.gradle/caches/transforms-3/a63a4c5c05de6949ea0833a132079b8e/transformed/jetified-android-image-cropper-2.8.0/res/values-zh/values-zh.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10",
                         "startColumns": "4,4,4,4,4,4,4,4,4",
