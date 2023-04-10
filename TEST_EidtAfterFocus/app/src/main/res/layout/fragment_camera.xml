@@ -69,6 +69,18 @@
         app:layout_constraintTop_toTopOf="@+id/horizontal_centerline3"
         tools:ignore="SpeakableTextPresentCheck"/>
 
+    <Button
+        android:id="@+id/gallery_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/baseline_image_24"
+        android:elevation="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_centerline6"
+        app:layout_constraintStart_toEndOf="@id/vertical_centerline5"
+        app:layout_constraintTop_toTopOf="@+id/horizontal_centerline3"
+        tools:ignore="SpeakableTextPresentCheck"/>
+
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -172,6 +184,20 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent=".95" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vertical_centerline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vertical_centerline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".2" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/horizontal_centerline1"

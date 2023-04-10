@@ -4,50 +4,29 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.RectF
+import android.graphics.*
 import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraMetadata
 import android.hardware.camera2.CaptureRequest
 import android.media.MediaPlayer
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.os.*
 import android.provider.MediaStore
 import android.util.Log
-import android.util.Rational
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.SeekBar
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.camera2.internal.compat.CameraCharacteristicsCompat
 import androidx.camera.camera2.interop.Camera2CameraControl
 import androidx.camera.camera2.interop.Camera2CameraInfo
 import androidx.camera.camera2.interop.CaptureRequestOptions
 import androidx.camera.core.*
+import androidx.camera.core.Camera
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.constraintlayout.widget.Guideline
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.test_editafterfocus.databinding.FragmentCameraBinding
-//import com.google.mlkit.vision.common.InputImage
-//import com.google.mlkit.vision.objects.DetectedObject
-//import com.google.mlkit.vision.objects.ObjectDetection
-//import com.google.mlkit.vision.objects.ObjectDetector
-//import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
+import kotlinx.coroutines.*
 import org.tensorflow.lite.support.image.TensorImage
-import java.lang.Thread.sleep
-import java.lang.reflect.Array.set
 import java.lang.reflect.InvocationTargetException
 import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
@@ -56,7 +35,8 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 import org.tensorflow.lite.task.vision.detector.ObjectDetector
-import kotlin.math.max
+import java.io.ByteArrayOutputStream
+import java.util.concurrent.atomic.AtomicInteger
 
 @androidx.annotation.OptIn(androidx.camera.camera2.interop.ExperimentalCamera2Interop::class)
 class CameraFragment : Fragment() {
@@ -75,6 +55,8 @@ class CameraFragment : Fragment() {
     private lateinit var camera: Camera
     private var cameraController: CameraControl? = null
     private lateinit var cameraExecutor: ExecutorService
+    private lateinit var cameraProvider: ProcessCameraProvider
+    private lateinit var cameraSelector: CameraSelector
     private lateinit var camera2CameraInfo: Camera2CameraInfo
     private var imageCapture: ImageCapture? = null
 
@@ -89,6 +71,10 @@ class CameraFragment : Fragment() {
     // Object Focus
     private lateinit var factory: MeteringPointFactory
     private var isFocusSuccess: Boolean? = null
+
+    val imageCaptureList = ArrayList<ByteArray>()
+    val imageCaptureCount = 10
+    val imageCaptureIndex = AtomicInteger()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -162,9 +148,49 @@ class CameraFragment : Fragment() {
                     mediaPlayer.start()
                 }
                 else{
+
                     // Burst Mode
 //                    takePhotoIndex(0, 10)
                     takeBurstMode(0,10)
+
+//                    if (imageCaptureIndex.get() >= imageCaptureCount) {
+//                        // 이미지 캡처가 완료되었을 때 처리할 로직 작성
+//                        mediaPlayer.start()
+//
+//                        for ((index, byteArray) in imageCaptureList.withIndex()) {
+//                            val fileName = "image${index}.jpg"
+////                            val contentValues = ContentValues().apply {
+////                                put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+////                                put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+////                                put(MediaStore.Images.Media.RELATIVE_PATH, "${Environment.DIRECTORY_DCIM}/CameraX-Image")
+////                            }
+//                            val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
+//                                .format(System.currentTimeMillis())
+//                            val contentValues = ContentValues().apply {
+//                                put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+//                                put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+//                                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+//                                    put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image")
+//                                }
+//                            }
+//
+//// Insert the image into the MediaStore
+//                            val contentResolver = mainActivity.contentResolver
+//                            val uri = contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+//
+//// Write the byte array to the output stream
+//                            uri?.let { uri ->
+//                                val outputStream = contentResolver.openOutputStream(uri)
+//                                outputStream?.use { output ->
+//                                    val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+//                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)
+//                                    output.flush()
+//                                }
+//                            }
+//                        }
+//                    } else {
+//                        // 아직 캡처할 이미지가 남아있을 때 처리할 로직 작성
+//                    }
                 }
             }
 
@@ -180,26 +206,13 @@ class CameraFragment : Fragment() {
             }
 
             else if(viewBinding.autoRewindRadio.isChecked){
-
+                // Burst Mode가 성공해야 코드를 짤 수 있음 ㅠ
             }
         }
 
-
-        /**
-         * 사진 1장 찍고 저장하는 Button
-         */
-//        viewBinding.imageCaptureButton.setOnClickListener {
-//            takePhoto()
-//        }
-
-        /**
-         * Lens Focus Distance별로 사진 찍기
-         */
-//        viewBinding.multiFocusButton.setOnClickListener {
-//            previewByteArrayList.clear()
-//            controlLensFocusDistance(0)
-////            captureLensFocusDistanceSeries(5)
-//        }
+        viewBinding.galleryButton.setOnClickListener {
+            // 갤러리 버튼
+        }
 
 
 
@@ -246,8 +259,8 @@ class CameraFragment : Fragment() {
     private fun setDetecter() {
         // Step 2: Initialize the detector object
         val options = ObjectDetector.ObjectDetectorOptions.builder()
-            .setMaxResults(10)          // 최대 결과 (모델에서 감지해야 하는 최대 객체 수)
-            .setScoreThreshold(0.2f)    // 점수 임계값 (감지된 객체를 반환하는 객체 감지기의 신뢰도)
+            .setMaxResults(5)          // 최대 결과 (모델에서 감지해야 하는 최대 객체 수)
+            .setScoreThreshold(0.4f)    // 점수 임계값 (감지된 객체를 반환하는 객체 감지기의 신뢰도)
             .build()
         customObjectDetector = ObjectDetector.createFromFileAndOptions(
             mainActivity,
@@ -333,6 +346,7 @@ class CameraFragment : Fragment() {
         )
     }
 
+
     /**
      * burstMode(index : Int, maxIndex : Int)
      *      - 연속 촬영 모드
@@ -350,19 +364,18 @@ class CameraFragment : Fragment() {
         imageCapture.takePicture(cameraExecutor, object :
             ImageCapture.OnImageCapturedCallback() {
             override fun onCaptureSuccess(image: ImageProxy) {
+
+                takeBurstMode(index + 1, maxIndex)
+
                 val buffer = image.planes[0].buffer
                 buffer.rewind()
                 val bytes = ByteArray(buffer.capacity())
                 buffer.get(bytes)
                 previewByteArrayList.add(bytes)
-                val msg = "previewByteArrayList.Size : ${previewByteArrayList.size}"
-                Handler(Looper.getMainLooper()).post {
-                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                }
-//                Log.v("previewByteArrayList", "previewByteArrayList.Size : ${previewByteArrayList.size}")
+                // 다시 호출 (재귀 함수)
+
                 image.close()
-                //다시 호출 ( 재귀 함수 )
-                takeBurstMode(index + 1, maxIndex)
+
                 super.onCaptureSuccess(image)
             }
 
@@ -373,20 +386,18 @@ class CameraFragment : Fragment() {
     }
 
     private fun previewToByteArray(){
-        val imageCapture = imageCapture ?: return
+        val imageCapture = imageCapture
 
-        imageCapture.takePicture(cameraExecutor, object :
+        imageCapture!!.takePicture(cameraExecutor, object :
             ImageCapture.OnImageCapturedCallback() {
             override fun onCaptureSuccess(image: ImageProxy) {
+
                 val buffer = image.planes[0].buffer
                 buffer.rewind()
                 val bytes = ByteArray(buffer.capacity())
                 buffer.get(bytes)
                 previewByteArrayList.add(bytes)
-                val msg = "previewByteArrayList.Size : ${previewByteArrayList.size}"
-                Handler(Looper.getMainLooper()).post {
-                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                }
+
                 image.close()
                 super.onCaptureSuccess(image)
             }
@@ -617,7 +628,7 @@ class CameraFragment : Fragment() {
 
             // 2. CameraProvier 사용 가능 여부 확인
             // 생명주기에 binding 할 수 있는 ProcessCameraProvider 객체 가져옴
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+            cameraProvider = cameraProviderFuture.get()
 
             // 3. 카메라를 선택하고 use case를 같이 생명주기에 binding
 
@@ -633,9 +644,39 @@ class CameraFragment : Fragment() {
 
             imageCapture = ImageCapture.Builder().build()
 
+
+// ImageAnalysis use case 설정
+            val imageAnalysis = ImageAnalysis.Builder()
+                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                .setTargetRotation(Surface.ROTATION_0)
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+
+            // 프레임 처리 로직
+            imageAnalysis.setAnalyzer(cameraExecutor) { image ->
+                if (imageCaptureIndex.get() < imageCaptureCount) {
+                    val buffer = image.planes[0].buffer
+                    val data = ByteArray(buffer.remaining())
+                    buffer.get(data)
+
+                    val yuvImage = YuvImage(data, ImageFormat.NV21, image.width, image.height, null)
+                    val outputStream = ByteArrayOutputStream()
+                    yuvImage.compressToJpeg(
+                        Rect(0, 0, yuvImage.width, yuvImage.height),
+                        100,
+                        outputStream
+                    )
+                    val jpegByteArray = outputStream.toByteArray()
+
+                    imageCaptureList.add(jpegByteArray)
+                    imageCaptureIndex.incrementAndGet()
+                }
+                image.close()
+            }
+
             // 3-2. 카메라 세팅
             // CameraSelector는 카메라 세팅을 맡는다.(전면, 후면 카메라)
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
                 // binding 전에 binding 초기화
@@ -643,7 +684,7 @@ class CameraFragment : Fragment() {
 
                 // 3-3. use case와 카메라를 생명 주기에 binding
                 camera = cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture
+                    this, cameraSelector, preview, imageCapture, imageAnalysis
                 )
 
                 cameraController = camera!!.cameraControl
