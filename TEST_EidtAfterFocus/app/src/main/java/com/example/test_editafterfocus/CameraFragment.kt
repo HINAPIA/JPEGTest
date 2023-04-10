@@ -12,6 +12,7 @@ import android.media.MediaPlayer
 import android.os.*
 import android.provider.MediaStore
 import android.util.Log
+import android.util.Size
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -58,7 +59,9 @@ class CameraFragment : Fragment() {
     private lateinit var cameraProvider: ProcessCameraProvider
     private lateinit var cameraSelector: CameraSelector
     private lateinit var camera2CameraInfo: Camera2CameraInfo
+    private lateinit var imageAnalyzer: ImageAnalysis
     private var imageCapture: ImageCapture? = null
+    private lateinit var executor: ExecutorService
 
     // TFLite
     private lateinit var customObjectDetector: ObjectDetector
@@ -72,9 +75,8 @@ class CameraFragment : Fragment() {
     private lateinit var factory: MeteringPointFactory
     private var isFocusSuccess: Boolean? = null
 
-    val imageCaptureList = ArrayList<ByteArray>()
-    val imageCaptureCount = 10
-    val imageCaptureIndex = AtomicInteger()
+
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -152,6 +154,7 @@ class CameraFragment : Fragment() {
                     // Burst Mode
 //                    takePhotoIndex(0, 10)
                     takeBurstMode(0,10)
+
 
 //                    if (imageCaptureIndex.get() >= imageCaptureCount) {
 //                        // 이미지 캡처가 완료되었을 때 처리할 로직 작성
@@ -644,35 +647,11 @@ class CameraFragment : Fragment() {
 
             imageCapture = ImageCapture.Builder().build()
 
-
-// ImageAnalysis use case 설정
-            val imageAnalysis = ImageAnalysis.Builder()
-                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                .setTargetRotation(Surface.ROTATION_0)
+            imageAnalyzer = ImageAnalysis.Builder()
+                .setTargetResolution(Size(640, 480))
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
 
-            // 프레임 처리 로직
-            imageAnalysis.setAnalyzer(cameraExecutor) { image ->
-                if (imageCaptureIndex.get() < imageCaptureCount) {
-                    val buffer = image.planes[0].buffer
-                    val data = ByteArray(buffer.remaining())
-                    buffer.get(data)
-
-                    val yuvImage = YuvImage(data, ImageFormat.NV21, image.width, image.height, null)
-                    val outputStream = ByteArrayOutputStream()
-                    yuvImage.compressToJpeg(
-                        Rect(0, 0, yuvImage.width, yuvImage.height),
-                        100,
-                        outputStream
-                    )
-                    val jpegByteArray = outputStream.toByteArray()
-
-                    imageCaptureList.add(jpegByteArray)
-                    imageCaptureIndex.incrementAndGet()
-                }
-                image.close()
-            }
 
             // 3-2. 카메라 세팅
             // CameraSelector는 카메라 세팅을 맡는다.(전면, 후면 카메라)
@@ -684,7 +663,7 @@ class CameraFragment : Fragment() {
 
                 // 3-3. use case와 카메라를 생명 주기에 binding
                 camera = cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture, imageAnalysis
+                    this, cameraSelector, preview, imageCapture
                 )
 
                 cameraController = camera!!.cameraControl
@@ -711,6 +690,7 @@ class CameraFragment : Fragment() {
         }, ContextCompat.getMainExecutor(mainActivity))
 
     }
+
 
     /**
      * 카메라 권한 확인하기
@@ -740,3 +720,4 @@ class CameraFragment : Fragment() {
             }.toTypedArray()
     }
 }
+
