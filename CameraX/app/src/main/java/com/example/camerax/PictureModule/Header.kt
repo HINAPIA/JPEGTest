@@ -22,8 +22,8 @@ class Header(_MC_container : MCContainer) {
     
     // MC Container에 채워진 Content의 정보를 Info 클래스들로 생성
     fun settingHeaderInfo(){
-        imageContentInfo = ImageContentInfo(MCContainer.imageContent,0)
-        textContentInfo = TextContentInfo(MCContainer.textContent,imageContentInfo.getEndOffset() +1)
+        imageContentInfo = ImageContentInfo(MCContainer.imageContent)
+        textContentInfo = TextContentInfo(MCContainer.textContent)
         audioContentInfo = AudioContentInfo(MCContainer.audioContent,imageContentInfo.getEndOffset()+1)
         headerDataLength = getAPP3FieldLength()
 
@@ -51,13 +51,18 @@ class Header(_MC_container : MCContainer) {
         size += imageContentInfo.getLength()
         size += textContentInfo.getLength()
         size += audioContentInfo.getLength()
-        return size + 4
+        return size + 8
     }
     fun convertBinaryData() : ByteArray {
         val buffer: ByteBuffer = ByteBuffer.allocate(getAPP3FieldLength() + 2)
         buffer.put("ff".toInt(16).toByte())
         buffer.put("e3".toInt(16).toByte())
         buffer.putInt(headerDataLength)
+        // M, C, F, 0
+        buffer.put(0x4D.toByte())
+        buffer.put(0x43.toByte())
+        buffer.put(0x46.toByte())
+        buffer.put(0x00.toByte())
         buffer.put(imageContentInfo.converBinaryData())
         buffer.put(textContentInfo.converBinaryData())
         buffer.put(audioContentInfo.converBinaryData())

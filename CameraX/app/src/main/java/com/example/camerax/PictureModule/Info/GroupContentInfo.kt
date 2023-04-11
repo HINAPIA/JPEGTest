@@ -16,8 +16,8 @@ class GroupContentInfo (_groupContent : GroupContent, _groupStartOffset : Int){
         groupStartOffset = _groupStartOffset
         groupContent = _groupContent
 
-        imageContentInfo = ImageContentInfo(groupContent.imageContent,0)
-        textContentInfo = TextContentInfo(groupContent.textContent,imageContentInfo.getEndOffset() +1)
+        imageContentInfo = ImageContentInfo(groupContent.imageContent)
+        textContentInfo = TextContentInfo(groupContent.textContent)
         audioContentInfo = AudioContentInfo(groupContent.audioContent,imageContentInfo.getEndOffset()+1)
     }
 

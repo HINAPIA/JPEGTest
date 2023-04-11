@@ -1,5 +1,6 @@
 package com.example.test_editafterfocus
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
@@ -8,7 +9,10 @@ import android.graphics.*
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraMetadata
 import android.hardware.camera2.CaptureRequest
+import android.media.AudioFormat
+import android.media.AudioRecord
 import android.media.MediaPlayer
+import android.media.MediaRecorder
 import android.os.*
 import android.provider.MediaStore
 import android.util.Log
@@ -37,6 +41,8 @@ import java.util.concurrent.Executors
 
 import org.tensorflow.lite.task.vision.detector.ObjectDetector
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.util.concurrent.atomic.AtomicInteger
 
 @androidx.annotation.OptIn(androidx.camera.camera2.interop.ExperimentalCamera2Interop::class)
@@ -144,9 +150,14 @@ class CameraFragment : Fragment() {
             // Basic Mode
             if(viewBinding.basicRadio.isChecked){
                 if(!(viewBinding.basicToggle.isChecked)){
+                    if (!isRecording) {
+                        startRecording()
+                    } else {
+                        stopRecording()
+                    }
                     // Single Mode
-//                    takePhotoIndex(0, 1)
-                    previewToByteArray()
+                    takePhotoIndex(0, 1)
+//                    previewToByteArray()
                     mediaPlayer.start()
                 }
                 else{
@@ -719,5 +730,98 @@ class CameraFragment : Fragment() {
                 }
             }.toTypedArray()
     }
+
+
+    private var recorder: MediaRecorder? = null
+    private var audioRecorder: AudioRecord? = null
+    private var audioThread: Thread? = null
+    private var audioFilePath1: String = ""
+    private var audioFilePath2: String = ""
+    private var isRecording: Boolean = false
+    private var isRecordingStarted: Boolean = false
+    private var startTime: Long = 0L
+    private var stopTime: Long = 0L
+
+    private fun startRecording() {
+        recorder = MediaRecorder()
+        audioFilePath1 = getAudioFilePath()
+        Log.d("test_test", audioFilePath1)
+        audioFilePath2 = getAudioFilePath()
+        Log.d("test_test", audioFilePath2)
+        recorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
+        recorder?.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+        recorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+        recorder?.setOutputFile(audioFilePath1)
+        recorder?.prepare()
+        recorder?.start()
+
+        val bufferSize = AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
+        if (ActivityCompat.checkSelfPermission(
+               mainActivity,
+                Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        audioRecorder = AudioRecord(MediaRecorder.AudioSource.MIC, 44100, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize)
+        audioThread = Thread(Runnable {
+            val data = ByteArray(bufferSize)
+            val fileOutputStream = FileOutputStream(audioFilePath1)
+            var isStarted = false
+            while (isRecording) {
+                val count = audioRecorder?.read(data, 0, bufferSize) ?: 0
+                if (count > 0) {
+                    if (!isStarted) {
+                        isStarted = true
+                        startTime = System.currentTimeMillis()
+                    }
+
+                    fileOutputStream.write(data, 0, count)
+                }
+            }
+            fileOutputStream.close()
+            if (isStarted) {
+                stopTime = System.currentTimeMillis()
+                if (stopTime - startTime > 1500L) {
+                    val file1 = File(audioFilePath1)
+                    file1.renameTo(File(audioFilePath2))
+                } else {
+                    val file1 = File(audioFilePath1)
+                    file1.delete()
+                }
+            }
+            audioRecorder?.stop()
+            audioRecorder?.release()
+            audioRecorder = null
+        })
+        isRecording = true
+        isRecordingStarted = true
+        audioRecorder?.startRecording()
+        audioThread?.start()
+    }
+
+    private fun stopRecording() {
+        isRecording = false
+        recorder?.stop()
+        recorder?.reset()
+        recorder?.release()
+        recorder = null
+    }
+
+    private fun getAudioFilePath(): String {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val audioFileName = "AUDIO_$timeStamp.mp4"
+        val storageDir = mainActivity.getExternalFilesDir(Environment.DIRECTORY_DCIM)
+        return "${storageDir?.absolutePath}/$audioFileName"
+    }
+
+
 }
 

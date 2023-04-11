@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.camera.core.impl.utils.Exif
+import androidx.exifinterface.media.ExifInterface
 import com.example.camerax.PictureModule.Contents.ContentAttribute
 import com.example.camerax.PictureModule.Contents.ContentType
 import com.example.camerax.SaveModule.SaveResolver

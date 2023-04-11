@@ -77,7 +77,6 @@ class SaveResolver(_mainActivity: Activity, _MC_Container: MCContainer) {
                     //EOI 작성
                     byteBuffer.write(0xff)
                     byteBuffer.write(0xd9)
-
                 }
             }
             // Text Wirte

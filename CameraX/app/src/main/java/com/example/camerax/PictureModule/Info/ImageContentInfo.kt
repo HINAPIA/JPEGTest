@@ -7,14 +7,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 
-class ImageContentInfo(imageContent: ImageContent, startOffset : Int) {
+class ImageContentInfo(imageContent: ImageContent) {
     var contentInfoSize: Int = 0
-    var dataStartOffset : Int = 0
     var imageCount : Int = 0
     var imageInfoList : ArrayList<ImageInfo> = arrayListOf()
 
     init{
-        dataStartOffset = 0
         imageCount = imageContent.pictureCount
         imageInfoList = fillImageInfoList(imageContent.pictureList)
         contentInfoSize = getLength()
@@ -44,7 +42,7 @@ class ImageContentInfo(imageContent: ImageContent, startOffset : Int) {
         for(i in 0..imageInfoList.size -1 ){
             size += imageInfoList.get(i).getImageInfoSize()
         }
-        size += 12
+        size += 8
         contentInfoSize = size
         return size
     }
@@ -53,7 +51,7 @@ class ImageContentInfo(imageContent: ImageContent, startOffset : Int) {
         val buffer: ByteBuffer = ByteBuffer.allocate(getLength())
         //Image Content
         buffer.putInt(contentInfoSize)
-        buffer.putInt(dataStartOffset)
+        //buffer.putInt(dataStartOffset)
         buffer.putInt(imageCount)
         //Image Content - Image Info
         for(j in 0..imageCount - 1){

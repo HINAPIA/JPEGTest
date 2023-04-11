@@ -4,15 +4,13 @@ import com.example.camerax.PictureModule.Contents.Text
 import com.example.camerax.PictureModule.TextContent
 import java.nio.ByteBuffer
 
-class TextContentInfo(textContent: TextContent , startOffset : Int) {
+class TextContentInfo(textContent: TextContent) {
 
     var contentInfoSize: Int = 0
-   // var dataStartOffset : Int = 0
     var textCount : Int = 0
     var textInfoList : ArrayList<TextInfo> = arrayListOf()
 
     init{
-      //  dataStartOffset = startOffset
         textCount = textContent.textCount
         textInfoList = fillTextInfoList(textContent.textList)
         contentInfoSize = getLength()
@@ -38,11 +36,8 @@ class TextContentInfo(textContent: TextContent , startOffset : Int) {
 
     fun converBinaryData(): ByteArray {
         val buffer: ByteBuffer = ByteBuffer.allocate(getLength())
-        //Image Content
         buffer.putInt(contentInfoSize)
-        //buffer.putInt(dataStartOffset)
         buffer.putInt(textCount)
-        //Image Content - Image Info
         for(j in 0..textCount - 1){
             var textInfo = textInfoList.get(j)
             buffer.putInt(textInfo.attribute)
@@ -50,16 +45,14 @@ class TextContentInfo(textContent: TextContent , startOffset : Int) {
             for(p in 0..textInfo.dataSize- 1){
                 buffer.putChar(textInfo.data.get(p))
             }
-
-        }// end of Text Info
-        // end of Text Content ...
+        }
         return buffer.array()
     }
 
     fun getLength() : Int {
         var size = 0
         for(i in 0..textInfoList.size -1 ){
-            size += textInfoList.get(i).getImageInfoSize()
+            size += textInfoList.get(i).getTextInfoSize()
         }
         size += 8
         return size
