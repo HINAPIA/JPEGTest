@@ -104,8 +104,8 @@ class MainActivity : AppCompatActivity() {
         }
         // editButton을 클릭했을 때: edit하는 것, 즉 magic picture을 제작하고자 함
         editButton.setOnClickListener {
-            runFaceDetection(mainBitmap)
-            //runObjectDetection(mainBitmap) // Main Picture 객체 감지(Object Detection) 실행
+//            runFaceDetection(mainBitmap)
+            runObjectDetection(mainBitmap) // Main Picture 객체 감지(Object Detection) 실행
         }
         // viewButton을 클릭했을 때: magic pricture 실행 (움직이게 하기)
         viewButton.setOnClickListener {
@@ -207,8 +207,8 @@ class MainActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.Main).launch {
             // boundingBox를 알아내고 이미지 크롭하는 함수 호출
-            //setStandardBoundingBox()
-            getFaceBoundingBox()
+            setStandardBoundingBox()
+//            getFaceBoundingBox()
         }
     }
 
@@ -595,36 +595,36 @@ class MainActivity : AppCompatActivity() {
      *      사진 속 객체를 감지하고, 감지된 객체에 boundingBox와 category를 적고 화면에 띄운다.
      *      또한, category를 classification List에 추가해준다. (분류에 도움을 줌)
      */
-    private fun runFaceDetection(bitmap: Bitmap) {
-
-        // Object Detection
-        FaceresultToDisplay = getFaceDetectionOneByOne(bitmap)!!
-
-        // ObjectDetection 결과(bindingBox) 그리기
-        val objectDetectionResult =
-            drawDetectionResult(bitmap, FaceresultToDisplay)
-
-        //추가할 커스텀 레이아웃 가져오기
-        val layoutInflater =
-            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
-        // 사진에서 감지된 객체 개수만큼 반복 문
-        for (i in 0 until FaceresultToDisplay.size) {
-
-                // 넣고자 하는 layout 불러오기
-                val customLayout = layoutInflater.inflate(R.layout.object_classification, null)
-
-                // 위 불러온 layout에서 변경을 할 view 가져오기
-                val classificationBtn: Button =
-                    customLayout.findViewById<Button>(R.id.classificationBtn)
-
-        }
-
-        // 화면에 이미지 띄우기
-        runOnUiThread {
-            imageView.setImageBitmap(objectDetectionResult)
-        }
-    }
+//    private fun runFaceDetection(bitmap: Bitmap) {
+//
+//        // Object Detection
+//        FaceresultToDisplay = getFaceDetectionOneByOne(bitmap)!!
+//
+//        // ObjectDetection 결과(bindingBox) 그리기
+//        val objectDetectionResult =
+//            drawDetectionResult(bitmap, FaceresultToDisplay)
+//
+//        //추가할 커스텀 레이아웃 가져오기
+//        val layoutInflater =
+//            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+//
+//        // 사진에서 감지된 객체 개수만큼 반복 문
+//        for (i in 0 until FaceresultToDisplay.size) {
+//
+//                // 넣고자 하는 layout 불러오기
+//                val customLayout = layoutInflater.inflate(R.layout.object_classification, null)
+//
+//                // 위 불러온 layout에서 변경을 할 view 가져오기
+//                val classificationBtn: Button =
+//                    customLayout.findViewById<Button>(R.id.classificationBtn)
+//
+//        }
+//
+//        // 화면에 이미지 띄우기
+//        runOnUiThread {
+//            imageView.setImageBitmap(objectDetectionResult)
+//        }
+//    }
 
 
 
